@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <defs>
+    <linearGradient id="grad1" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#8b5cf6" />
+      <stop offset="100%" stop-color="#22d3ee" />
+    </linearGradient>
+  </defs>
+  <!-- Bloch sphere lines -->
+  <circle cx="50" cy="50" r="40" fill="none" stroke="url(#grad1)" stroke-width="1.5" stroke-dasharray="3 3" opacity="0.4"/>
+  <ellipse cx="50" cy="50" rx="40" ry="12" fill="none" stroke="url(#grad1)" stroke-width="1.5" stroke-dasharray="3 3" opacity="0.4"/>
+  <!-- Mountain peak -->
+  <path d="M50 20 L80 80 L20 80 Z" fill="url(#grad1)" opacity="0.15"/>
+  <path d="M50 20 L50 80 L20 80 Z" fill="url(#grad1)" opacity="0.25"/>
+  <path d="M50 20 L50 80 L80 80 Z" fill="url(#grad1)" opacity="0.1"/>
+  <!-- Ascent path (glowing vector line) -->
+  <path d="M50 80 L50 20" stroke="#fbbf24" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="50" cy="20" r="4" fill="#fbbf24"/>
+</svg>

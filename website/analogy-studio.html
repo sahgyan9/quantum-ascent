@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Analogy Studio — Quantum Ascent</title>
+<meta name="description" content="Generate custom AI prompt templates with precise quantum physics constraints to learn quantum concepts using your favorite analogies.">
 <link rel="stylesheet" href="assets/css/site.css">
 <style>
   select, input[type="text"] {
@@ -31,34 +32,53 @@
 
 <div class="container">
   <h1>🎨 Analogy Studio</h1>
-  <p class="muted" style="max-width:44em">Everyone's brain hooks onto different things.
-  Tell us your world, pick a concept, and we'll engineer a prompt for <i>your</i>
-  favorite AI (ChatGPT, Claude, Gemini…). The precise physics is baked into the
-  prompt as ground rules, so the AI explains it through your life <b>without
-  drifting into pop-science myths</b>.</p>
-
-  <div class="panel" style="max-width:640px">
-    <label for="concept"><b>Concept to explain</b></label>
-    <select id="concept"></select>
-
-    <label for="background"><b>Your world</b> — job, hobby, passion… anything</label>
-    <input type="text" id="background" placeholder="e.g. I'm a cricket fan who works as a nurse"
-           aria-label="your background">
-
-    <label for="level"><b>How deep?</b></label>
-    <select id="level">
-      <option value="first-touch">First touch — I just want the feel of it</option>
-      <option value="course" selected>Course level — I'm working through the notebooks</option>
-      <option value="rigorous">Rigorous — connect the analogy back to the math</option>
-    </select>
-
-    <button class="btn" id="generate">Generate my prompt</button>
-    <button class="btn ghost" id="copy" disabled>📋 Copy</button>
-    <span id="copied" style="color:var(--green)"></span>
+  <div class="learning-list" style="margin: 20px 0 32px;">
+    <div class="learning-item">
+      <span class="marker-green">✓</span>
+      <span><b>Personalized Hooks:</b> Connect complex physics concepts directly to your unique hobbies, job, or passions.</span>
+    </div>
+    <div class="learning-item">
+      <span class="marker-green">✓</span>
+      <span><b>Rigorous Prompts:</b> Generates customized AI instructions with strict physical constraints, preventing AI model hallucinations or pop-science oversimplifications.</span>
+    </div>
   </div>
 
-  <h2 class="section" id="out-title" hidden>Your prompt</h2>
-  <div id="prompt-out" hidden></div>
+  <div class="workspace">
+    <div class="workspace-left">
+      <div class="panel">
+        <h3 style="margin-bottom: 16px; border-bottom: 1px solid var(--line); padding-bottom: 10px; color: var(--cyan);">🔧 Configuration</h3>
+        
+        <label for="concept"><b>Concept to explain</b></label>
+        <select id="concept"></select>
+
+        <label for="background"><b>Your world</b> — job, hobby, passion… anything</label>
+        <input type="text" id="background" placeholder="e.g. I'm a cricket fan who works as a nurse"
+               aria-label="your background">
+
+        <label for="level"><b>How deep?</b></label>
+        <select id="level">
+          <option value="first-touch">First touch — I just want the feel of it</option>
+          <option value="course" selected>Course level — I'm working through the notebooks</option>
+          <option value="rigorous">Rigorous — connect the analogy back to the math</option>
+        </select>
+
+        <button class="btn" id="generate" style="width: 100%;">Generate my prompt</button>
+      </div>
+    </div>
+
+    <div class="workspace-right">
+      <div class="panel prompt-card">
+        <div class="prompt-header">
+          <h3 style="color: var(--cyan);">💻 Engineered Prompt</h3>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span id="copied" style="font-size: 13.5px; color: var(--green);"></span>
+            <button class="btn ghost btn-sm" id="copy" disabled>📋 Copy</button>
+          </div>
+        </div>
+        <div id="prompt-out" class="prompt-placeholder">Configure parameters on the left and click "Generate my prompt" to view your custom prompt here...</div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <footer>Built for the WISER Education Challenge 2026 · Definitions reviewed against
@@ -98,15 +118,15 @@ Finish with:
 
   const out = document.getElementById("prompt-out");
   out.textContent = prompt;
-  out.hidden = false;
-  document.getElementById("out-title").hidden = false;
+  out.classList.remove("prompt-placeholder");
   document.getElementById("copy").disabled = false;
   document.getElementById("copied").textContent = "";
 });
 
 document.getElementById("copy").addEventListener("click", async () => {
   await navigator.clipboard.writeText(document.getElementById("prompt-out").textContent);
-  document.getElementById("copied").textContent = "✓ copied — paste it into your AI";
+  document.getElementById("copied").textContent = "✓ copied";
+  setTimeout(() => { document.getElementById("copied").textContent = ""; }, 2000);
 });
 </script>
 </body>

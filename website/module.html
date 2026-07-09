@@ -4,7 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Basecamp — Quantum Ascent</title>
+<meta name="description" content="Interactive basecamp module detail page on Quantum Ascent. Build intuition with widgets and complete code tasks.">
 <link rel="stylesheet" href="assets/css/site.css">
+<!-- KaTeX Math Rendering -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
 </head>
 <body>
 
@@ -52,26 +57,81 @@
     <p class="muted">${m.subtitle} · ~${m.minutes} min · ${m.xp} XP
       ${m.badge ? `· earns the <span class="badge-chip">🏅 ${m.badge}</span> badge` : ""}</p>
 
-    <div class="panel" style="margin:14px 0">
-      <b>You'll learn:</b> <span class="muted">${m.concepts.join(" · ")}</span>
+    <div class="panel" style="margin: 20px 0">
+      <h3 style="font-size: 16px; margin-bottom: 12px; color: var(--text);">🎯 What you will learn:</h3>
+      <ul class="learning-list">
+        ${m.concepts.map(concept => `
+          <li class="learning-item">
+            <span class="marker-green">✓</span>
+            <span>${concept}</span>
+          </li>
+        `).join("")}
+      </ul>
     </div>
 
     ${soon ? `<div class="panel" style="border-color:var(--violet)">
         🚧 This basecamp is being carved out of the mountain. Check back soon —
         or start with <a href="module.html?id=01">Basecamp 1</a>.</div>` : `
+    
+    <div class="panel" style="border-color: var(--violet); background: rgba(139, 92, 246, 0.03); margin: 24px 0 32px;">
+      <h3 style="font-size: 16px; margin-bottom: 8px; color: var(--text); display: flex; align-items: center; gap: 8px; font-family: var(--font-heading);">
+        🏔️ Climber's Guide — How to conquer this Basecamp:
+      </h3>
+      <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 12px; font-size: 14.5px;">
+        <div style="display: flex; gap: 10px; align-items: flex-start;">
+          <span style="color: var(--cyan); font-weight: 700; font-family: var(--font-heading);">Step 1:</span>
+          <span>Scroll down to <b>Section 2</b> and open the <b>Jupyter Notebook</b>. Read it line by line to understand the quantum mechanics theory and complete the code tasks.</span>
+        </div>
+        <div style="display: flex; gap: 10px; align-items: flex-start;">
+          <span style="color: var(--cyan); font-weight: 700; font-family: var(--font-heading);">Step 2:</span>
+          <span>Return here and play with the <b>Interactive Widget</b> in <b>Section 1</b> to visualize what the theory and math look like in real time.</span>
+        </div>
+        <div style="display: flex; gap: 10px; align-items: flex-start;">
+          <span style="color: var(--cyan); font-weight: 700; font-family: var(--font-heading);">Step 3:</span>
+          <span>Take the <b>Quiz</b> in <b>Section 3</b> to lock in your XP and claim your badge!</span>
+        </div>
+      </div>
+    </div>
+
     <h2 class="section">1 · Build intuition — play with the widget</h2>
-    <p class="muted">Poke it. Predict before you press. The notebook will formalize
-    what your hands learn here.</p>
+    <div class="learning-list" style="margin: 16px 0 24px;">
+      <div class="learning-item">
+        <span class="marker-green">1</span>
+        <span><b>Explore:</b> Poke the interactive widgets, adjust inputs, and notice how the state moves.</span>
+      </div>
+      <div class="learning-item">
+        <span class="marker-green">2</span>
+        <span><b>Predict:</b> Guess the statistics of measurement outcomes before you sample.</span>
+      </div>
+      <div class="learning-item">
+        <span class="marker-green">3</span>
+        <span><b>Observe:</b> Run measurements (shots) to see the random collapse align with probabilities.</span>
+      </div>
+    </div>
     <iframe src="widgets/${m.widget}/index.html" style="width:100%;height:560px;
       border:1px solid var(--line);border-radius:12px" title="${m.widget} interactive widget"></iframe>
-    <p><a href="widgets/${m.widget}/index.html" target="_blank" rel="noopener">Open widget in a new tab ↗</a></p>
-
+    <p style="margin-top: 8px;"><a href="widgets/${m.widget}/index.html" target="_blank" rel="noopener">Open widget in a new tab ↗</a></p>
+ 
     <h2 class="section">2 · Do the physics — the interactive notebook</h2>
-    <p class="muted">Gap-fill tasks with instant feedback. No installation needed —
-    Colab runs it in your browser.</p>
-    <a class="btn" href="${colab}" target="_blank" rel="noopener">▶ Open in Google Colab</a>
-    <a class="btn ghost" href="${nbviewer}" target="_blank" rel="noopener">Preview (nbviewer)</a>
-
+    <div class="learning-list" style="margin: 16px 0 24px;">
+      <div class="learning-item">
+        <span class="marker-green">✓</span>
+        <span><b>Gap-Fill Challenges:</b> Complete incomplete code files to verify your mathematical understanding.</span>
+      </div>
+      <div class="learning-item">
+        <span class="marker-green">✓</span>
+        <span><b>Instant Checkers:</b> Get explainers on *why* your circuit or math failed, not just *that* it did.</span>
+      </div>
+      <div class="learning-item">
+        <span class="marker-green">✓</span>
+        <span><b>No Setup Required:</b> Open directly in Google Colab and run on free cloud servers.</span>
+      </div>
+    </div>
+    <div style="display: flex; gap: 12px; margin-bottom: 24px;">
+      <a class="btn" href="${colab}" target="_blank" rel="noopener">▶ Open in Google Colab</a>
+      <a class="btn ghost" href="${nbviewer}" target="_blank" rel="noopener">Preview (nbviewer)</a>
+    </div>
+ 
     <h2 class="section" id="quiz">3 · Prove it — the quiz</h2>
     <div id="quiz-box"></div>`}
 

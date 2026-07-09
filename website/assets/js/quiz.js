@@ -34,14 +34,38 @@ async function renderQuiz(containerId, moduleId, moduleMeta) {
         });
         const ex = document.createElement("div");
         ex.className = "quiz-explain";
-        ex.textContent = (good ? "✅ " : "❌ ") + item.explain;
+        ex.innerHTML = `<span style="font-weight:700; color: ${good ? 'var(--green)' : '#f87171'}">${good ? "✓ Correct: " : "✗ Incorrect: "}</span>` + item.explain;
         box.appendChild(ex);
+        if (typeof renderMathInElement !== "undefined") {
+          renderMathInElement(ex, {
+            delimiters: [
+              {left: '$$', right: '$$', display: true},
+              {left: '$', right: '$', display: false}
+            ],
+            throwOnError: false
+          });
+        }
         if (answered === questions.length) finish();
       });
       box.appendChild(btn);
     });
     el.appendChild(box);
   });
+
+  const typeset = () => {
+    if (typeof renderMathInElement !== "undefined") {
+      renderMathInElement(el, {
+        delimiters: [
+          {left: '$$', right: '$$', display: true},
+          {left: '$', right: '$', display: false}
+        ],
+        throwOnError: false
+      });
+    } else {
+      setTimeout(typeset, 50);
+    }
+  };
+  typeset();
 
   function finish() {
     const score = correct / questions.length;

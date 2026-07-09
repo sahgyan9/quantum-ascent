@@ -21,7 +21,7 @@
 
 <div class="container">
   <div class="hero">
-    <div style="flex:1;min-width:300px">
+    <div class="hero-content">
       <h1>Don't just watch quantum lectures.<br><em>Climb</em> the mountain.</h1>
       <p class="lead">Six hands-on basecamps take you from "what is a qubit?" to
       solving real optimization problems with QAOA — with interactive widgets to
@@ -30,7 +30,11 @@
       <a class="btn" href="ascent.html">Start the ascent →</a>
       <a class="btn ghost" href="module.html?id=01">Jump into Basecamp 1</a>
     </div>
-    <canvas id="hero-bloch" width="340" height="340" aria-hidden="true"></canvas>
+    <div class="hero-visual">
+      <div class="hero-visual-card">
+        <canvas id="hero-bloch" width="340" height="340" aria-hidden="true"></canvas>
+      </div>
+    </div>
   </div>
 
   <h2 class="section">Why this course is different</h2>
@@ -50,11 +54,58 @@
   </div>
 
   <h2 class="section">The route</h2>
-  <p class="muted">Basecamp 1: The Qubit → 2: Gates & Circuits → 3: Entanglement →
-  4: Hamiltonians & Energy → 5: The Variational Principle → 🏔️ Summit: QAOA for
-  Max-Cut. Each basecamp: interactive widget → guided notebook with gap-fill tasks →
-  quiz → XP and badges. Track your before/after understanding with the
-  <a href="assessment.html">summit assessment</a>.</p>
+  <p class="muted" style="margin-bottom: 20px;">Climb through six structured basecamps to conquer the QAOA summit. Each camp features: <b>Interactive Widget</b> ➔ <b>Jupyter Notebook</b> ➔ <b>Concept Quiz</b>.</p>
+  
+  <div class="grid3" style="margin-top: 24px;">
+    <div class="panel">
+      <h3>Basecamp 1: The Qubit</h3>
+      <ul style="list-style: none; padding: 0; margin-top: 12px;">
+        <li style="display: flex; gap: 8px; font-size: 14px; margin-bottom: 8px; align-items: center;"><span style="color: var(--green); font-weight: bold;">✓</span> Qubits & Superposition</li>
+        <li style="display: flex; gap: 8px; font-size: 14px; margin-bottom: 8px; align-items: center;"><span style="color: var(--green); font-weight: bold;">✓</span> The Born Rule Statistics</li>
+        <li style="display: flex; gap: 8px; font-size: 14px; align-items: center;"><span style="color: var(--green); font-weight: bold;">✓</span> Bloch Sampler Widget</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <h3>Basecamp 2: Gates & Circuits</h3>
+      <ul style="list-style: none; padding: 0; margin-top: 12px;">
+        <li style="display: flex; gap: 8px; font-size: 14px; margin-bottom: 8px; align-items: center;"><span style="color: var(--green); font-weight: bold;">✓</span> Rotations & Unitary Gates</li>
+        <li style="display: flex; gap: 8px; font-size: 14px; margin-bottom: 8px; align-items: center;"><span style="color: var(--green); font-weight: bold;">✓</span> Qiskit Endianness Traps</li>
+        <li style="display: flex; gap: 8px; font-size: 14px; align-items: center;"><span style="color: var(--green); font-weight: bold;">✓</span> Gate Playground Widget</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <h3>Basecamp 3: Entanglement</h3>
+      <ul style="list-style: none; padding: 0; margin-top: 12px;">
+        <li style="display: flex; gap: 8px; font-size: 14px; margin-bottom: 8px; align-items: center;"><span style="color: var(--green); font-weight: bold;">✓</span> Tensor State Spaces</li>
+        <li style="display: flex; gap: 8px; font-size: 14px; margin-bottom: 8px; align-items: center;"><span style="color: var(--green); font-weight: bold;">✓</span> Bell State Correlations</li>
+        <li style="display: flex; gap: 8px; font-size: 14px; align-items: center;"><span style="color: var(--green); font-weight: bold;">✓</span> CHSH Game Widget</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <h3>Basecamp 4: Hamiltonians</h3>
+      <ul style="list-style: none; padding: 0; margin-top: 12px;">
+        <li style="display: flex; gap: 8px; font-size: 14px; margin-bottom: 8px; align-items: center;"><span style="color: var(--green); font-weight: bold;">✓</span> Observables & Expectation</li>
+        <li style="display: flex; gap: 8px; font-size: 14px; margin-bottom: 8px; align-items: center;"><span style="color: var(--green); font-weight: bold;">✓</span> Pauli Strings Encoding</li>
+        <li style="display: flex; gap: 8px; font-size: 14px; align-items: center;"><span style="color: var(--green); font-weight: bold;">✓</span> Expectation Sampler Widget</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <h3>Basecamp 5: Variational</h3>
+      <ul style="list-style: none; padding: 0; margin-top: 12px;">
+        <li style="display: flex; gap: 8px; font-size: 14px; margin-bottom: 8px; align-items: center;"><span style="color: var(--green); font-weight: bold;">✓</span> Parameterized Ansatz</li>
+        <li style="display: flex; gap: 8px; font-size: 14px; margin-bottom: 8px; align-items: center;"><span style="color: var(--green); font-weight: bold;">✓</span> Optimizer Landscapes</li>
+        <li style="display: flex; gap: 8px; font-size: 14px; align-items: center;"><span style="color: var(--green); font-weight: bold;">✓</span> QAOA Landscape Widget</li>
+      </ul>
+    </div>
+    <div class="panel" style="border-color: var(--gold);">
+      <h3>🏔️ Basecamp 6: Summit</h3>
+      <ul style="list-style: none; padding: 0; margin-top: 12px;">
+        <li style="display: flex; gap: 8px; font-size: 14px; margin-bottom: 8px; align-items: center;"><span style="color: var(--gold); font-weight: bold;">★</span> Max-Cut Formulations</li>
+        <li style="display: flex; gap: 8px; font-size: 14px; margin-bottom: 8px; align-items: center;"><span style="color: var(--gold); font-weight: bold;">★</span> Mixer & Cost Ansätze</li>
+        <li style="display: flex; gap: 8px; font-size: 14px; align-items: center;"><span style="color: var(--gold); font-weight: bold;">★</span> Maxcut Painter Capstone</li>
+      </ul>
+    </div>
+  </div>
 
   <div class="panel" style="margin-top:18px">
     <b>For educators:</b> <span class="muted">every notebook opens in Google Colab with

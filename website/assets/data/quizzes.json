@@ -1,7 +1,7 @@
 {
   "01": [
     {
-      "q": "A qubit is in the state (1/√2)|0⟩ + (1/√2)|1⟩. What does a single measurement give you?",
+      "q": "A qubit is in the state $\\frac{1}{\\sqrt{2}}|0\\rangle + \\frac{1}{\\sqrt{2}}|1\\rangle$. What does a single measurement give you?",
       "options": [
         "Both 0 and 1 simultaneously",
         "0 or 1, each with probability 1/2 — and the state collapses to that outcome",
@@ -9,40 +9,40 @@
         "The two amplitudes themselves"
       ],
       "answer": 1,
-      "explain": "One shot yields exactly one classical outcome, sampled by the Born rule (P = |amplitude|²). The 'both at once' slogan confuses the pre-measurement amplitudes with the post-measurement result."
+      "explain": "One shot yields exactly one classical outcome, sampled by the Born rule ($P = |\\text{amplitude}|^2$). The 'both at once' slogan confuses the pre-measurement amplitudes with the post-measurement result."
     },
     {
       "q": "Which of these is a valid qubit state?",
       "options": [
-        "0.5|0⟩ + 0.5|1⟩",
-        "|0⟩ + |1⟩",
-        "(√3/2)|0⟩ + (1/2)|1⟩",
-        "0.75|0⟩ + 0.25|1⟩"
+        "$0.5|0\\rangle + 0.5|1\\rangle$",
+        "$|0\\rangle + |1\\rangle$",
+        "$\\frac{\\sqrt{3}}{2}|0\\rangle + \\frac{1}{2}|1\\rangle$",
+        "$0.75|0\\rangle + 0.25|1\\rangle$"
       ],
       "answer": 2,
-      "explain": "Normalization lives on the squares of the amplitudes: (√3/2)² + (1/2)² = 3/4 + 1/4 = 1. The others sum to 1/2, 2, and 0.625 — physics forbids all three."
+      "explain": "Normalization lives on the squares of the amplitudes: $(\\frac{\\sqrt{3}}{2})^2 + (\\frac{1}{2})^2 = \\frac{3}{4} + \\frac{1}{4} = 1$. The others sum to 1/2, 2, and 0.625 — physics forbids all three."
     },
     {
-      "q": "You run H|0⟩ for 1024 shots and get 498 zeros, 526 ones. What should you conclude?",
+      "q": "You run $H|0\\rangle$ for 1024 shots and get 498 zeros, 526 ones. What should you conclude?",
       "options": [
         "The circuit is wrong — it should give exactly 512/512",
         "The simulator is broken",
-        "This is consistent with P(0)=P(1)=1/2 — counts fluctuate like coin flips (σ ≈ 16 here)",
+        "This is consistent with $P(0)=P(1)=1/2$ — counts fluctuate like coin flips ($\\sigma \\approx 16$ here)",
         "The qubit decohered"
       ],
       "answer": 2,
-      "explain": "Each shot is an independent Born-rule sample. Deviations of a few standard deviations (√(N·p·(1−p)) ≈ 16 shots) are expected; that's why we judge distributions statistically, not exactly."
+      "explain": "Each shot is an independent Born-rule sample. Deviations of a few standard deviations ($\\sqrt{N \\cdot p \\cdot (1-p)} \\approx 16$ shots) are expected; that's why we judge distributions statistically, not exactly."
     },
     {
-      "q": "You want a state with P(1) = 1/4 starting from |0⟩. Which gate does it?",
+      "q": "You want a state with $P(1) = 1/4$ starting from $|0\\rangle$. Which gate does it?",
       "options": [
         "H, because it creates superposition",
-        "RY(π/3), because sin²(π/6) = 1/4",
-        "RY(π/4), because a quarter turn gives a quarter probability",
+        "$RY(\\pi/3)$, because $\\sin^2(\\pi/6) = 1/4$",
+        "$RY(\\pi/4)$, because a quarter turn gives a quarter probability",
         "X, then measure quickly"
       ],
       "answer": 1,
-      "explain": "RY(θ)|0⟩ = cos(θ/2)|0⟩ + sin(θ/2)|1⟩, so P(1) = sin²(θ/2) = 1/4 needs θ/2 = π/6, i.e. θ = π/3 (60°). Angles map to probabilities through sin² of the HALF-angle — the widget's slider showed you this curve."
+      "explain": "$RY(\\theta)|0\\rangle = \\cos(\\theta/2)|0\\rangle + \\sin(\\theta/2)|1\\rangle$, so $P(1) = \\sin^2(\\theta/2) = 1/4$ needs $\\theta/2 = \\pi/6$, i.e. $\\theta = \\pi/3$ ($60^\\circ$). Angles map to probabilities through $\\sin^2$ of the HALF-angle — the widget's slider showed you this curve."
     }
   ]
 }
