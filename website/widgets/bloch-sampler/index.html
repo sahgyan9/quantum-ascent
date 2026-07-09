@@ -1,0 +1,156 @@
+<meta charset="utf-8">
+<title>Bloch Sampler — Quantum Ascent</title>
+<link rel="stylesheet" href="../_base/widget.css">
+<style>
+  .wrap { display: flex; gap: 12px; max-width: 880px; }
+  #sphere { background: radial-gradient(circle at 40% 35%, #16204000, #0b1020), var(--panel);
+            border: 1px solid var(--line); border-radius: 10px; }
+  .right { flex: 1; display: flex; flex-direction: column; gap: 10px; }
+  .bars { display: grid; grid-template-columns: 34px 1fr 64px; gap: 6px; align-items: center; }
+  .track { height: 16px; background: #0e1530; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+  .fill  { height: 100%; width: 0%; transition: width .15s; }
+  .f0 { background: var(--cyan); } .f1 { background: var(--violet); }
+  .h0 { background: rgba(34,211,238,.45); } .h1 { background: rgba(139,92,246,.45); }
+  #flash { min-height: 22px; font-weight: 700; }
+  .pop { animation: pop .35s; } @keyframes pop { 0% {transform: scale(1.4);} 100% {transform: scale(1);} }
+</style>
+
+<div class="hint-bar" id="hint">💡 <b>Try this:</b> drag <b>θ</b> to tilt the qubit
+between |0⟩ (north) and |1⟩ (south), predict the odds, then press <b>Measure</b>
+and watch the statistics build toward your prediction.</div>
+
+<div class="wrap">
+  <canvas id="sphere" width="420" height="420"></canvas>
+
+  <div class="right">
+    <div class="panel">
+      <label>θ (tilt): <span class="readout" id="thetaV">90°</span></label>
+      <input type="range" id="theta" min="0" max="180" value="90" step="1"
+             aria-label="theta tilt angle">
+      <label>φ (twist — changes no probabilities; wait for Basecamp 2!):
+             <span class="readout" id="phiV">0°</span></label>
+      <input type="range" id="phi" min="0" max="360" value="0" step="1"
+             aria-label="phi phase angle">
+      <div style="margin-top:8px" class="readout">
+        |ψ⟩ = <span id="amp0">0.707</span> |0⟩ + <span id="amp1">0.707</span> |1⟩
+        &nbsp;·&nbsp; ⟨Z⟩ = <span id="expz">0.00</span>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="bars">
+        <span>P(0)</span><div class="track"><div class="fill f0" id="p0bar"></div></div><span class="readout" id="p0">50.0%</span>
+        <span>P(1)</span><div class="track"><div class="fill f1" id="p1bar"></div></div><span class="readout" id="p1">50.0%</span>
+      </div>
+      <div style="color:var(--muted);margin:8px 0 2px">Measured so far (<span id="shots">0</span> shots):</div>
+      <div class="bars">
+        <span>0:</span><div class="track"><div class="fill h0" id="h0bar"></div></div><span class="readout" id="c0">0</span>
+        <span>1:</span><div class="track"><div class="fill h1" id="h1bar"></div></div><span class="readout" id="c1">0</span>
+      </div>
+      <div id="flash"></div>
+      <button id="m1">Measure ×1</button>
+      <button id="m100" class="violet">Measure ×100</button>
+      <button id="reset" class="secondary">Reset</button>
+    </div>
+  </div>
+</div>
+
+<script>
+"use strict";
+const $ = id => document.getElementById(id);
+const cv = $("sphere"), ctx = cv.getContext("2d");
+const state = { theta: 90, phi: 0, c0: 0, c1: 0, collapse: null };
+
+function probs() {
+  const t = state.theta * Math.PI / 180;
+  const p0 = Math.cos(t / 2) ** 2;
+  return [p0, 1 - p0];
+}
+
+/* ------------------------------------------------ sphere drawing */
+function project(theta, phi) {
+  // orthographic 3D->2D: x = sinθ cosφ, y = sinθ sinφ, z = cosθ
+  const t = theta * Math.PI / 180, p = phi * Math.PI / 180;
+  const x = Math.sin(t) * Math.cos(p), y = Math.sin(t) * Math.sin(p), z = Math.cos(t);
+  // screen: x right (with slight y-depth skew), z up
+  return { sx: 210 + 150 * (x + 0.35 * y), sy: 210 - 150 * (z - 0.25 * y), depth: y };
+}
+
+function draw() {
+  ctx.clearRect(0, 0, 420, 420);
+  ctx.strokeStyle = "#26304f"; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.arc(210, 210, 150, 0, 7); ctx.stroke();       // sphere outline
+  ctx.beginPath(); ctx.ellipse(210, 210, 150, 44, 0, 0, 7); ctx.stroke(); // equator
+  ctx.setLineDash([4, 5]);                                           // z-axis
+  ctx.beginPath(); ctx.moveTo(210, 45); ctx.lineTo(210, 375); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = "#93a1c8"; ctx.font = "16px system-ui";
+  ctx.fillText("|0⟩", 222, 55); ctx.fillText("|1⟩", 222, 380);
+
+  const g = state.collapse !== null
+    ? project(state.collapse === 0 ? 0 : 180, 0)
+    : project(state.theta, state.phi);
+  const grad = ctx.createLinearGradient(210, 210, g.sx, g.sy);
+  grad.addColorStop(0, "#22d3ee"); grad.addColorStop(1, "#8b5cf6");
+  ctx.strokeStyle = grad; ctx.lineWidth = 4; ctx.lineCap = "round";
+  ctx.beginPath(); ctx.moveTo(210, 210); ctx.lineTo(g.sx, g.sy); ctx.stroke();
+  ctx.fillStyle = state.collapse !== null ? "#f87171" : "#22d3ee";
+  ctx.beginPath(); ctx.arc(g.sx, g.sy, 8, 0, 7); ctx.fill();
+  if (state.collapse !== null) {
+    ctx.fillStyle = "#f87171"; ctx.font = "bold 15px system-ui";
+    ctx.fillText("collapsed!", g.sx + 12, g.sy);
+  }
+}
+
+/* ------------------------------------------------ UI sync */
+function render() {
+  const [p0, p1] = probs();
+  const t = state.theta * Math.PI / 180;
+  $("thetaV").textContent = state.theta + "°";
+  $("phiV").textContent = state.phi + "°";
+  $("amp0").textContent = Math.cos(t / 2).toFixed(3);
+  $("amp1").textContent = (state.phi ? "e^{i·" + state.phi + "°} " : "") + Math.sin(t / 2).toFixed(3);
+  $("expz").textContent = (p0 - p1).toFixed(2);
+  $("p0").textContent = (100 * p0).toFixed(1) + "%";
+  $("p1").textContent = (100 * p1).toFixed(1) + "%";
+  $("p0bar").style.width = 100 * p0 + "%";
+  $("p1bar").style.width = 100 * p1 + "%";
+  const shots = state.c0 + state.c1;
+  $("shots").textContent = shots;
+  $("c0").textContent = state.c0;
+  $("c1").textContent = state.c1;
+  $("h0bar").style.width = (shots ? 100 * state.c0 / shots : 0) + "%";
+  $("h1bar").style.width = (shots ? 100 * state.c1 / shots : 0) + "%";
+  draw();
+}
+
+function measure(n) {
+  const [p0] = probs();
+  let last = 0;
+  for (let i = 0; i < n; i++) {
+    last = Math.random() < p0 ? 0 : 1;
+    state[last === 0 ? "c0" : "c1"]++;
+  }
+  const f = $("flash");
+  f.textContent = n === 1 ? "→ outcome: " + last : "→ " + n + " shots sampled";
+  f.style.color = last === 0 ? "var(--cyan)" : "var(--violet)";
+  f.classList.remove("pop"); void f.offsetWidth; f.classList.add("pop");
+  if (n === 1) {           // show Born-rule collapse for a beat
+    state.collapse = last;
+    setTimeout(() => { state.collapse = null; render(); }, 450);
+  }
+  render();
+}
+
+$("theta").addEventListener("input", e => { state.theta = +e.target.value; state.c0 = state.c1 = 0; render(); });
+$("phi").addEventListener("input", e => { state.phi = +e.target.value; render(); });
+$("m1").addEventListener("click", () => measure(1));
+$("m100").addEventListener("click", () => measure(100));
+$("reset").addEventListener("click", () => {
+  Object.assign(state, { theta: 90, phi: 0, c0: 0, c1: 0, collapse: null });
+  $("theta").value = 90; $("phi").value = 0; $("flash").textContent = "";
+  render();
+});
+
+render();
+</script>

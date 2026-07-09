@@ -1,0 +1,19 @@
+.env
+credentials.json
+token.json
+.tmp/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ipynb_checkpoints/
+.venv/
+venv/
+node_modules/
+.firebase/
+
+# third-party reference material (NVIDIA CUDA-Q Academic, CC-BY-NC) — study copy, not ours to redistribute
+02_qaoa_for_max_cut_and_gpt_qaoa.ipynb
+
+# local-only
+.claude/
+Brainstormed_Idea.md

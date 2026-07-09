@@ -1,0 +1,77 @@
+{
+  "github": "sahgyan9/quantum-ascent",
+  "modules": [
+    {
+      "id": "01",
+      "title": "The Qubit & Superposition",
+      "subtitle": "Amplitudes, the Born rule, your first circuit",
+      "concepts": ["qubit as vector", "superposition", "Born rule", "shots & statistics", "H and RY gates"],
+      "minutes": 45,
+      "notebook": "notebooks/01_qubits_and_superposition.ipynb",
+      "widget": "bloch-sampler",
+      "xp": 100,
+      "badge": "Superposed",
+      "status": "available"
+    },
+    {
+      "id": "02",
+      "title": "Gates & Circuits",
+      "subtitle": "Rotations, unitarity, and the endianness trap",
+      "concepts": ["X/Z/H as rotations", "circuit composition", "unitarity", "Qiskit endianness"],
+      "minutes": 50,
+      "notebook": "notebooks/02_gates_and_circuits.ipynb",
+      "widget": "gate-playground",
+      "xp": 100,
+      "badge": null,
+      "status": "coming-soon"
+    },
+    {
+      "id": "03",
+      "title": "Entanglement",
+      "subtitle": "Bell states and correlations beyond classical",
+      "concepts": ["tensor products", "Bell states", "correlations", "CHSH intuition"],
+      "minutes": 55,
+      "notebook": "notebooks/03_entanglement_and_multiqubit.ipynb",
+      "widget": "entanglement-explorer",
+      "xp": 120,
+      "badge": "Entangled",
+      "status": "coming-soon"
+    },
+    {
+      "id": "04",
+      "title": "Hamiltonians & Energy",
+      "subtitle": "Observables, Pauli strings, expectation values",
+      "concepts": ["observables", "SparsePauliOp", "expectation values", "cost Hamiltonians"],
+      "minutes": 50,
+      "notebook": "notebooks/04_hamiltonians_and_expectation.ipynb",
+      "widget": "bloch-sampler",
+      "xp": 120,
+      "badge": null,
+      "status": "coming-soon"
+    },
+    {
+      "id": "05",
+      "title": "The Variational Principle",
+      "subtitle": "Tune angles, descend the energy landscape",
+      "concepts": ["parameterized circuits", "cost landscapes", "classical optimizers"],
+      "minutes": 55,
+      "notebook": "notebooks/05_variational_principle.ipynb",
+      "widget": "qaoa-landscape",
+      "xp": 150,
+      "badge": "Ground State",
+      "status": "coming-soon"
+    },
+    {
+      "id": "06",
+      "title": "Summit: QAOA for Max-Cut",
+      "subtitle": "Solve a real optimization problem end to end",
+      "concepts": ["Max-Cut", "cost & mixer Hamiltonians", "QAOA ansatz", "approximation ratio"],
+      "minutes": 70,
+      "notebook": "notebooks/06_qaoa_maxcut_capstone.ipynb",
+      "widget": "maxcut-painter",
+      "xp": 200,
+      "badge": "Summit",
+      "status": "coming-soon"
+    }
+  ]
+}

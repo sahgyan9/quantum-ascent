@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Basecamp — Quantum Ascent</title>
+<link rel="stylesheet" href="assets/css/site.css">
+</head>
+<body>
+
+<nav>
+  <a class="brand" href="index.html">🏔️ Quantum <span>Ascent</span></a>
+  <a class="navlink" href="ascent.html">The Ascent</a>
+  <a class="navlink" href="widgets.html">Widget Gallery</a>
+  <a class="navlink" href="analogy-studio.html">Analogy Studio</a>
+  <div class="spacer"></div>
+  <span id="xp-pill">⚡ 0 XP · 0/6</span>
+  <button id="theme-toggle">☀️ Light</button>
+</nav>
+
+<div class="container" id="content">
+  <p class="muted">Loading basecamp…</p>
+</div>
+
+<footer>
+  Built for the WISER Education Challenge 2026 ·
+  <a href="ascent.html">Back to the Ascent</a>
+</footer>
+
+<script src="assets/js/progress.js"></script>
+<script src="assets/js/quiz.js"></script>
+<script src="assets/js/confetti.js"></script>
+<script>
+"use strict";
+(async () => {
+  const id = new URLSearchParams(location.search).get("id") || "01";
+  const data = await (await fetch("assets/data/modules.json")).json();
+  const m = data.modules.find(x => x.id === id);
+  const el = document.getElementById("content");
+  if (!m) { el.innerHTML = "<p>Unknown basecamp.</p>"; return; }
+
+  document.title = `Basecamp ${m.id}: ${m.title} — Quantum Ascent`;
+  const gh = data.github;
+  const colab = `https://colab.research.google.com/github/${gh}/blob/main/${m.notebook}`;
+  const nbviewer = `https://nbviewer.org/github/${gh}/blob/main/${m.notebook}`;
+  const soon = m.status === "coming-soon";
+  const prev = data.modules[data.modules.indexOf(m) - 1];
+  const next = data.modules[data.modules.indexOf(m) + 1];
+
+  el.innerHTML = `
+    <h1>${m.id === "06" ? "🏔️ " : ""}Basecamp ${m.id}: ${m.title}</h1>
+    <p class="muted">${m.subtitle} · ~${m.minutes} min · ${m.xp} XP
+      ${m.badge ? `· earns the <span class="badge-chip">🏅 ${m.badge}</span> badge` : ""}</p>
+
+    <div class="panel" style="margin:14px 0">
+      <b>You'll learn:</b> <span class="muted">${m.concepts.join(" · ")}</span>
+    </div>
+
+    ${soon ? `<div class="panel" style="border-color:var(--violet)">
+        🚧 This basecamp is being carved out of the mountain. Check back soon —
+        or start with <a href="module.html?id=01">Basecamp 1</a>.</div>` : `
+    <h2 class="section">1 · Build intuition — play with the widget</h2>
+    <p class="muted">Poke it. Predict before you press. The notebook will formalize
+    what your hands learn here.</p>
+    <iframe src="widgets/${m.widget}/index.html" style="width:100%;height:560px;
+      border:1px solid var(--line);border-radius:12px" title="${m.widget} interactive widget"></iframe>
+    <p><a href="widgets/${m.widget}/index.html" target="_blank" rel="noopener">Open widget in a new tab ↗</a></p>
+
+    <h2 class="section">2 · Do the physics — the interactive notebook</h2>
+    <p class="muted">Gap-fill tasks with instant feedback. No installation needed —
+    Colab runs it in your browser.</p>
+    <a class="btn" href="${colab}" target="_blank" rel="noopener">▶ Open in Google Colab</a>
+    <a class="btn ghost" href="${nbviewer}" target="_blank" rel="noopener">Preview (nbviewer)</a>
+
+    <h2 class="section" id="quiz">3 · Prove it — the quiz</h2>
+    <div id="quiz-box"></div>`}
+
+    <div style="margin-top:36px;display:flex;justify-content:space-between">
+      <span>${prev ? `<a href="module.html?id=${prev.id}">← Basecamp ${prev.id}: ${prev.title}</a>` : ""}</span>
+      <span>${next ? `<a href="module.html?id=${next.id}">Basecamp ${next.id}: ${next.title} →</a>` : ""}</span>
+    </div>`;
+
+  if (!soon) {
+    Progress.markOpened(id);
+    renderQuiz("quiz-box", id, m);
+  }
+})();
+</script>
+</body>
+</html>

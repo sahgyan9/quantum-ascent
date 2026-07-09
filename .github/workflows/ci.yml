@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  schedule:
+    # weekly canary against latest SDKs to catch Qiskit API churn early
+    - cron: "0 6 * * 1"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install pinned dependencies
+        run: pip install -r requirements.txt
+      - name: Run test suite (checkers, notebook execution, widget smoke)
+        run: pytest -v
+
+  latest-sdk-canary:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install LATEST (unpinned) quantum SDKs
+        run: |
+          pip install -r requirements.txt
+          pip install --upgrade qiskit qiskit-aer pennylane
+      - name: Run tests against latest SDKs
+        run: pytest -v
+
+  # Firebase Hosting deploy is added in week 2 once the project exists:
+  #   firebase deploy --only hosting  (with FIREBASE_TOKEN secret)

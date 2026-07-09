@@ -1,0 +1,50 @@
+/* Quantum Ascent — shared widget look (deep-space theme, matches site.css) */
+:root {
+  --bg: #0b1020;
+  --panel: #131a30;
+  --line: #26304f;
+  --text: #e6ecff;
+  --muted: #93a1c8;
+  --cyan: #22d3ee;
+  --violet: #8b5cf6;
+  --green: #34d399;
+  --red: #f87171;
+}
+* { box-sizing: border-box; margin: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font: 14px/1.45 "Segoe UI", system-ui, sans-serif;
+  padding: 12px;
+}
+.hint-bar {
+  background: linear-gradient(90deg, rgba(34,211,238,.12), rgba(139,92,246,.12));
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 12px;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+.hint-bar b { color: var(--cyan); }
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 12px;
+}
+label { color: var(--muted); display: block; margin: 8px 0 2px; }
+input[type="range"] { width: 100%; accent-color: var(--cyan); cursor: pointer; }
+button {
+  background: var(--cyan);
+  border: 0; border-radius: 8px;
+  color: #06202a; font-weight: 600; font-size: 14px;
+  padding: 8px 14px; margin: 4px 4px 0 0;
+  cursor: pointer;
+  transition: transform .08s, filter .15s;
+}
+button:hover { filter: brightness(1.12); }
+button:active { transform: scale(.96); }
+button.secondary { background: transparent; color: var(--muted); border: 1px solid var(--line); }
+button.violet { background: var(--violet); color: #f3edff; }
+.readout { font-variant-numeric: tabular-nums; color: var(--text); }
+.big { font-size: 18px; font-weight: 700; }

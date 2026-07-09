@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quantum Ascent — learn quantum computing by climbing</title>
+<meta name="description" content="An interactive, hands-on quantum computing course: from your first qubit to solving real optimization problems with QAOA.">
+<link rel="stylesheet" href="assets/css/site.css">
+</head>
+<body>
+
+<nav>
+  <a class="brand" href="index.html">🏔️ Quantum <span>Ascent</span></a>
+  <a class="navlink" href="ascent.html">The Ascent</a>
+  <a class="navlink" href="widgets.html">Widget Gallery</a>
+  <a class="navlink" href="analogy-studio.html">Analogy Studio</a>
+  <div class="spacer"></div>
+  <span id="xp-pill">⚡ 0 XP · 0/6</span>
+  <button id="theme-toggle">☀️ Light</button>
+</nav>
+
+<div class="container">
+  <div class="hero">
+    <div style="flex:1;min-width:300px">
+      <h1>Don't just watch quantum lectures.<br><em>Climb</em> the mountain.</h1>
+      <p class="lead">Six hands-on basecamps take you from "what is a qubit?" to
+      solving real optimization problems with QAOA — with interactive widgets to
+      build intuition, gap-fill code you complete yourself, instant feedback on
+      every answer, and analogies tailored to <i>your</i> world.</p>
+      <a class="btn" href="ascent.html">Start the ascent →</a>
+      <a class="btn ghost" href="module.html?id=01">Jump into Basecamp 1</a>
+    </div>
+    <canvas id="hero-bloch" width="340" height="340" aria-hidden="true"></canvas>
+  </div>
+
+  <h2 class="section">Why this course is different</h2>
+  <div class="grid3">
+    <div class="panel"><h3>🎛️ Play first, formalize second</h3>
+      <p class="muted">Every concept starts as an interactive widget you can poke.
+      Only after your hands understand it does the math arrive — and by then it's
+      just naming what you already saw.</p></div>
+    <div class="panel"><h3>⛏️ You write the quantum code</h3>
+      <p class="muted">Notebooks give you the scaffolding; you fill the physics.
+      Instant checkers tell you not just <i>that</i> you're wrong, but <i>why</i> —
+      and honest shot noise never fails a correct answer.</p></div>
+    <div class="panel"><h3>🎨 Analogies from your world</h3>
+      <p class="muted">Cricket fan? Baker? Guitarist? The Analogy Studio generates
+      AI prompts with the precise physics baked in, so your favorite AI explains
+      each concept through your life — without the pop-science myths.</p></div>
+  </div>
+
+  <h2 class="section">The route</h2>
+  <p class="muted">Basecamp 1: The Qubit → 2: Gates & Circuits → 3: Entanglement →
+  4: Hamiltonians & Energy → 5: The Variational Principle → 🏔️ Summit: QAOA for
+  Max-Cut. Each basecamp: interactive widget → guided notebook with gap-fill tasks →
+  quiz → XP and badges. Track your before/after understanding with the
+  <a href="assessment.html">summit assessment</a>.</p>
+
+  <div class="panel" style="margin-top:18px">
+    <b>For educators:</b> <span class="muted">every notebook opens in Google Colab with
+    one click — nothing to install. Auto-graded assignments, quiz banks, and a
+    15-minute adoption guide included.</span>
+    <a href="https://github.com/sahgyan9/quantum-ascent" target="_blank" rel="noopener">View on GitHub ↗</a>
+  </div>
+</div>
+
+<footer>
+  Built for the <a href="https://www.thewiser.org" target="_blank" rel="noopener">WISER</a>
+  Education Challenge 2026 · Code Apache-2.0, content CC-BY-4.0 ·
+  <a href="#" onclick="Progress.export();return false">Export progress</a> ·
+  <a href="#" onclick="Progress.reset();return false">Reset progress</a>
+</footer>
+
+<script src="assets/js/progress.js"></script>
+<script>
+/* Animated Bloch-sphere hero: a qubit state precessing, leaving a glowing trail. */
+(() => {
+  const cv = document.getElementById("hero-bloch"), ctx = cv.getContext("2d");
+  const C = 170, R = 130;
+  let t = 0;
+  const trail = [];
+  function project(theta, phi) {
+    const x = Math.sin(theta) * Math.cos(phi), y = Math.sin(theta) * Math.sin(phi),
+          z = Math.cos(theta);
+    return { x: C + R * (x + 0.35 * y), y: C - R * (z - 0.25 * y) };
+  }
+  (function tick() {
+    ctx.clearRect(0, 0, 340, 340);
+    const line = getComputedStyle(document.documentElement).getPropertyValue("--line");
+    ctx.strokeStyle = line; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.arc(C, C, R, 0, 7); ctx.stroke();
+    ctx.beginPath(); ctx.ellipse(C, C, R, 38, 0, 0, 7); ctx.stroke();
+    const theta = 1.1 + 0.25 * Math.sin(t / 90), phi = t / 40;
+    trail.push(project(theta, phi));
+    if (trail.length > 70) trail.shift();
+    trail.forEach((p, i) => {
+      ctx.fillStyle = `rgba(34,211,238,${(i / trail.length) * 0.5})`;
+      ctx.beginPath(); ctx.arc(p.x, p.y, 2.2, 0, 7); ctx.fill();
+    });
+    const g = trail[trail.length - 1];
+    const grad = ctx.createLinearGradient(C, C, g.x, g.y);
+    grad.addColorStop(0, "#22d3ee"); grad.addColorStop(1, "#8b5cf6");
+    ctx.strokeStyle = grad; ctx.lineWidth = 3.5; ctx.lineCap = "round";
+    ctx.beginPath(); ctx.moveTo(C, C); ctx.lineTo(g.x, g.y); ctx.stroke();
+    ctx.fillStyle = "#22d3ee";
+    ctx.beginPath(); ctx.arc(g.x, g.y, 6, 0, 7); ctx.fill();
+    t++;
+    requestAnimationFrame(tick);
+  })();
+})();
+</script>
+</body>
+</html>

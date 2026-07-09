@@ -1,0 +1,16 @@
+# Testing / notebook infrastructure
+pytest
+jupyter
+nbformat
+nbclient
+
+# Quantum SDKs — pinned exactly: course code and Colab bootstrap must match (see docs/technologies.md)
+qiskit==2.3.1
+qiskit-aer==0.17.2
+pennylane==0.45.0
+
+# Scientific stack
+numpy
+scipy
+matplotlib
+pylatexenc   # required by Qiskit's matplotlib circuit drawer

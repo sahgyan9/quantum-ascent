@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Analogy Studio — Quantum Ascent</title>
+<link rel="stylesheet" href="assets/css/site.css">
+<style>
+  select, input[type="text"] {
+    width: 100%; background: var(--bg2); color: var(--text);
+    border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px;
+    font-size: 15px; margin: 4px 0 14px;
+  }
+  #prompt-out {
+    white-space: pre-wrap; background: var(--bg2); border: 1px solid var(--line);
+    border-radius: 10px; padding: 16px; font: 13.5px/1.5 Consolas, monospace;
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="brand" href="index.html">🏔️ Quantum <span>Ascent</span></a>
+  <a class="navlink" href="ascent.html">The Ascent</a>
+  <a class="navlink" href="widgets.html">Widget Gallery</a>
+  <a class="navlink active" href="analogy-studio.html">Analogy Studio</a>
+  <div class="spacer"></div>
+  <span id="xp-pill">⚡ 0 XP · 0/6</span>
+  <button id="theme-toggle">☀️ Light</button>
+</nav>
+
+<div class="container">
+  <h1>🎨 Analogy Studio</h1>
+  <p class="muted" style="max-width:44em">Everyone's brain hooks onto different things.
+  Tell us your world, pick a concept, and we'll engineer a prompt for <i>your</i>
+  favorite AI (ChatGPT, Claude, Gemini…). The precise physics is baked into the
+  prompt as ground rules, so the AI explains it through your life <b>without
+  drifting into pop-science myths</b>.</p>
+
+  <div class="panel" style="max-width:640px">
+    <label for="concept"><b>Concept to explain</b></label>
+    <select id="concept"></select>
+
+    <label for="background"><b>Your world</b> — job, hobby, passion… anything</label>
+    <input type="text" id="background" placeholder="e.g. I'm a cricket fan who works as a nurse"
+           aria-label="your background">
+
+    <label for="level"><b>How deep?</b></label>
+    <select id="level">
+      <option value="first-touch">First touch — I just want the feel of it</option>
+      <option value="course" selected>Course level — I'm working through the notebooks</option>
+      <option value="rigorous">Rigorous — connect the analogy back to the math</option>
+    </select>
+
+    <button class="btn" id="generate">Generate my prompt</button>
+    <button class="btn ghost" id="copy" disabled>📋 Copy</button>
+    <span id="copied" style="color:var(--green)"></span>
+  </div>
+
+  <h2 class="section" id="out-title" hidden>Your prompt</h2>
+  <div id="prompt-out" hidden></div>
+</div>
+
+<footer>Built for the WISER Education Challenge 2026 · Definitions reviewed against
+the course notebooks — see <code>concepts.js</code></footer>
+
+<script src="assets/js/progress.js"></script>
+<script src="widgets/prompt-generator/concepts.js"></script>
+<script>
+"use strict";
+const sel = document.getElementById("concept");
+for (const [key, c] of Object.entries(CONCEPTS)) {
+  sel.insertAdjacentHTML("beforeend", `<option value="${key}">${c.title}</option>`);
+}
+
+const LEVEL_LINE = {
+  "first-touch": "Keep it short and vivid — one core analogy, no equations.",
+  "course": "Use the analogy to explain each ground rule below, one by one.",
+  "rigorous": "After the analogy, map each of its elements explicitly onto the mathematical objects in the ground rules, and state the math.",
+};
+
+document.getElementById("generate").addEventListener("click", () => {
+  const c = CONCEPTS[sel.value];
+  const bg = document.getElementById("background").value.trim() || "everyday life";
+  const level = document.getElementById("level").value;
+  const rules = c.rules.map((r, i) => `${i + 1}) ${r}`).join("\n");
+  const prompt =
+`I'm learning quantum computing. Explain **${c.title}** to me using an analogy drawn from MY world: ${bg}.
+
+${LEVEL_LINE[level]}
+
+Ground rules — your analogy MUST respect these facts (do not simplify them away):
+${rules}
+
+Finish with:
+- "Where this analogy breaks down:" — one honest paragraph.
+- One question to test whether I really got it.`;
+
+  const out = document.getElementById("prompt-out");
+  out.textContent = prompt;
+  out.hidden = false;
+  document.getElementById("out-title").hidden = false;
+  document.getElementById("copy").disabled = false;
+  document.getElementById("copied").textContent = "";
+});
+
+document.getElementById("copy").addEventListener("click", async () => {
+  await navigator.clipboard.writeText(document.getElementById("prompt-out").textContent);
+  document.getElementById("copied").textContent = "✓ copied — paste it into your AI";
+});
+</script>
+</body>
+</html>

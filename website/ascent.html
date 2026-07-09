@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Ascent — Quantum Ascent</title>
+<link rel="stylesheet" href="assets/css/site.css">
+</head>
+<body>
+
+<nav>
+  <a class="brand" href="index.html">🏔️ Quantum <span>Ascent</span></a>
+  <a class="navlink active" href="ascent.html">The Ascent</a>
+  <a class="navlink" href="widgets.html">Widget Gallery</a>
+  <a class="navlink" href="analogy-studio.html">Analogy Studio</a>
+  <div class="spacer"></div>
+  <span id="xp-pill">⚡ 0 XP · 0/6</span>
+  <button id="theme-toggle">☀️ Light</button>
+</nav>
+
+<div class="container">
+  <h1>The Ascent</h1>
+  <p class="muted">Click a basecamp to open it. Completed camps glow — reach the summit
+  and claim all four badges. <span id="badge-row"></span></p>
+
+  <svg id="mountain" viewBox="0 0 1000 560" style="width:100%;max-width:1000px"
+       role="img" aria-label="Course map: six basecamps ascending a mountain">
+    <!-- mountain silhouette -->
+    <path d="M0,560 L180,380 L320,470 L520,220 L700,360 L840,120 L1000,560 Z"
+          fill="none" stroke="var(--line)" stroke-width="2" opacity="0.6"/>
+    <g id="trails"></g>
+    <g id="camps"></g>
+  </svg>
+</div>
+
+<footer>
+  Built for the WISER Education Challenge 2026 ·
+  <a href="#" onclick="Progress.export();return false">Export progress</a> ·
+  <a href="#" onclick="Progress.reset();return false">Reset progress</a>
+</footer>
+
+<script src="assets/js/progress.js"></script>
+<script>
+"use strict";
+/* Basecamp positions climb the silhouette toward the peak. */
+const POS = [
+  [120, 470], [280, 400], [430, 320], [570, 250], [700, 180], [840, 95],
+];
+
+async function build() {
+  const data = await (await fetch("assets/data/modules.json")).json();
+  const p = Progress.get();
+  const camps = document.getElementById("camps");
+  const trails = document.getElementById("trails");
+  const svgNS = "http://www.w3.org/2000/svg";
+
+  data.modules.forEach((m, i) => {
+    const [x, y] = POS[i];
+    const done = p.modules[m.id]?.completed;
+
+    if (i > 0) {
+      const [px, py] = POS[i - 1];
+      const trail = document.createElementNS(svgNS, "path");
+      trail.setAttribute("d", `M${px},${py} Q${(px + x) / 2},${Math.min(py, y) - 28} ${x},${y}`);
+      trail.setAttribute("class", "trail" +
+        (done && p.modules[data.modules[i - 1].id]?.completed ? " lit" : ""));
+      trails.appendChild(trail);
+    }
+
+    const g = document.createElementNS(svgNS, "g");
+    g.setAttribute("class", "camp " + (done ? "done" : m.status === "available" ? "available" : ""));
+    g.innerHTML = `
+      <circle class="node" cx="${x}" cy="${y}" r="${i === 5 ? 26 : 20}"></circle>
+      <text x="${x}" y="${y + 5}" text-anchor="middle">${done ? "✓" : m.id}</text>
+      <text x="${x}" y="${y + 44}" text-anchor="middle">${i === 5 ? "🏔️ " : ""}${m.title}</text>
+      <text class="sub" x="${x}" y="${y + 62}" text-anchor="middle">${m.minutes} min · ${m.status === "coming-soon" ? "coming soon" : m.xp + " XP"}</text>`;
+    g.addEventListener("click", () => location.href = `module.html?id=${m.id}`);
+    g.style.cursor = "pointer";
+    camps.appendChild(g);
+  });
+
+  const badges = p.badges.map(b => `<span class="badge-chip">🏅 ${b}</span>`).join(" ");
+  document.getElementById("badge-row").innerHTML = badges;
+}
+build();
+</script>
+</body>
+</html>

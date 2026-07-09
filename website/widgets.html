@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Widget Gallery — Quantum Ascent</title>
+<link rel="stylesheet" href="assets/css/site.css">
+</head>
+<body>
+
+<nav>
+  <a class="brand" href="index.html">🏔️ Quantum <span>Ascent</span></a>
+  <a class="navlink" href="ascent.html">The Ascent</a>
+  <a class="navlink active" href="widgets.html">Widget Gallery</a>
+  <a class="navlink" href="analogy-studio.html">Analogy Studio</a>
+  <div class="spacer"></div>
+  <span id="xp-pill">⚡ 0 XP · 0/6</span>
+  <button id="theme-toggle">☀️ Light</button>
+</nav>
+
+<div class="container">
+  <h1>Widget Gallery</h1>
+  <p class="muted">Every interactive from the course, playable right here. Educators:
+  each widget is a single self-contained HTML file — embed it in your own slides or
+  LMS with one iframe.</p>
+  <div id="gallery"></div>
+</div>
+
+<footer>Built for the WISER Education Challenge 2026</footer>
+
+<script src="assets/js/progress.js"></script>
+<script>
+"use strict";
+(async () => {
+  const data = await (await fetch("assets/data/modules.json")).json();
+  const seen = new Set();
+  const gallery = document.getElementById("gallery");
+  for (const m of data.modules) {
+    if (m.status === "coming-soon" || seen.has(m.widget)) continue;
+    seen.add(m.widget);
+    gallery.insertAdjacentHTML("beforeend", `
+      <h2 class="section">${m.widget} <span class="muted" style="font-size:15px">
+        · used in <a href="module.html?id=${m.id}">Basecamp ${m.id}: ${m.title}</a></span></h2>
+      <iframe src="widgets/${m.widget}/index.html" style="width:100%;height:560px;
+        border:1px solid var(--line);border-radius:12px" title="${m.widget}"></iframe>
+      <p><a href="widgets/${m.widget}/index.html" target="_blank" rel="noopener">Open in a new tab ↗</a></p>`);
+  }
+  if (!seen.size) gallery.innerHTML = '<p class="muted">Widgets are being polished — first one lands with Basecamp 1.</p>';
+})();
+</script>
+</body>
+</html>
