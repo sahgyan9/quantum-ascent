@@ -95,6 +95,11 @@ def check_statevector(state, expected, tol: float = 1e-6) -> None:
 
     ``state``/``expected`` may be a Statevector, QuantumCircuit, list or array.
     """
+    if state is None:
+        _fail(
+            "Your state vector is undefined (None).",
+            "Make sure you have completed the task and assigned your array/state to the target variable.",
+        )
     v = _to_vector(state)
     w = _to_vector(expected)
     if v.shape != w.shape:
@@ -128,9 +133,15 @@ def check_counts_close(counts, expected_probs, alpha: float = 1e-3) -> None:
     ``counts``: dict bitstring -> shots (as from Result.get_counts()).
     ``expected_probs``: dict bitstring -> ideal probability.
     Passes unless the disagreement is statistically significant (p < alpha),
-    so honest shot noise never fails a correct circuit.
+    so honest shot noise never fails a correct answer.
     """
     from scipy import stats
+
+    if counts is None:
+        _fail(
+            "Your counts dictionary is undefined (None).",
+            "Make sure you have run the simulation, retrieved the counts, and assigned them to the target variable.",
+        )
 
     counts = dict(counts)
     shots = sum(counts.values())
@@ -184,6 +195,12 @@ def check_unitary_equiv(circuit, expected, tol: float = 1e-6) -> None:
     """
     from qiskit.quantum_info import Operator
 
+    if circuit is None:
+        _fail(
+            "Your circuit is undefined (None).",
+            "Make sure you have defined your QuantumCircuit and assigned it to the target variable.",
+        )
+
     U = Operator(circuit).data
     if isinstance(expected, (list, np.ndarray)):
         V = np.asarray(expected, dtype=complex)
@@ -210,6 +227,11 @@ def check_unitary_equiv(circuit, expected, tol: float = 1e-6) -> None:
 
 def check_expectation(value, target, tol: float = 1e-2) -> None:
     """Check a computed expectation value against the target."""
+    if value is None:
+        _fail(
+            "Your expectation value is undefined (None).",
+            "Make sure you have computed the expectation value and assigned it to the target variable.",
+        )
     value = float(np.real(value))
     diff = abs(value - target)
     if diff > tol:
@@ -228,6 +250,11 @@ def check_optimum(history, target, tol: float = 1e-2) -> None:
 
     ``history`` may be the final cost (float) or the list of costs per iteration.
     """
+    if history is None:
+        _fail(
+            "Your cost history is undefined (None).",
+            "Make sure you have completed the optimization and passed the cost history.",
+        )
     costs = np.atleast_1d(np.asarray(history, dtype=float))
     best = float(costs.min())
     if best > target + tol:
@@ -257,6 +284,11 @@ def check_maxcut_solution(bitstring, edges) -> None:
     ``bitstring``: measurement outcome, Qiskit convention (qubit 0 rightmost).
     Brute-forces the graph (fine for teaching-sized graphs, n <= 16).
     """
+    if bitstring is None:
+        _fail(
+            "Your bitstring is undefined (None).",
+            "Make sure you have selected the most frequent bitstring and passed it to the checker.",
+        )
     bitstring = str(bitstring).strip()
     n = 1 + max(max(e[0], e[1]) for e in edges)
     if len(bitstring) != n:

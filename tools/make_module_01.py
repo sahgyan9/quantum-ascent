@@ -102,6 +102,7 @@ cells.append(task(1, (
 cells.append(code(
 """import numpy as np
 
+plus = None  # Initialize
 # Build the |+> state as an array of its two amplitudes [amp_0, amp_1]
 # Hint: assign your array to the variable 'plus'
 ### BEGIN SOLUTION
@@ -146,7 +147,8 @@ cells.append(task(2, (
     "circuit fails."
 )))
 cells.append(code(
-"""# Run the simulation and assign the counts dictionary to `counts`
+"""counts = None  # Initialize
+# Run the simulation and assign the counts dictionary to `counts`
 ### BEGIN SOLUTION
 counts = AerSimulator().run(qc, shots=1024).result().get_counts()
 ### END SOLUTION
