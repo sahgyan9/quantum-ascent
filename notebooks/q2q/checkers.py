@@ -56,7 +56,7 @@ def _pass(msg: str) -> None:
     )
 
 
-def _fail(msg: str, hint: str = "") -> None:
+def _fail(msg: str, hint: str = "", raise_err: bool = True) -> None:
     hint_html = f'<br><b>Hint:</b> {hint}' if hint else ""
     hint_txt = f"\n   Hint: {hint}" if hint else ""
     _show(
@@ -65,7 +65,8 @@ def _fail(msg: str, hint: str = "") -> None:
         f'❌ <b>Not yet.</b> {msg}{hint_html}</div>',
         f"❌ Not yet. {msg}{hint_txt}",
     )
-    raise CheckError(msg)
+    if raise_err:
+        raise CheckError(msg)
 
 
 # ---------------------------------------------------------------- helpers
@@ -99,7 +100,9 @@ def check_statevector(state, expected, tol: float = 1e-6) -> None:
         _fail(
             "Your state vector is undefined (None).",
             "Make sure you have completed the task and assigned your array/state to the target variable.",
+            raise_err=False,
         )
+        return
     v = _to_vector(state)
     w = _to_vector(expected)
     if v.shape != w.shape:
@@ -141,7 +144,9 @@ def check_counts_close(counts, expected_probs, alpha: float = 1e-3) -> None:
         _fail(
             "Your counts dictionary is undefined (None).",
             "Make sure you have run the simulation, retrieved the counts, and assigned them to the target variable.",
+            raise_err=False,
         )
+        return
 
     counts = dict(counts)
     shots = sum(counts.values())
@@ -199,7 +204,9 @@ def check_unitary_equiv(circuit, expected, tol: float = 1e-6) -> None:
         _fail(
             "Your circuit is undefined (None).",
             "Make sure you have defined your QuantumCircuit and assigned it to the target variable.",
+            raise_err=False,
         )
+        return
 
     U = Operator(circuit).data
     if isinstance(expected, (list, np.ndarray)):
@@ -231,7 +238,9 @@ def check_expectation(value, target, tol: float = 1e-2) -> None:
         _fail(
             "Your expectation value is undefined (None).",
             "Make sure you have computed the expectation value and assigned it to the target variable.",
+            raise_err=False,
         )
+        return
     value = float(np.real(value))
     diff = abs(value - target)
     if diff > tol:
@@ -254,7 +263,9 @@ def check_optimum(history, target, tol: float = 1e-2) -> None:
         _fail(
             "Your cost history is undefined (None).",
             "Make sure you have completed the optimization and passed the cost history.",
+            raise_err=False,
         )
+        return
     costs = np.atleast_1d(np.asarray(history, dtype=float))
     best = float(costs.min())
     if best > target + tol:
@@ -288,7 +299,9 @@ def check_maxcut_solution(bitstring, edges) -> None:
         _fail(
             "Your bitstring is undefined (None).",
             "Make sure you have selected the most frequent bitstring and passed it to the checker.",
+            raise_err=False,
         )
+        return
     bitstring = str(bitstring).strip()
     n = 1 + max(max(e[0], e[1]) for e in edges)
     if len(bitstring) != n:
