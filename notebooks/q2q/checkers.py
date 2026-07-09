@@ -103,6 +103,17 @@ def check_statevector(state, expected, tol: float = 1e-6) -> None:
             raise_err=False,
         )
         return
+    try:
+        from qiskit import QuantumCircuit
+        if isinstance(state, QuantumCircuit) and len(state.data) == 0:
+            _fail(
+                "Your circuit is empty (has no gates).",
+                "Make sure you apply the quantum gates to the circuit before running the check.",
+                raise_err=False,
+            )
+            return
+    except ImportError:
+        pass
     v = _to_vector(state)
     w = _to_vector(expected)
     if v.shape != w.shape:
@@ -207,6 +218,17 @@ def check_unitary_equiv(circuit, expected, tol: float = 1e-6) -> None:
             raise_err=False,
         )
         return
+    try:
+        from qiskit import QuantumCircuit
+        if isinstance(circuit, QuantumCircuit) and len(circuit.data) == 0:
+            _fail(
+                "Your circuit is empty (has no gates).",
+                "Make sure you apply the quantum gates to the circuit before running the check.",
+                raise_err=False,
+            )
+            return
+    except ImportError:
+        pass
 
     U = Operator(circuit).data
     if isinstance(expected, (list, np.ndarray)):

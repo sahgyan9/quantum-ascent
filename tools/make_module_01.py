@@ -185,16 +185,13 @@ cells.append(task(3, (
     "sin²(θ/2) = 1/4, then code it."
 )))
 cells.append(code(
-"""from qiskit.quantum_info import Statevector
-
-qc3 = QuantumCircuit(1)
+"""qc3 = QuantumCircuit(1)
 ### BEGIN SOLUTION
 theta = np.pi / 3           # sin^2(theta/2) = 1/4  =>  theta/2 = pi/6
 qc3.ry(theta, 0)
 ### END SOLUTION
 
-state = Statevector(qc3)
-checkers.check_statevector(state, targets.M1_TASK3)"""))
+checkers.check_statevector(qc3, targets.M1_TASK3)"""))
 cells.append(analysis(r"""From $\sin^2\tfrac{\theta}{2} = \tfrac14$:
 $\sin\tfrac{\theta}{2} = \tfrac12 \Rightarrow \tfrac{\theta}{2} = \tfrac{\pi}{6}
 \Rightarrow \theta = \tfrac{\pi}{3}$ (that's the ≈ 60° you found on the
