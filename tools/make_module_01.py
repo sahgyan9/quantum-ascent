@@ -59,8 +59,8 @@ this ascent."""))
 # ----------------------------------------------------------------- widget
 cells.append(exercise(1, (
     "Below is the <b>Bloch Sampler</b>. The arrow is a qubit state; the "
-    "<b>θ slider</b> tilts it between the north pole ($\\ket{0}$) and south "
-    "pole ($\\ket{1}$). "
+    "<b>θ slider</b> tilts it between the north pole (|0⟩) and south "
+    "pole (|1⟩). "
     "<br>1️⃣ Set θ ≈ 90° and press <b>Measure ×1</b> a few times. Can you "
     "predict each outcome? "
     "<br>2️⃣ Now press <b>Measure ×100</b>. What shape does the histogram "
@@ -94,8 +94,8 @@ shots* reveal the amplitudes. That's how all quantum data comes home."""))
 
 # ----------------------------------------------------------------- task 1
 cells.append(task(1, (
-    "Build the $\\ket{+}$ state as a NumPy array of its two amplitudes: equal "
-    "weight on $\\ket{0}$ and $\\ket{1}$, both amplitudes real and positive, "
+    "Build the |+⟩ state as a NumPy array of its two amplitudes: equal "
+    "weight on |0⟩ and |1⟩, both amplitudes real and positive, "
     "properly normalized. The checker forgives global phase but not "
     "normalization."
 )))
@@ -103,6 +103,7 @@ cells.append(code(
 """import numpy as np
 
 # Build the |+> state as an array of its two amplitudes [amp_0, amp_1]
+# Hint: assign your array to the variable 'plus'
 ### BEGIN SOLUTION
 plus = np.array([1, 1]) / np.sqrt(2)
 ### END SOLUTION
@@ -145,9 +146,9 @@ cells.append(task(2, (
     "circuit fails."
 )))
 cells.append(code(
-"""### BEGIN SOLUTION
-job = AerSimulator().run(qc, shots=1024)
-counts = job.result().get_counts()
+"""# Run the simulation and assign the counts dictionary to `counts`
+### BEGIN SOLUTION
+counts = AerSimulator().run(qc, shots=1024).result().get_counts()
 ### END SOLUTION
 
 print(counts)
@@ -175,11 +176,11 @@ until the statistics encode the answer to a hard problem."""))
 
 # ----------------------------------------------------------------- task 3
 cells.append(task(3, (
-    "Prepare the state with $P(1) = \\tfrac14$ (the one you hunted for with "
+    "Prepare the state with P(1) = 1/4 (the one you hunted for with "
     "the slider in Exercise 1). Create a 1-qubit circuit, apply "
     "<code>qc3.ry(theta, 0)</code> with the right angle, and check the exact "
     "statevector. <br><i>Paper first:</i> solve "
-    "$\\sin^2\\tfrac{\\theta}{2} = \\tfrac14$, then code it."
+    "sin²(θ/2) = 1/4, then code it."
 )))
 cells.append(code(
 """from qiskit.quantum_info import Statevector
