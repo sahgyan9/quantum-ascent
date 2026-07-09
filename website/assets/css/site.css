@@ -1,45 +1,34 @@
-/* 🏔️ Quantum Ascent — Modern Gen Z / Developer CSS Design System */
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=Fira+Code&display=swap');
+/* 🏔️ Quantum Ascent — Minimalist Editorial Design System (light-only) */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;1,400&display=swap');
 
 :root {
-  /* Colors - Dark Mode (Default) */
-  --bg: #070a13;
-  --bg2: #0c1020;
-  --panel: #131a30;
-  --panel-glass: rgba(19, 26, 48, 0.7);
-  --line: #26304f;
-  --line-glow: rgba(34, 211, 238, 0.2);
-  --text: #f1f5f9;
-  --muted: #94a3b8;
-  
-  --cyan: #22d3ee;
-  --violet: #8b5cf6;
-  --green: #34d399;
-  --gold: #fbbf24;
-  --glow-color: rgba(139, 92, 246, 0.3);
-  
-  /* Font Family Pairs */
-  --font-heading: 'Space Grotesk', system-ui, -apple-system, sans-serif;
-  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
-  --font-code: 'Fira Code', Consolas, monospace;
-}
-
-:root[data-theme="light"] {
-  /* Colors - Light Mode */
-  --bg: #f6f8ff;
-  --bg2: #eef1fb;
+  /* Colors — warm paper, near-black ink, one green brand accent */
+  --bg: #f8f6f1;
+  --bg2: #f1eee6;
   --panel: #ffffff;
-  --panel-glass: rgba(255, 255, 255, 0.85);
-  --line: #d8def0;
-  --line-glow: rgba(8, 145, 178, 0.15);
-  --text: #0f172a;
-  --muted: #64748b;
-  
-  --cyan: #0891b2;
-  --violet: #7c3aed;
-  --green: #059669;
-  --gold: #b45309;
-  --glow-color: rgba(124, 58, 237, 0.15);
+  --line: #e2dfd8;
+  --text: #1a1a18;
+  --muted: #6b6860;
+
+  --accent: #1f7a4d;
+  --accent-bg: #eaf6ee;
+  --accent-strong: #17603c;
+
+  --amber: #b45309;
+  --amber-bg: #fdf3e7;
+
+  --danger: #b3261e;
+  --danger-bg: #fbebe9;
+
+  /* Font pairs */
+  --font-heading: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-code: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  --max-w-wide: 1080px;
+  --radius-sm: 4px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
 }
 
 /* -------- Global Reset & Base Layout -------- */
@@ -47,7 +36,6 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 html {
@@ -57,36 +45,32 @@ html {
 
 body {
   background-color: var(--bg);
-  background-image: 
-    radial-gradient(at 0% 0%, var(--glow-color) 0px, transparent 50%),
-    radial-gradient(at 100% 100%, rgba(34, 211, 238, 0.05) 0px, transparent 50%);
-  background-attachment: fixed;
   color: var(--text);
   font-family: var(--font-body);
-  line-height: 1.6;
+  line-height: 1.7;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   overflow-x: hidden;
 }
 
-/* Headings */
+/* Headings — light serif, never bold */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
-  font-weight: 700;
-  letter-spacing: -0.02em;
+  font-weight: 400;
   line-height: 1.25;
+  color: var(--text);
 }
 
 a {
-  color: var(--cyan);
+  color: var(--accent);
   text-decoration: none;
-  transition: color 0.2s, text-shadow 0.2s;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.15s, color 0.15s;
 }
 
 a:hover {
-  color: var(--text);
-  text-shadow: 0 0 8px var(--cyan);
+  border-bottom-color: currentColor;
 }
 
 /* -------- Navigation Header -------- */
@@ -96,9 +80,7 @@ nav {
   gap: 24px;
   padding: 18px 40px;
   border-bottom: 1px solid var(--line);
-  background: var(--panel-glass);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: var(--bg);
   position: sticky;
   top: 0;
   z-index: 100;
@@ -107,28 +89,29 @@ nav {
 nav .brand {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   font-family: var(--font-heading);
-  font-weight: 700;
-  font-size: 20px;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 22px;
   color: var(--text);
 }
 
+nav .brand img,
 nav .brand svg {
   width: 28px;
   height: 28px;
 }
 
 nav .brand span {
-  background: linear-gradient(135deg, var(--cyan), var(--violet));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: var(--text);
 }
 
 nav a.navlink {
   color: var(--muted);
   font-weight: 500;
   font-size: 15px;
+  font-family: var(--font-body);
   padding: 6px 4px;
   position: relative;
   transition: color 0.2s;
@@ -140,11 +123,15 @@ nav a.navlink::after {
   bottom: 0;
   left: 0;
   width: 100%;
-  height: 2px;
-  background: var(--cyan);
+  height: 1px;
+  background: var(--accent);
   transform: scaleX(0);
   transform-origin: right;
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.25s ease;
+}
+
+nav a.navlink:hover, nav a.navlink.active {
+  color: var(--text);
 }
 
 nav a.navlink:hover::after, nav a.navlink.active::after {
@@ -157,50 +144,31 @@ nav .spacer {
 }
 
 #xp-pill {
-  border: 1px solid var(--line);
+  border: 1px solid var(--amber);
   border-radius: 999px;
   padding: 6px 16px;
-  color: var(--gold);
-  background: rgba(251, 191, 36, 0.05);
+  color: var(--amber);
+  background: var(--amber-bg);
   font-weight: 600;
-  font-size: 14px;
+  font-size: 13px;
   letter-spacing: 0.02em;
   display: flex;
   align-items: center;
   gap: 6px;
-  box-shadow: 0 0 10px rgba(251, 191, 36, 0.05);
 }
 
+/* Site is light-only now; the toggle markup is being retired from pages,
+   this is just a safety net if it lingers anywhere. */
 #theme-toggle {
-  background: var(--bg2);
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  color: var(--text);
-  padding: 6px 12px;
-  cursor: pointer;
-  font-weight: 500;
-  font-size: 14px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  transition: background-color 0.2s, transform 0.1s;
-}
-
-#theme-toggle:hover {
-  background: var(--line);
-  transform: translateY(-1px);
-}
-
-#theme-toggle:active {
-  transform: translateY(0);
+  display: none;
 }
 
 /* -------- Layout Containers & Grids -------- */
 .container {
-  max-width: 1140px;
+  max-width: var(--max-w-wide);
   width: 100%;
   margin: 0 auto;
-  padding: 40px 24px;
+  padding: 48px 24px;
   flex: 1;
 }
 
@@ -219,28 +187,23 @@ nav .spacer {
 }
 
 .hero h1 {
-  font-size: 48px;
+  font-size: clamp(2.2rem, 5vw, 3.4rem);
   line-height: 1.15;
   margin-bottom: 20px;
-  background: linear-gradient(135deg, var(--text) 50%, var(--muted));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: var(--text);
 }
 
 .hero h1 em {
-  background: linear-gradient(135deg, var(--cyan), var(--violet));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  font-style: normal;
-  position: relative;
+  font-style: italic;
+  color: var(--accent);
 }
 
 .hero p.lead {
   color: var(--muted);
   font-size: 18px;
-  line-height: 1.6;
+  line-height: 1.7;
   margin-bottom: 32px;
-  max-width: 580px;
+  max-width: 560px;
 }
 
 .hero-visual {
@@ -248,16 +211,14 @@ nav .spacer {
   display: flex;
   justify-content: center;
   align-items: center;
-  position: relative;
 }
 
 .hero-visual-card {
-  background: var(--panel-glass);
+  background: var(--panel);
   border: 1px solid var(--line);
-  border-radius: 24px;
+  border-radius: var(--radius-lg);
   padding: 20px;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05);
-  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 24px rgba(26, 26, 24, 0.05);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -268,68 +229,64 @@ nav .spacer {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, var(--cyan), #0ea5e9);
-  color: #031c27;
+  background: var(--accent);
+  color: #ffffff;
   font-weight: 600;
-  padding: 12px 28px;
-  border-radius: 12px;
-  border: 0;
+  padding: 12px 26px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--accent);
   cursor: pointer;
-  font-size: 16px;
-  font-family: var(--font-heading);
+  font-size: 15px;
+  font-family: var(--font-body);
   gap: 8px;
-  box-shadow: 0 4px 14px rgba(34, 211, 238, 0.3);
-  transition: transform 0.1s, filter 0.2s, box-shadow 0.2s;
+  transition: background-color 0.15s, transform 0.1s;
 }
 
 .btn:hover {
-  filter: brightness(1.12);
-  box-shadow: 0 6px 20px rgba(34, 211, 238, 0.4);
+  background: var(--accent-strong);
+  border-color: var(--accent-strong);
 }
 
 .btn:active {
-  transform: scale(0.97);
+  transform: scale(0.98);
 }
 
 .btn.ghost {
   background: transparent;
   color: var(--text);
-  border: 1.5px solid var(--line);
-  box-shadow: none;
+  border: 1px solid var(--line);
 }
 
 .btn.ghost:hover {
-  background: rgba(255,255,255,0.03);
+  background: var(--bg2);
   border-color: var(--muted);
-  box-shadow: none;
 }
 
+/* Secondary outline-accent style (class name kept for HTML compatibility) */
 .btn.violet {
-  background: linear-gradient(135deg, var(--violet), #6d28d9);
-  color: #ffffff;
-  box-shadow: 0 4px 14px rgba(139, 92, 246, 0.3);
+  background: #ffffff;
+  color: var(--accent);
+  border: 1px solid var(--accent);
 }
 
 .btn.violet:hover {
-  box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
+  background: var(--accent-bg);
 }
 
 .btn[disabled] {
   opacity: 0.45;
   cursor: not-allowed;
-  box-shadow: none !important;
   transform: none !important;
 }
 
 /* -------- Card Panels & Grid Layouts -------- */
 .panel {
-  background: var(--panel-glass);
+  background: var(--panel);
   border: 1px solid var(--line);
-  border-radius: 18px;
+  border-radius: var(--radius-lg);
   padding: 24px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.02);
-  backdrop-filter: blur(10px);
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s, box-shadow 0.3s;
+  box-shadow: 0 2px 8px rgba(26, 26, 24, 0.03);
+  transition: transform 0.2s ease, border-color 0.2s, box-shadow 0.2s;
 }
 
 .panel.card, .grid3 .panel {
@@ -337,9 +294,9 @@ nav .spacer {
 }
 
 .panel.card:hover, .grid3 .panel:hover {
-  transform: translateY(-4px);
-  border-color: var(--line-glow);
-  box-shadow: 0 20px 40px rgba(0,0,0,0.25), 0 0 20px rgba(34, 211, 238, 0.08), inset 0 1px 0 rgba(255,255,255,0.05);
+  transform: translateY(-3px);
+  border-color: var(--accent);
+  box-shadow: 0 10px 24px rgba(26, 26, 24, 0.07);
 }
 
 .panel h3 {
@@ -350,7 +307,7 @@ nav .spacer {
 
 .panel p.muted {
   font-size: 15px;
-  line-height: 1.6;
+  line-height: 1.7;
 }
 
 .grid3 {
@@ -361,7 +318,7 @@ nav .spacer {
 
 h2.section {
   margin: 60px 0 24px;
-  font-size: 28px;
+  font-size: clamp(1.6rem, 3vw, 2rem);
   position: relative;
   display: inline-block;
 }
@@ -369,12 +326,11 @@ h2.section {
 h2.section::after {
   content: '';
   position: absolute;
-  bottom: -6px;
+  bottom: -8px;
   left: 0;
   width: 40px;
-  height: 3px;
-  background: linear-gradient(90deg, var(--cyan), var(--violet));
-  border-radius: 99px;
+  height: 2px;
+  background: var(--accent);
 }
 
 .muted {
@@ -384,9 +340,9 @@ h2.section::after {
 .badge-chip {
   display: inline-flex;
   align-items: center;
-  border: 1px solid var(--gold);
-  background: rgba(251, 191, 36, 0.05);
-  color: var(--gold);
+  border: 1px solid var(--amber);
+  background: var(--amber-bg);
+  color: var(--amber);
   border-radius: 999px;
   padding: 3px 14px;
   font-size: 13px;
@@ -396,11 +352,11 @@ h2.section::after {
 
 /* -------- Ascent Map (SVG styling) -------- */
 #mountain {
-  background: var(--bg2);
+  background: var(--panel);
   border: 1px solid var(--line);
-  border-radius: 20px;
+  border-radius: var(--radius-lg);
   padding: 20px;
-  box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 8px rgba(26, 26, 24, 0.03);
 }
 
 .camp {
@@ -410,32 +366,30 @@ h2.section::after {
 .camp circle.node {
   fill: var(--panel);
   stroke: var(--line);
-  stroke-width: 2.5;
-  transition: stroke 0.3s, fill 0.3s, filter 0.3s;
+  stroke-width: 2;
+  transition: stroke 0.2s, fill 0.2s;
 }
 
 .camp:hover circle.node {
-  stroke: var(--cyan);
-  fill: rgba(34, 211, 238, 0.1);
+  stroke: var(--accent);
+  fill: var(--accent-bg);
 }
 
 .camp.done circle.node {
-  fill: var(--cyan);
-  stroke: var(--cyan);
-  filter: drop-shadow(0 0 8px var(--cyan));
+  fill: var(--accent);
+  stroke: var(--accent);
 }
 
 .camp.available circle.node {
-  stroke: var(--violet);
-  fill: rgba(139, 92, 246, 0.15);
-  filter: drop-shadow(0 0 6px var(--violet));
+  stroke: var(--accent);
+  fill: var(--accent-bg);
 }
 
 .camp text {
   fill: var(--text);
   font-size: 13px;
   font-weight: 600;
-  font-family: var(--font-heading);
+  font-family: var(--font-body);
 }
 
 .camp text.sub {
@@ -446,14 +400,14 @@ h2.section::after {
 
 .trail {
   stroke: var(--line);
-  stroke-width: 3;
+  stroke-width: 2;
   fill: none;
-  stroke-dasharray: 6 7;
+  stroke-linecap: round;
+  stroke-dasharray: 1 6;
 }
 
 .trail.lit {
-  stroke: var(--cyan);
-  filter: drop-shadow(0 0 5px var(--cyan));
+  stroke: var(--accent);
 }
 
 /* -------- Quiz -------- */
@@ -465,31 +419,31 @@ h2.section::after {
   display: block;
   width: 100%;
   text-align: left;
-  background: var(--bg2);
-  border: 1.5px solid var(--line);
+  background: var(--panel);
+  border: 1px solid var(--line);
   color: var(--text);
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   padding: 14px 20px;
   margin: 10px 0;
   cursor: pointer;
   font-size: 15px;
   font-family: var(--font-body);
-  transition: border-color 0.2s, background-color 0.2s;
+  transition: border-color 0.15s, background-color 0.15s;
 }
 
 .quiz-opt:hover {
-  border-color: var(--cyan);
-  background-color: rgba(34, 211, 238, 0.02);
+  border-color: var(--accent);
+  background-color: var(--accent-bg);
 }
 
 .quiz-opt.correct {
-  border-color: var(--green);
-  background: color-mix(in srgb, var(--green) 12%, var(--bg2));
+  border-color: var(--accent);
+  background: var(--accent-bg);
 }
 
 .quiz-opt.wrong {
-  border-color: #f87171;
-  background: color-mix(in srgb, #f87171 10%, var(--bg2));
+  border-color: var(--danger);
+  background: var(--danger-bg);
 }
 
 .quiz-opt[disabled] {
@@ -500,17 +454,17 @@ h2.section::after {
   color: var(--muted);
   font-size: 14.5px;
   margin-top: 12px;
-  border-left: 3px solid var(--violet);
+  border-left: 2px solid var(--accent);
   padding: 10px 16px;
-  background: rgba(139, 92, 246, 0.03);
-  border-radius: 0 10px 10px 0;
-  animation: slideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  background: var(--bg2);
+  border-radius: 0 8px 8px 0;
+  animation: slideIn 0.3s ease forwards;
 }
 
 @keyframes slideIn {
   from {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(6px);
   }
   to {
     opacity: 1;
@@ -529,7 +483,7 @@ h2.section::after {
 }
 
 .ring .val {
-  stroke: var(--green);
+  stroke: var(--accent);
   fill: none;
   stroke-linecap: round;
   transition: stroke-dashoffset 0.4s;
@@ -545,7 +499,7 @@ footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: var(--panel-glass);
+  background: var(--bg);
 }
 
 footer a {
@@ -553,17 +507,16 @@ footer a {
 }
 
 footer a:hover {
-  color: var(--cyan);
-  text-shadow: none;
+  color: var(--accent);
 }
 
-/* -------- Learning List with Green Markers -------- */
+/* -------- Learning List -------- */
 .learning-list {
   list-style: none;
   padding: 0;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 16px;
+  gap: 12px;
   margin-top: 16px;
 }
 
@@ -573,18 +526,16 @@ footer a:hover {
   gap: 12px;
   font-size: 15px;
   color: var(--text);
-  background: rgba(255, 255, 255, 0.01);
+  background: var(--panel);
   padding: 10px 14px;
-  border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.02);
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s, border-color 0.2s;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--line);
+  transition: transform 0.15s ease, border-color 0.15s;
 }
 
 .learning-item:hover {
   transform: translateY(-2px);
-  background: rgba(255, 255, 255, 0.03);
-  border-color: var(--line-glow);
-  box-shadow: 0 4px 12px rgba(34, 211, 238, 0.03);
+  border-color: var(--accent);
 }
 
 /* -------- Split-Pane Workspace (Analogy Studio) -------- */
@@ -630,13 +581,13 @@ footer a:hover {
   padding: 40px 20px;
   background: var(--bg2);
   border: 1px solid var(--line);
-  border-radius: 12px;
+  border-radius: var(--radius-md);
 }
 #prompt-out {
   white-space: pre-wrap;
   background: var(--bg2);
   border: 1px solid var(--line);
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   padding: 20px;
   font-family: var(--font-code);
   font-size: 14px;
@@ -648,19 +599,19 @@ footer a:hover {
 }
 .workspace select, .workspace input[type="text"] {
   width: 100%;
-  background: var(--bg2);
+  background: var(--panel);
   color: var(--text);
   border: 1px solid var(--line);
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   padding: 12px 14px;
   font-size: 15px;
+  font-family: var(--font-body);
   margin: 6px 0 20px;
   outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition: border-color 0.15s;
 }
 .workspace select:focus, .workspace input[type="text"]:focus {
-  border-color: var(--cyan);
-  box-shadow: 0 0 10px rgba(34, 211, 238, 0.15);
+  border-color: var(--accent);
 }
 .btn-sm {
   padding: 6px 14px;
@@ -685,15 +636,14 @@ footer a:hover {
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  background: rgba(52, 211, 153, 0.12);
-  color: var(--green);
+  background: var(--accent-bg);
+  color: var(--accent);
   font-size: 12px;
   font-weight: 700;
   flex-shrink: 0;
-  box-shadow: 0 0 8px rgba(52, 211, 153, 0.1);
 }
 
-/* -------- Desktop-First Responsive Styles (Max-Width Media Queries) -------- */
+/* -------- Desktop-First Responsive Styles -------- */
 @media (max-width: 1024px) {
   nav {
     padding: 16px 24px;
@@ -703,9 +653,6 @@ footer a:hover {
   }
   .hero {
     gap: 40px;
-  }
-  .hero h1 {
-    font-size: 40px;
   }
   .grid3 {
     grid-template-columns: repeat(2, 1fr);
@@ -743,13 +690,10 @@ footer a:hover {
     padding: 16px 20px;
   }
   nav .brand {
-    font-size: 18px;
+    font-size: 19px;
   }
   nav .spacer {
     display: none;
-  }
-  .hero h1 {
-    font-size: 32px;
   }
   .grid3 {
     grid-template-columns: 1fr;

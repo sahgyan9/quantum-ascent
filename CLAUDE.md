@@ -89,6 +89,23 @@ When building user-facing interfaces (web, CLI, or otherwise), you MUST adhere t
 6. **Constraints:** Prevent users from making errors by restricting invalid choices (e.g., disable buttons when a form is invalid instead of throwing an error after submission).
 ----
 
+## Pedagogical & Content Preferences
+
+**The Moat (Core Competitive Advantage):** This platform differentiates itself by strictly avoiding pop-science myths (e.g., "qubits are 0 and 1 at the same time") and overwhelming jargon. Instead, the focus is strictly on highly interactive, deeply grounded physical analogies (e.g., the spinning coin) coupled with step-by-step guidance. This approach MUST be documented and prioritized across all educational content.
+
+When authoring or modifying educational Jupyter Notebooks and web resources:
+1. **Beginner Friendliness & Counselling**: Adopt a supportive, reassuring, and encouraging tone throughout. 
+   - When introducing potentially overwhelming topics or equations, explicitly check in on the student (e.g., *"If this feels like a lot, don't worry! We will build and understand these concepts slowly, step-by-step."*).
+   - Incorporate helpful study tips (e.g., *"If the math or concepts feel intimidating, the best way to grab them is to grab a physical pen and write them down on paper as we go!"*).
+   - Use clear, physical analogies to resolve confusing pop-science descriptions (e.g., use a *spinning coin analogy* to explain quantum measurement/collapse instead of the confusing *"0 and 1 at the same time"* slogan).
+2. **Minimize Upfront Mathematical Overhead**: Do not overwhelm students with dense linear algebra, complex numbers, or bracket notation in early sections or at first exposure. Introduce concepts conceptually first using analogies, visual signifiers, or interactive widgets, and introduce formal mathematical representations gradually and gently.
+   - **Syntax Pre-requisites**: Always provide a clear, simple code example demonstrating the exact syntax of any library functions or data structures (like NumPy arrays) before asking students to write them in a task. Never assume prior programming knowledge for new syntax.
+3. **Ignore-Math-Setup Signifiers**: Clearly signpost any macro or bootstrap setup cells defining math notation (e.g., LaTeX macros) so that students know they can safely ignore the underlying code/setup blocks and only focus on the concepts.
+4. **Develop Critical Thinking Over Rote Coding**: Emphasize why concepts work, predicting statistics before executing code, and analyzing outcomes. Keep coding requirements focused on verifying concepts (since writing raw code can be done by AI).
+5. **Consistency Across Web/UI**: Apply these exact same tone, analogies, and step-by-step guidance rules to all course website copy, educational apps, and interactive UI widgets.
+
+----
+
 ## Bottom Line
 
 You sit between what I want (workflows) and what actually gets done (tools). Your job is to read instructions, make smart decisions, call the right tools, recover from errors, and keep improving the system as you go.

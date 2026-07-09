@@ -21,13 +21,12 @@
 <body>
 
 <nav>
-  <a class="brand" href="index.html">🏔️ Quantum <span>Ascent</span></a>
+  <a class="brand" href="index.html"><img src="assets/logo.svg" alt="" width="28" height="28"> Quantum <span>Ascent</span></a>
   <a class="navlink" href="ascent.html">The Ascent</a>
   <a class="navlink" href="widgets.html">Widget Gallery</a>
   <a class="navlink active" href="analogy-studio.html">Analogy Studio</a>
   <div class="spacer"></div>
   <span id="xp-pill">⚡ 0 XP · 0/6</span>
-  <button id="theme-toggle">☀️ Light</button>
 </nav>
 
 <div class="container">
@@ -46,7 +45,7 @@
   <div class="workspace">
     <div class="workspace-left">
       <div class="panel">
-        <h3 style="margin-bottom: 16px; border-bottom: 1px solid var(--line); padding-bottom: 10px; color: var(--cyan);">🔧 Configuration</h3>
+        <h3 style="margin-bottom: 16px; border-bottom: 1px solid var(--line); padding-bottom: 10px; color: var(--accent);">🔧 Configuration</h3>
         
         <label for="concept"><b>Concept to explain</b></label>
         <select id="concept"></select>
@@ -69,9 +68,9 @@
     <div class="workspace-right">
       <div class="panel prompt-card">
         <div class="prompt-header">
-          <h3 style="color: var(--cyan);">💻 Engineered Prompt</h3>
+          <h3 style="color: var(--accent);">💻 Engineered Prompt</h3>
           <div style="display: flex; align-items: center; gap: 10px;">
-            <span id="copied" style="font-size: 13.5px; color: var(--green);"></span>
+            <span id="copied" style="font-size: 13.5px; color: var(--accent);"></span>
             <button class="btn ghost btn-sm" id="copy" disabled>📋 Copy</button>
           </div>
         </div>

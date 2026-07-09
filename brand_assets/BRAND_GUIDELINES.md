@@ -1,93 +1,67 @@
-# 🏔️ Quantum Ascent — Brand Guidelines
+# Quantum Ascent — Brand Guidelines
 
-This document outlines the visual system, color theories, typography, spacing, and component specifications for the **Quantum Ascent** learning platform.
+This document defines the visual system for the **Quantum Ascent** learning platform: an editorial, minimalist design language shared across the website (`website/assets/css/site.css`) and the course notebooks (`tools/nb_common.py`, `notebooks/q2q/latex_macros.py`).
 
----
-
-## 🎨 1. Color Palette
-
-Our colors reflect the deep-space nature of quantum mechanics combined with the energetic, gamified feel of climbing a mountain summit.
-
-### Base Colors (Theme Neutral)
-* **Gold / Amber** (`#fbbf24` to `#f59e0b`)
-  * *Psychological Rationale:* Represents triumph, high achievement, and completeness. Used for badges, XP indicators, and the final summit node.
-
-### Dark Mode (Default Environment)
-* **Deep Space Navy** (`--bg`: `#070a13` / `#0b1020`)
-  * *Psychological Rationale:* Deep, immersive slate blue that reduces eye strain for long learning sessions and establishes a serious, high-tech context.
-* **Glassmorphic Indigo** (`--panel`: `#131a30`)
-  * *Psychological Rationale:* A slightly lighter blue-violet that adds a layer of depth and structure when placed over the deep-space background.
-* **Border Line** (`--line`: `#26304f`)
-  * *Psychological Rationale:* Low-contrast slate blue that gives sharp structure to panels without drawing focus away from key actions.
-* **Vibrant Violet** (`--violet`: `#8b5cf6`)
-  * *Psychological Rationale:* Combines blue stability and red energy. Evokes mystery, high intellect, and the complexity of quantum entanglement.
-* **Neon Cyan** (`--cyan`: `#22d3ee`)
-  * *Psychological Rationale:* Fresh, energetic, and digital. Associated with lasers, state vectors, and forward-looking technologies.
-* **Mint Green** (`--green`: `#34d399`)
-  * *Psychological Rationale:* Associated with success, correct answers, and verification. Used for successful checks and green success buttons.
-
-### Light Mode (High Contrast Toggle)
-* **Ice Blue** (`--bg`: `#f6f8ff`)
-  * *Psychological Rationale:* Clean, crisp, high-contrast background that feels modern and lightweight.
-* **Chamber White** (`--panel`: `#ffffff`)
-  * *Psychological Rationale:* Pure white panels that float over the ice blue base.
-* **Slate Line** (`--line`: `#d8def0`)
-  * *Psychological Rationale:* Soft gray border that keeps layout elements well-aligned.
-* **Royal Violet** (`--violet`: `#7c3aed`)
-  * *Psychological Rationale:* Darker, high-contrast violet that reads cleanly against light backgrounds.
-* **Deep Cyan** (`--cyan`: `#0891b2`)
-  * *Psychological Rationale:* High-contrast turquoise cyan that commands action.
-* **Forest Green** (`--green`: `#059669`)
-  * *Psychological Rationale:* Strong, readable green for success states.
+The direction: calm and academic rather than flashy — closer to a well-typeset journal than a SaaS dashboard. The mountain/basecamp metaphor stays, but expressed with restraint: one accent color, hairline borders, generous whitespace, light-only.
 
 ---
 
-## ✍️ 2. Typography
+## 1. Logo
 
-We use a modern, geometric type scale that feels clean, digital, and premium.
+`website/assets/logo.svg` (source concept: `brand_assets/logo_final.svg`) — a badge mark: a thin circle containing a single-stroke mountain ridge, with one small filled dot marking the summit.
 
-* **Headings:** `Space Grotesk` or `Outfit`
-  * *Characteristics:* Sans-serif, geometric, futuristic, slightly wide curves.
-  * *Weight:* SemiBold (600) or Bold (700).
-* **Body / Interface:** `Inter` or `Plus Jakarta Sans`
-  * *Characteristics:* Highly readable at small sizes, neutral, elegant spacing.
-  * *Weight:* Regular (400) or Medium (500).
-* **Code / Math:** `Fira Code` or `JetBrains Mono`
-  * *Characteristics:* Monospace with clear coding ligatures for displaying state amplitudes and notebooks.
-  * *Weight:* Regular (400).
+- Two colors only: ink (`#1a1a18`) for the circle and ridge, accent green (`#1f7a4d`) for the summit dot. No gradients, no glow, no drop shadow.
+- Minimum size: 20px (favicon-safe — the mark stays legible because it's built from few, thick strokes rather than fine detail).
+- Always pair with the wordmark in the nav: logo mark + "Quantum" + *Ascent* (italic, see Typography) — never the mark alone in page chrome, since "Quantum Ascent" is the recognizable unit at this stage of the brand.
+- Don't recolor the mark per-page or add effects (glow, gradient fill, drop shadow) — consistency of the mark is what makes it recognizable across notebooks, favicon, and site.
 
----
+## 2. Color
 
-## 📏 3. Spacing System
+One accent, used everywhere something needs to draw the eye. A second, distinct color is reserved for task/XP-energy moments so it never gets confused with brand identity.
 
-We adhere strictly to an **8px grid** to guarantee visual alignment and layout balance:
+| Token | Hex | Use |
+|---|---|---|
+| `--bg` | `#f8f6f1` | Page background — warm paper, not pure white |
+| `--bg2` | `#f1eee6` | Secondary surfaces (code blocks, input fields, hover panels) |
+| `--panel` | `#ffffff` | Cards |
+| `--line` | `#e2dfd8` | Hairline borders — the primary way structure is shown, not shadows |
+| `--text` | `#1a1a18` | Body/heading ink |
+| `--muted` | `#6b6860` | Secondary text |
+| `--accent` | `#1f7a4d` | **The** brand color — links, buttons, logo dot, "done" states, brand-identity callouts |
+| `--accent-bg` | `#eaf6ee` | Pale accent tint for hover/selected states |
+| `--amber` | `#b45309` | XP pill, task/gap-fill callouts, badge chips — deliberately *not* the brand accent, so task energy and brand identity stay visually distinct |
+| `--danger` | `#b3261e` | Wrong-answer states only |
 
-| Token | Size | Application |
-| :--- | :--- | :--- |
-| `xs` | 4px | Small badge padding, minor text gaps |
-| `sm` | 8px | Button padding (vertical), card gaps |
-| `md` | 16px | Standard button padding (horizontal), list item spacing |
-| `lg` | 24px | Card padding, standard container gaps |
-| `xl` | 32px | Section gaps, hero text margins |
-| `xxl`| 48px | Hero vertical spacing, footer margins |
+Rules:
+- **Light-only.** No dark mode toggle in the site chrome. (Notebook callouts hardcode both background and text color per-box regardless, so they stay readable in whatever theme the notebook host — VSCode, Colab, Jupyter — happens to be in.)
+- **One accent for brand identity.** Don't introduce a second "brand" hue (no more cyan/violet multi-accent). If something needs a second color for *semantic* reasons (success vs. warning vs. task), use amber or danger, not a new brand color.
+- **No glow, no gradient text, no glassmorphism.** Borders and whitespace carry the structure. Shadows, where used at all, are whisper-soft (`0 2px 8px rgba(26,26,24,0.03)`), never colored.
+- The interactive widgets (`website/widgets/*`) intentionally keep their own separate dark "instrument readout" palette (`website/widgets/_base/widget.css`) — that's a deliberate contrast (a device screen embedded in a paper page), not a site-theme leak. Don't try to reconcile it with `--bg`/`--accent`.
 
----
+## 3. Typography
 
-## 🕹️ 4. Component Personality
+| Role | Font | Weight | Notes |
+|---|---|---|---|
+| Headings | Playfair Display | 400 (occasionally italic) | Light serif, never bold. Italic for the emphasized word in a hero line (e.g. "*Climb* the mountain") and for the wordmark's "Ascent". |
+| Body / UI | Inter | 400 body, 500–700 for labels/buttons | `line-height: 1.7` for reading comfort |
+| Code | system monospace stack | 400 | No custom mono font import — keep the font-loading footprint small |
 
-To make the site feel alive and Gen Z-friendly, all components must use micro-animations and custom styling:
+Both fonts load from a single Google Fonts request in `site.css`. Don't add more font families — the two-font pairing (serif display + sans body) is the whole visual signature; a third face dilutes it.
 
-### Card & Panels
-* **Style:** Glassmorphic borders (`border: 1px solid var(--line)`).
-* **Radius:** `border-radius: 16px`.
-* **Glow:** Subtle dropshadows using HSL values based on their active states (cyan or violet glows).
+## 4. Layout & Spacing
 
-### Interactive Buttons
-* **Base Hover:** Brightness increase (`filter: brightness(1.12)`).
-* **Active Press:** Scale down (`transform: scale(0.97)`), transition speed of `0.08s`.
-* **Transitions:** All state changes should transition smoothly over `0.2s ease`.
+- Reading column: content pages read comfortably up to `--max-w-wide: 1080px`; prose-heavy sections should feel closer to a ~780px measure where practical (the notebook markdown, being plain text, naturally reads this way already).
+- Structure via hairline `1px solid var(--line)` borders and whitespace, not boxes-with-shadows.
+- Radii are modest and consistent: `4px` small elements, `10px` inputs/buttons, `16px` cards. Never pill-shaped except the nav's XP pill and badge chips (a deliberate small exception, both borrowed from a "chip" convention).
 
-### Ascent Nodes (Basecamps)
-* **Inactive:** Dark border, muted gray text.
-* **Available:** Glowing Violet outline (`filter: drop-shadow(0 0 6px var(--violet))`).
-* **Completed:** Neon Cyan core, glowing outer halo (`filter: drop-shadow(0 0 8px var(--cyan))`), display checkmark.
+## 5. Components
+
+- **Buttons** (`.btn`): solid accent fill, white text, 1px border matching the fill. `.btn.ghost` is transparent with a hairline border. `.btn.violet` (class name kept for backward compatibility) is now an accent-outline secondary style — not actually violet.
+- **Cards** (`.panel`): white background, hairline border, tiny lift (`translateY(-3px)`) and border-color shift to accent on hover — no shadow glow.
+- **Quiz options**: hairline border, accent border+tint on hover/correct, danger border+tint on wrong. No color-mixing tricks — flat `--accent-bg`/`--danger-bg` tints.
+- **Ascent map nodes**: hairline circle, accent fill for done/available states. No drop-shadow glow.
+- **Notebook callouts** (`tools/nb_common.py`): each callout type hardcodes both a background and a text color together (never relies on the host's default text color — that was the original readability bug). Briefing/footer/analogy use the accent green; exercise callouts use teal; task callouts use amber, kept visually distinct from the brand-accent callouts so "here's a task" never reads as "here's brand chrome."
+
+## 6. Voice
+
+Encouraging, plain-spoken, never condescending. Reassure before introducing anything that might look intimidating (new notation, a block of math) rather than apologizing after. Prefer "let's break this down together" over "don't worry, this is easy." See `CLAUDE.md`'s pedagogical rules for the full house style — this document only covers the visual system.

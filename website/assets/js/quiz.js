@@ -34,7 +34,7 @@ async function renderQuiz(containerId, moduleId, moduleMeta) {
         });
         const ex = document.createElement("div");
         ex.className = "quiz-explain";
-        ex.innerHTML = `<span style="font-weight:700; color: ${good ? 'var(--green)' : '#f87171'}">${good ? "✓ Correct: " : "✗ Incorrect: "}</span>` + item.explain;
+        ex.innerHTML = `<span style="font-weight:700; color: ${good ? 'var(--accent)' : 'var(--danger)'}">${good ? "✓ Correct: " : "✗ Incorrect: "}</span>` + item.explain;
         box.appendChild(ex);
         if (typeof renderMathInElement !== "undefined") {
           renderMathInElement(ex, {

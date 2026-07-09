@@ -1,23 +1,36 @@
-"""The house LaTeX notation, shared by every notebook.
+"""House LaTeX shorthand, expanded to plain LaTeX at notebook-generation time.
 
-Each notebook's second cell is a markdown cell containing MACROS so that
-bra-ket notation renders identically everywhere (QWorld convention).
-tools/build_solutions.py and the tests verify the cell is present and identical.
+Custom \\gdef macros defined in one markdown cell are NOT reliably carried to
+later cells by every renderer (VSCode's KaTeX in particular does not persist
+\\gdef across cells the way MathJax does), which caused undefined-macro
+ParseErrors. To make math rendering renderer-agnostic (identical in Colab,
+VSCode, and nbviewer), authors still write the short forms below in generator
+source for readability, but expand() rewrites them into plain, portable LaTeX
+before a cell is written — no \\gdef ever ships in a notebook.
 """
 
-MACROS = r"""$
-\gdef\ket#1{|#1\rangle}
-\gdef\bra#1{\langle #1|}
-\gdef\braket#1#2{\langle #1|#2\rangle}
-\gdef\sqrttwo{\tfrac{1}{\sqrt{2}}}
-\gdef\mymatrix#1#2{\begin{pmatrix} #2 \end{pmatrix}}
-\gdef\myvector#1{\begin{pmatrix} #1 \end{pmatrix}}
-\gdef\hadamard{\sqrttwo\mymatrix{}{1 & 1 \\ 1 & -1}}
-$
-<i>This cell defines the math notation used below — if formulas look broken,
-run (or re-render) this cell first.</i>"""
+import re
+
+_RULES = [
+    (re.compile(r"\\braket\{([^{}]*)\}\{([^{}]*)\}"),
+     lambda m: rf"\langle {m.group(1)}|{m.group(2)}\rangle"),
+    (re.compile(r"\\ket\{([^{}]*)\}"),
+     lambda m: rf"|{m.group(1)}\rangle"),
+    (re.compile(r"\\bra\{([^{}]*)\}"),
+     lambda m: rf"\langle {m.group(1)}|"),
+    (re.compile(r"\\mymatrix\{[^{}]*\}\{([^{}]*)\}"),
+     lambda m: rf"\begin{{pmatrix}} {m.group(1)} \end{{pmatrix}}"),
+    (re.compile(r"\\myvector\{([^{}]*)\}"),
+     lambda m: rf"\begin{{pmatrix}} {m.group(1)} \end{{pmatrix}}"),
+    (re.compile(r"\\hadamard(?:\{\})?"),
+     lambda m: r"\tfrac{1}{\sqrt{2}}\begin{pmatrix} 1 & 1 \\ 1 & -1 \end{pmatrix}"),
+    (re.compile(r"\\sqrttwo"),
+     lambda m: r"\tfrac{1}{\sqrt{2}}"),
+]
 
 
-def macros_cell() -> str:
-    """Return the markdown source for the house macro cell."""
-    return MACROS
+def expand(text: str) -> str:
+    """Expand house LaTeX shorthand macros into plain, renderer-portable LaTeX."""
+    for pattern, replacement in _RULES:
+        text = pattern.sub(replacement, text)
+    return text

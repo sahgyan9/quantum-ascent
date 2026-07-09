@@ -25,21 +25,27 @@ def test_all_notebooks_are_valid_nbformat():
         nbformat.validate(nb)
 
 
-def test_course_notebooks_have_house_macro_cell():
-    from q2q.latex_macros import MACROS
-
+def test_course_notebooks_have_no_gdef_macros():
+    """Custom \\gdef macros aren't reliably carried across cells by every
+    renderer (VSCode's KaTeX doesn't persist \\gdef the way MathJax does),
+    which used to cause "Undefined control sequence" ParseErrors. Notebooks
+    must ship only plain, renderer-portable LaTeX — see q2q/latex_macros.py.
+    """
+    house_macro_names = ("ket", "bra", "braket", "sqrttwo", "mymatrix",
+                          "myvector", "hadamard")
     for path in _course_notebooks():
         nb = nbformat.read(path, as_version=4)
         sources = [c.source for c in nb.cells if c.cell_type == "markdown"]
-        assert any(r"\gdef\ket" in s for s in sources), (
-            f"{Path(path).name}: missing the house LaTeX macro cell "
-            f"(q2q.latex_macros.MACROS)"
+        text = "\n".join(sources)
+        assert r"\gdef" not in text, (
+            f"{Path(path).name}: contains a \\gdef — macros must be expanded "
+            f"to plain LaTeX at generation time (see q2q.latex_macros.expand)"
         )
-        # the macro cell must be the canonical one, not a drifted copy
-        macro_cells = [s for s in sources if r"\gdef\ket" in s]
-        assert MACROS in macro_cells, (
-            f"{Path(path).name}: macro cell differs from q2q.latex_macros.MACROS"
-        )
+        for name in house_macro_names:
+            assert f"\\{name}" not in text, (
+                f"{Path(path).name}: unexpanded house macro \\{name} found — "
+                f"run the tools/make_module_NN.py generator to regenerate"
+            )
 
 
 def test_student_notebooks_reference_checkers():

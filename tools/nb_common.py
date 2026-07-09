@@ -13,12 +13,20 @@ import nbformat.v4 as nbf
 REPO = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO / "notebooks"))
 
-from q2q.latex_macros import MACROS  # noqa: E402
+from q2q.latex_macros import expand as expand_macros  # noqa: E402
 
-# Colors of the Quantum Ascent brand (match website/assets/css/site.css)
-CYAN = "#0891b2"
-VIOLET = "#7c3aed"
-GREEN = "#059669"
+# Colors of the Quantum Ascent brand (match website/assets/css/site.css) —
+# each callout hardcodes BOTH background and text color together so it stays
+# readable regardless of the notebook host's light/dark theme.
+ACCENT = "#1f7a4d"       # briefing / footer / analogy — primary brand accent
+ACCENT_BG = "#eaf6ee"
+ACCENT_TEXT = "#0f3d22"
+TEAL = "#0e7490"         # exercise (widget) callouts
+TEAL_BG = "#eaf4f6"
+TEAL_TEXT = "#0c363f"
+AMBER = "#b45309"        # task (gap-fill) callouts — kept distinct from
+AMBER_BG = "#fdf3e7"     # the brand accent so task callouts don't blend
+AMBER_TEXT = "#5c2d0c"   # in with briefing/footer callouts
 
 BOOTSTRAP = '''\
 # ✅ Setup — run me first! (works locally and on Google Colab)
@@ -49,7 +57,7 @@ print("Setup complete — you're ready to climb. 🏔️")'''
 
 
 def md(source, tags=None):
-    cell = nbf.new_markdown_cell(source)
+    cell = nbf.new_markdown_cell(expand_macros(source))
     if tags:
         cell.metadata["tags"] = tags
     return cell
@@ -62,10 +70,6 @@ def code(source, tags=None):
     return cell
 
 
-def macro_cell():
-    return md(MACROS)
-
-
 def bootstrap_cell():
     return code(BOOTSTRAP)
 
@@ -74,7 +78,7 @@ def briefing(module_no, title, mission, objectives, minutes):
     obj = "\n".join(f"- {o}" for o in objectives)
     return md(
         f"# 🏔️ Quantum Ascent — Basecamp {module_no}: {title}\n\n"
-        f'<div style="border-left:5px solid {VIOLET};background:#f5f3ff;color:#2e1065;'
+        f'<div style="border-left:5px solid {ACCENT};background:{ACCENT_BG};color:{ACCENT_TEXT};'
         f'padding:12px 16px;border-radius:4px">\n'
         f"<b>📋 Mission briefing.</b> {mission}\n</div>\n\n"
         f"**By the end of this basecamp you can:**\n{obj}\n\n"
@@ -86,7 +90,7 @@ def briefing(module_no, title, mission, objectives, minutes):
 def exercise(n, text):
     """Widget-interaction exercise callout (NVIDIA-style, our branding)."""
     return md(
-        f'<div style="border-left:5px solid {CYAN};background:#ecfeff;color:#083344;'
+        f'<div style="border-left:5px solid {TEAL};background:{TEAL_BG};color:{TEAL_TEXT};'
         f'padding:12px 16px;border-radius:4px">\n'
         f'<b>🔭 Exercise {n}.</b> {text}\n</div>'
     )
@@ -95,7 +99,7 @@ def exercise(n, text):
 def task(n, text):
     """Gap-fill coding task header."""
     return md(
-        f'<div style="border-left:5px solid {GREEN};background:#ecfdf5;color:#064e3b;'
+        f'<div style="border-left:5px solid {AMBER};background:{AMBER_BG};color:{AMBER_TEXT};'
         f'padding:12px 16px;border-radius:4px">\n'
         f'<b>⛏️ Task {n}.</b> {text}\n</div>'
     )
@@ -107,7 +111,7 @@ def analysis(text):
 
 def analogy_callout(concept_title, prompt_body):
     return md(
-        f'<div style="border:1px dashed {VIOLET};background:#faf5ff;color:#2e1065;'
+        f'<div style="border:1px dashed {ACCENT};background:{ACCENT_BG};color:{ACCENT_TEXT};'
         f'padding:12px 16px;border-radius:8px">\n'
         f"<b>🎨 Make it yours — analogy time.</b> Everyone's brain hooks onto "
         f"different things. Copy the prompt below into <i>your</i> favorite AI "
@@ -116,14 +120,14 @@ def analogy_callout(concept_title, prompt_body):
         f"prompt, so the AI can't drift into pop-science myths. Want more "
         f'control? Use the <a href="https://quantum-ascent-77617.web.app/'
         f'analogy-studio.html">Analogy Studio</a>.\n\n'
-        f"<pre style=\"white-space:pre-wrap;background:#fff;border:1px solid "
-        f"#e9d5ff;color:#1e1b2e;border-radius:6px;padding:10px\">{prompt_body}</pre>\n</div>"
+        f"<pre style=\"white-space:pre-wrap;background:#ffffff;border:1px solid "
+        f"#cfe6d8;color:{ACCENT_TEXT};border-radius:6px;padding:10px\">{prompt_body}</pre>\n</div>"
     )
 
 
 def basecamp_footer(module_no, summary, quiz_url, next_label, solutions_relpath):
     return md(
-        f'<div style="border-left:5px solid {VIOLET};background:#f5f3ff;color:#2e1065;'
+        f'<div style="border-left:5px solid {ACCENT};background:{ACCENT_BG};color:{ACCENT_TEXT};'
         f'padding:12px 16px;border-radius:4px">\n'
         f"<b>🚩 Basecamp {module_no} reached!</b> {summary}\n</div>\n\n"
         f"**Next steps:**\n"

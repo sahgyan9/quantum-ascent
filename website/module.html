@@ -14,13 +14,12 @@
 <body>
 
 <nav>
-  <a class="brand" href="index.html">🏔️ Quantum <span>Ascent</span></a>
+  <a class="brand" href="index.html"><img src="assets/logo.svg" alt="" width="28" height="28"> Quantum <span>Ascent</span></a>
   <a class="navlink" href="ascent.html">The Ascent</a>
   <a class="navlink" href="widgets.html">Widget Gallery</a>
   <a class="navlink" href="analogy-studio.html">Analogy Studio</a>
   <div class="spacer"></div>
   <span id="xp-pill">⚡ 0 XP · 0/6</span>
-  <button id="theme-toggle">☀️ Light</button>
 </nav>
 
 <div class="container" id="content">
@@ -69,25 +68,25 @@
       </ul>
     </div>
 
-    ${soon ? `<div class="panel" style="border-color:var(--violet)">
+    ${soon ? `<div class="panel" style="border-color:var(--accent)">
         🚧 This basecamp is being carved out of the mountain. Check back soon —
         or start with <a href="module.html?id=01">Basecamp 1</a>.</div>` : `
     
-    <div class="panel" style="border-color: var(--violet); background: rgba(139, 92, 246, 0.03); margin: 24px 0 32px;">
+    <div class="panel" style="border-color: var(--accent); background: var(--accent-bg); margin: 24px 0 32px;">
       <h3 style="font-size: 16px; margin-bottom: 8px; color: var(--text); display: flex; align-items: center; gap: 8px; font-family: var(--font-heading);">
         🏔️ Climber's Guide — How to conquer this Basecamp:
       </h3>
       <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 12px; font-size: 14.5px;">
         <div style="display: flex; gap: 10px; align-items: flex-start;">
-          <span style="color: var(--cyan); font-weight: 700; font-family: var(--font-heading);">Step 1:</span>
+          <span style="color: var(--accent); font-weight: 700; font-family: var(--font-heading); flex-shrink: 0; white-space: nowrap;">Step 1:</span>
           <span>Scroll down to <b>Section 2</b> and open the <b>Jupyter Notebook</b>. Read it line by line to understand the quantum mechanics theory and complete the code tasks.</span>
         </div>
         <div style="display: flex; gap: 10px; align-items: flex-start;">
-          <span style="color: var(--cyan); font-weight: 700; font-family: var(--font-heading);">Step 2:</span>
+          <span style="color: var(--accent); font-weight: 700; font-family: var(--font-heading); flex-shrink: 0; white-space: nowrap;">Step 2:</span>
           <span>Return here and play with the <b>Interactive Widget</b> in <b>Section 1</b> to visualize what the theory and math look like in real time.</span>
         </div>
         <div style="display: flex; gap: 10px; align-items: flex-start;">
-          <span style="color: var(--cyan); font-weight: 700; font-family: var(--font-heading);">Step 3:</span>
+          <span style="color: var(--accent); font-weight: 700; font-family: var(--font-heading); flex-shrink: 0; white-space: nowrap;">Step 3:</span>
           <span>Take the <b>Quiz</b> in <b>Section 3</b> to lock in your XP and claim your badge!</span>
         </div>
       </div>

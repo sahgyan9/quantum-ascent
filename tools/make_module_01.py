@@ -6,7 +6,7 @@
 
 from nb_common import (
     REPO, analysis, analogy_callout, basecamp_footer, bootstrap_cell,
-    briefing, code, exercise, macro_cell, md, task, write_notebook,
+    briefing, code, exercise, md, task, write_notebook,
 )
 
 cells = []
@@ -19,7 +19,10 @@ cells.append(briefing(
         "richer: a pair of <b>amplitudes</b> that only turn into yes/no when "
         "you look. Your mission: build your first quantum states, predict "
         "their measurement statistics <i>before</i> running them, and verify "
-        "your predictions on a real quantum simulator."
+        "your predictions on a real quantum simulator.<br><br>"
+        "<i>Note: If quantum concepts feel a bit abstract or intimidating at first, "
+        "don't worry! We will build and understand these ideas slowly, step-by-step. "
+        "Let's take it one step at a time.</i>"
     ),
     objectives=[
         "Describe a qubit state as a 2-amplitude vector and explain why the 'both 0 and 1 at once' slogan is misleading",
@@ -29,35 +32,47 @@ cells.append(briefing(
     ],
     minutes=45,
 ))
-cells.append(macro_cell())
 cells.append(bootstrap_cell())
 
 # ----------------------------------------------------------------- 1.1
 cells.append(md(r"""## 1.1 From bits to qubits
 
-A classical bit is a switch: it is $0$ or it is $1$, end of story.
+Let's start with what you already know. A classical bit is like a standard light switch: it is either **0** (off) or **1** (on). There is no middle ground.
 
-A **qubit** is described by *two complex numbers* called **amplitudes**:
+A **qubit** (quantum bit) is different. Before you look at it, it isn't set to just 0 or 1. Instead, it is described by two numbers called **amplitudes** (written as $\alpha$ and $\beta$):
 
-$$\ket{\psi} = \alpha \ket{0} + \beta \ket{1}, \qquad |\alpha|^2 + |\beta|^2 = 1.$$
+$$\ket{\psi} = \alpha \ket{0} + \beta \ket{1}$$
 
-Here $\ket{0} = \myvector{1 \\ 0}$ and $\ket{1} = \myvector{0 \\ 1}$ are just
-the two unit vectors of a 2D space, and the qubit state is a point on the unit
-circle (or sphere, once phases enter) spanned by them.
+Amplitudes are **not** probabilities themselves — they're a related but different kind of number. Here's the rule that connects them, called the **Born rule**: when you measure the qubit, you get outcome **0** with probability $|\alpha|^2$, and outcome **1** with probability $|\beta|^2$. (The bars mean "size of the number, squared" — for the ordinary positive amplitudes we'll use in this basecamp, that's just the number squared.)
 
-> ⚠️ **Myth check.** Pop science says a qubit is "0 and 1 at the same time."
-> That framing breaks down fast. The precise statement: the qubit carries two
-> amplitudes, and **when measured** it gives $0$ with probability $|\alpha|^2$
-> and $1$ with probability $|\beta|^2$ — this is the **Born rule**. Everything
-> in this course builds on that one sentence.
+For example, imagine you are **spinning a coin**. While it's spinning, it isn't heads or tails yet — it's some blend of both, described by amplitudes. But when you **slap it down on the table** (in quantum computing, we call this **measurement**), it is forced to land on either heads (0) or tails (1).
 
-Amplitudes are not probabilities: they can be negative or complex, and that
-sign is exactly what lets quantum circuits make outcomes *cancel out*
-(interference) — the resource behind every quantum speedup you'll meet on
-this ascent."""))
+> ✍️ **Study Tip:** If these concepts or the mathematical notation feel intimidating at first, don't worry! The best way to grab the concept is to grab a physical pen and write them down on paper together as we go. We will build and understand everything slowly, step-by-step.
 
-# ----------------------------------------------------------------- widget
+> 💡 **Don't panic! Let's break down the rest of the notation:**
+> - The vertical bar and angle bracket (like $\ket{\psi}$ or $\ket{0}$) is called **Dirac notation**. It's just a shorthand way of saying *"this is a quantum state."* You can think of it as a wrapper.
+> - $\ket{0}$ represents the state where the qubit will definitely measure as **0**.
+> - $\ket{1}$ represents the state where the qubit will definitely measure as **1**.
+
+Since a measurement must land on *either* 0 or 1, the two probabilities have to add up to $100\%$ ($1$):
+$$|\alpha|^2 + |\beta|^2 = 1.$$
+
+This rule has a name: **normalization**. Every valid qubit state's amplitudes must be sized so this equation holds true — you'll use this constantly from here on, so it's worth remembering the word.
+
+### Why use amplitudes instead of regular probabilities?
+If amplitudes just determine probabilities, why not just use normal probabilities?
+Unlike regular probabilities (which are always positive numbers), amplitudes can be positive, negative, or even complex numbers. This allows amplitudes to *cancel each other out* (a phenomenon called **interference**). This cancellation is the secret engine behind every quantum speedup you'll meet on this ascent — but for now, we'll keep things simple and only use real, positive amplitudes."""))
+
+# ----------------------------------------------------------------- spinning coin widget
 cells.append(exercise(1, (
+    "Try it yourself! Below is the <b>Spinning Coin</b> widget. "
+    "<br>1️⃣ The coin is spinning in a 50/50 state. Click <b>Slap! (Measure)</b> to force it to pick 0 (Heads) or 1 (Tails). "
+    "<br>2️⃣ Click it 100 times. Notice how the histogram roughly settles into ~50 times Heads and ~50 times Tails."
+)))
+cells.append(code('show_widget("coin-spinner")'))
+
+# ----------------------------------------------------------------- bloch sampler widget
+cells.append(exercise(2, (
     "Below is the <b>Bloch Sampler</b>. The arrow is a qubit state; the "
     "<b>θ slider</b> tilts it between the north pole (|0⟩) and south "
     "pole (|1⟩). "
@@ -73,37 +88,62 @@ cells.append(code('show_widget("bloch-sampler")'))
 # ----------------------------------------------------------------- 1.2
 cells.append(md(r"""## 1.2 The math the widget was showing you
 
-Any single-qubit state can be written with two angles $\theta$ (tilt) and
-$\varphi$ (twist, ignored until Basecamp 2):
+> 📐 **Don't worry about the trigonometry!**
+> If these formulas look a bit scary, take a deep breath. We are just using basic angles to describe the physical tilt of the arrow in the widget. Let's break it down together.
 
-$$\ket{\psi} = \cos\tfrac{\theta}{2}\,\ket{0} + e^{i\varphi}\sin\tfrac{\theta}{2}\,\ket{1}.$$
+Any single-qubit state can be represented as an arrow on a sphere. We can write this state using two angles: $\theta$ (the tilt from the top) and $\varphi$ (the twist around the equator, which we can ignore for now):
 
-So the Born rule says:
+$$\ket{\psi} = \cos\tfrac{\theta}{2}\,\ket{0} + e^{i\varphi}\sin\tfrac{\theta}{2}\,\ket{1}$$
 
-$$P(0) = \cos^2\tfrac{\theta}{2}, \qquad P(1) = \sin^2\tfrac{\theta}{2}.$$
+According to the Born rule, the probability of measuring 0 or 1 is just the square of these coefficients:
 
-**Worked example** — the state you get at $\theta = 90°$:
+$$P(0) = \cos^2\tfrac{\theta}{2}, \qquad P(1) = \sin^2\tfrac{\theta}{2}$$
+
+### Worked Example: The $\theta = 90^\circ$ State
+Let's see what happens if we tilt the arrow exactly halfway down to the equator ($\theta = 90^\circ$ or $\pi/2$ radians):
+* $\theta/2 = 45^\circ$
+* $\cos(45^\circ) = \tfrac{1}{\sqrt{2}}$
+* $\sin(45^\circ) = \tfrac{1}{\sqrt{2}}$
+
+Substituting these in, we get the state (often called the $\ket{+}$ state):
 
 $$\ket{+} = \sqrttwo\,\ket{0} + \sqrttwo\,\ket{1}
 \;\Rightarrow\;
 P(0) = \left(\sqrttwo\right)^2 = \tfrac12,\quad P(1) = \tfrac12.$$
 
-A perfect coin flip — which is exactly the 50/50 histogram you watched build
-up in the widget. One shot tells you almost nothing; the *statistics over many
-shots* reveal the amplitudes. That's how all quantum data comes home."""))
+This is a perfect 50/50 coin flip! That is exactly the histogram you watched build up in the widget.
+Remember: one single measurement tells you almost nothing (just a 0 or a 1); it is the **statistics over many shots** that reveal the underlying amplitudes. That is how we read quantum data!
+
+### 🐍 Coding connection: Representing states with NumPy
+In Python, we represent a qubit's amplitude pair as a **NumPy array**: `np.array([amplitude_0, amplitude_1])`. Run the cell below to see the syntax in action — building the two basic states, reading out a single amplitude, and scaling an array (useful any time you need to normalize a state):"""))
+
+cells.append(code(
+"""import numpy as np
+
+state_0 = np.array([1, 0])   # this is |0>: amplitude 1 on "0", amplitude 0 on "1"
+state_1 = np.array([0, 1])   # this is |1>
+print("state_0 =", state_0)
+print("first amplitude of state_0 (index 0):", state_0[0])
+
+# NumPy scales every entry of an array at once — handy for normalizing a state.
+# Example: [3, 4] scaled down to a unit-length vector (0.6^2 + 0.8^2 = 1).
+example = np.array([3, 4]) / 5
+print("example =", example, "-> squares sum to", (example ** 2).sum())"""))
+
+cells.append(md(r"""Notice `example`'s squared entries summed to exactly 1 — that's **normalization** in action, the same rule from §1.1 ($|\alpha|^2+|\beta|^2=1$). Now it's your turn: use the same `np.array(...)` syntax, plus that normalization rule, to build the $\ket{+}$ state yourself in Task 1."""))
 
 # ----------------------------------------------------------------- task 1
 cells.append(task(1, (
     "Build the |+⟩ state as a NumPy array of its two amplitudes: equal "
     "weight on |0⟩ and |1⟩, both amplitudes real and positive, "
-    "properly normalized. The checker forgives global phase but not "
-    "normalization."
+    "properly normalized (their squares must sum to 1 — see §1.1). "
+    "The checker forgives global phase but not normalization."
 )))
 cells.append(code(
-"""import numpy as np
-
-plus = None  # Initialize
-# Build the |+> state as an array of its two amplitudes [amp_0, amp_1]
+"""plus = None  # Initialize
+# Build the |+> state as an array of its two amplitudes [amp_0, amp_1].
+# Both amplitudes are equal, real, and positive — and the array must be
+# normalized: (amp_0)^2 + (amp_1)^2 must equal 1.
 # Hint: assign your array to the variable 'plus'
 ### BEGIN SOLUTION
 plus = np.array([1, 1]) / np.sqrt(2)
@@ -121,14 +161,13 @@ unit circle of amplitude space."""))
 # ----------------------------------------------------------------- 1.3
 cells.append(md(r"""## 1.3 Your first quantum circuit
 
-In hardware we don't type amplitude arrays — we start every qubit in
-$\ket{0}$ and apply **gates** to steer it. The **Hadamard gate** $H$ is the
-superposition-maker:
+In real quantum hardware, we can't directly type amplitude arrays. Instead, we start every qubit in the default state $\ket{0}$ and apply **quantum gates** (which act like operations that rotate the dials). 
+
+The **Hadamard gate** ($H$) is the ultimate superposition-maker. It takes a qubit starting at $\ket{0}$ and sets its dials to a perfect 50/50 split ($\ket{+}$):
 
 $$H = \hadamard{}, \qquad H\ket{0} = \ket{+}.$$
 
-Let's build that in Qiskit. A circuit reads left to right: prepare, transform,
-measure."""))
+Let's build this circuit in Qiskit. A quantum circuit is read from left to right: prepare the qubits, apply the transformations (gates), and finally, measure the outcomes."""))
 cells.append(code(
 """from qiskit import QuantumCircuit
 from qiskit_aer import AerSimulator
@@ -166,20 +205,23 @@ counts, same verdict."""))
 # ----------------------------------------------------------------- 1.4
 cells.append(md(r"""## 1.4 Steering the amplitudes: the $R_y$ gate
 
-$H$ only ever gives 50/50. To dial in *any* probability we rotate by a chosen
-angle with the $R_y(\theta)$ gate — the code version of the widget's θ slider:
+The Hadamard gate only gives a 50/50 split. What if we want to dial in any specific probability? 
 
-$$R_y(\theta)\ket{0} = \cos\tfrac{\theta}{2}\,\ket{0} + \sin\tfrac{\theta}{2}\,\ket{1}.$$
+We do this by rotating the qubit state by a chosen angle using the $R_y(\theta)$ gate. This is the programmatic version of the $\theta$ slider you used in the first exercise:
 
-Want a target $P(1)$? Solve $\sin^2\tfrac{\theta}{2} = P(1)$ for $\theta$.
-This little trick — *choose an angle, get a distribution* — is the seed of
-everything at the Summit: variational algorithms tune exactly such angles
-until the statistics encode the answer to a hard problem."""))
+$$R_y(\theta)\ket{0} = \cos\tfrac{\theta}{2}\,\ket{0} + \sin\tfrac{\theta}{2}\,\ket{1}$$
+
+If you want a target probability of getting a 1 (i.e. $P(1)$), you just solve the equation:
+$$\sin^2\tfrac{\theta}{2} = P(1)$$
+
+This concept — *choosing an angle to get a specific distribution* — is extremely powerful! Later on the Summit, we will see how variational algorithms tune these rotation angles until the measurement statistics output the solution to a hard computational problem.
+
+One more tool before Task 3: instead of running many shots to *estimate* probabilities, Qiskit can compute a circuit's exact amplitude pair directly — this is called the circuit's **statevector**. Task 3 checks your statevector exactly, rather than counting shots."""))
 
 # ----------------------------------------------------------------- task 3
 cells.append(task(3, (
     "Prepare the state with P(1) = 1/4 (the one you hunted for with "
-    "the slider in Exercise 1). Create a 1-qubit circuit, apply "
+    "the slider in Exercise 2). Create a 1-qubit circuit, apply "
     "<code>qc3.ry(theta, 0)</code> with the right angle, and check the exact "
     "statevector. <br><i>Paper first:</i> solve "
     "sin²(θ/2) = 1/4, then code it."
@@ -192,17 +234,25 @@ qc3.ry(theta, 0)
 ### END SOLUTION
 
 checkers.check_statevector(qc3, targets.M1_TASK3)"""))
-cells.append(analysis(r"""From $\sin^2\tfrac{\theta}{2} = \tfrac14$:
-$\sin\tfrac{\theta}{2} = \tfrac12 \Rightarrow \tfrac{\theta}{2} = \tfrac{\pi}{6}
-\Rightarrow \theta = \tfrac{\pi}{3}$ (that's the ≈ 60° you found on the
-slider). The resulting state is
+cells.append(analysis(r"""Let's break down the math step-by-step to see how we got that angle:
+1. We want the probability of getting a 1 to be $1/4$, so:
+   $$P(1) = \sin^2\tfrac{\theta}{2} = \tfrac14$$
+2. Taking the square root of both sides gives:
+   $$\sin\tfrac{\theta}{2} = \tfrac12$$
+3. What angle has a sine of $1/2$? That is $30^\circ$ (or $\pi/6$ radians):
+   $$\tfrac{\theta}{2} = \tfrac{\pi}{6}$$
+4. Multiplying by 2 gives our rotation angle $\theta$:
+   $$\theta = \tfrac{\pi}{3} \approx 1.047 \text{ radians (or } 60^\circ \text{)}$$
+   (This is the ≈ 60° angle you found using the slider in Exercise 2!)
 
-$$\cos\tfrac{\pi}{6}\ket{0} + \sin\tfrac{\pi}{6}\ket{1}
-= \tfrac{\sqrt3}{2}\ket{0} + \tfrac12\ket{1},$$
+When we plug this back into our state formula, we get:
+$$\cos\tfrac{\pi}{6}\ket{0} + \sin\tfrac{\pi}{6}\ket{1} = \tfrac{\sqrt3}{2}\ket{0} + \tfrac12\ket{1}$$
 
-and indeed $\left(\tfrac{\sqrt3}{2}\right)^2 = \tfrac34$, $\left(\tfrac12\right)^2 = \tfrac14$.
-Amplitudes → squares → probabilities. Once that chain feels automatic, you
-think in quantum."""))
+And indeed, the squares of these amplitudes are:
+* $P(0) = \left(\tfrac{\sqrt3}{2}\right)^2 = \tfrac34$
+* $P(1) = \left(\tfrac12\right)^2 = \tfrac14$
+
+Amplitudes $\rightarrow$ squares $\rightarrow$ probabilities. Once this chain feels automatic, you're officially thinking in quantum!"""))
 
 # ----------------------------------------------------------------- analogy
 cells.append(analogy_callout(

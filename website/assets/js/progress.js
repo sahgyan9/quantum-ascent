@@ -107,7 +107,7 @@ document.addEventListener("DOMContentLoaded", () => {
     localStorage.setItem("q2q_theme", t);
     if (toggle) toggle.textContent = t === "light" ? "🌙 Dark" : "☀️ Light";
   };
-  applyTheme(localStorage.getItem("q2q_theme") || "dark");
+  applyTheme(localStorage.getItem("q2q_theme") || "light");
   if (toggle) toggle.addEventListener("click", () =>
     applyTheme(document.documentElement.dataset.theme === "light" ? "dark" : "light"));
 });

@@ -16,6 +16,5 @@ from .checkers import (
     check_maxcut_solution,
 )
 from .widgets import show_widget
-from .latex_macros import macros_cell
 
 __version__ = "0.1.0"
