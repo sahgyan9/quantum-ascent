@@ -74,7 +74,7 @@ def briefing(module_no, title, mission, objectives, minutes):
     obj = "\n".join(f"- {o}" for o in objectives)
     return md(
         f"# 🏔️ Quantum Ascent — Basecamp {module_no}: {title}\n\n"
-        f'<div style="border-left:5px solid {VIOLET};background:#f5f3ff;'
+        f'<div style="border-left:5px solid {VIOLET};background:#f5f3ff;color:#2e1065;'
         f'padding:12px 16px;border-radius:4px">\n'
         f"<b>📋 Mission briefing.</b> {mission}\n</div>\n\n"
         f"**By the end of this basecamp you can:**\n{obj}\n\n"
@@ -86,7 +86,7 @@ def briefing(module_no, title, mission, objectives, minutes):
 def exercise(n, text):
     """Widget-interaction exercise callout (NVIDIA-style, our branding)."""
     return md(
-        f'<div style="border-left:5px solid {CYAN};background:#ecfeff;'
+        f'<div style="border-left:5px solid {CYAN};background:#ecfeff;color:#083344;'
         f'padding:12px 16px;border-radius:4px">\n'
         f'<b>🔭 Exercise {n}.</b> {text}\n</div>'
     )
@@ -95,7 +95,7 @@ def exercise(n, text):
 def task(n, text):
     """Gap-fill coding task header."""
     return md(
-        f'<div style="border-left:5px solid {GREEN};background:#ecfdf5;'
+        f'<div style="border-left:5px solid {GREEN};background:#ecfdf5;color:#064e3b;'
         f'padding:12px 16px;border-radius:4px">\n'
         f'<b>⛏️ Task {n}.</b> {text}\n</div>'
     )
@@ -107,7 +107,7 @@ def analysis(text):
 
 def analogy_callout(concept_title, prompt_body):
     return md(
-        f'<div style="border:1px dashed {VIOLET};background:#faf5ff;'
+        f'<div style="border:1px dashed {VIOLET};background:#faf5ff;color:#2e1065;'
         f'padding:12px 16px;border-radius:8px">\n'
         f"<b>🎨 Make it yours — analogy time.</b> Everyone's brain hooks onto "
         f"different things. Copy the prompt below into <i>your</i> favorite AI "
@@ -117,13 +117,13 @@ def analogy_callout(concept_title, prompt_body):
         f'control? Use the <a href="https://quantum-ascent-77617.web.app/'
         f'analogy-studio.html">Analogy Studio</a>.\n\n'
         f"<pre style=\"white-space:pre-wrap;background:#fff;border:1px solid "
-        f"#e9d5ff;border-radius:6px;padding:10px\">{prompt_body}</pre>\n</div>"
+        f"#e9d5ff;color:#1e1b2e;border-radius:6px;padding:10px\">{prompt_body}</pre>\n</div>"
     )
 
 
 def basecamp_footer(module_no, summary, quiz_url, next_label, solutions_relpath):
     return md(
-        f'<div style="border-left:5px solid {VIOLET};background:#f5f3ff;'
+        f'<div style="border-left:5px solid {VIOLET};background:#f5f3ff;color:#2e1065;'
         f'padding:12px 16px;border-radius:4px">\n'
         f"<b>🚩 Basecamp {module_no} reached!</b> {summary}\n</div>\n\n"
         f"**Next steps:**\n"
