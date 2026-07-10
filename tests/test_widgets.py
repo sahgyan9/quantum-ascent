@@ -48,3 +48,11 @@ def test_widget_has_hint_bar(path):
     assert 'class="hint' in html or 'id="hint' in html, (
         "widget needs a hint bar telling the user what to try (discoverability)"
     )
+
+
+def test_coin_spinner_has_bias_slider_and_prediction_ticks():
+    """Module 01's 75/25 biased-coin narrative needs the bias slider, and the
+    predict-before-you-look principle needs the green prediction ticks."""
+    html = _read(str(REPO / "website" / "widgets" / "coin-spinner" / "index.html"))
+    assert 'id="bias"' in html and 'type="range"' in html, "P(Heads) bias slider missing"
+    assert 'id="t0"' in html and 'id="t1"' in html, "prediction tick marks missing"

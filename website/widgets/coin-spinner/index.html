@@ -4,7 +4,7 @@
 <style>
   .wrap { display: flex; gap: 20px; max-width: 880px; align-items: flex-start; }
   .coin-container { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #0b1020; border: 1px solid var(--line); border-radius: 10px; padding: 40px; }
-  
+
   .coin {
     width: 150px;
     height: 150px;
@@ -12,16 +12,16 @@
     transform-style: preserve-3d;
     transition: transform 0.1s linear;
   }
-  
+
   .spinning {
     animation: spin 0.5s linear infinite;
   }
-  
+
   @keyframes spin {
     0% { transform: rotateY(0deg); }
     100% { transform: rotateY(360deg); }
   }
-  
+
   .face {
     position: absolute;
     width: 100%;
@@ -36,23 +36,27 @@
     color: #fff;
     border: 8px solid;
   }
-  
+
   .heads { background: var(--cyan); border-color: #083344; transform: rotateY(0deg); }
   .tails { background: var(--violet); border-color: #2e1065; transform: rotateY(180deg); }
-  
+
   .right { flex: 1; display: flex; flex-direction: column; gap: 10px; width: 100%; }
   .bars { display: grid; grid-template-columns: 50px 1fr 64px; gap: 6px; align-items: center; }
-  .track { height: 16px; background: #0e1530; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+  .track { height: 16px; background: #0e1530; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; position: relative; }
   .fill  { height: 100%; width: 0%; transition: width .15s; }
   .h0 { background: rgba(34,211,238,.45); } .h1 { background: rgba(139,92,246,.45); }
-  
+  .tick { position: absolute; top: -2px; bottom: -2px; width: 2px; background: var(--green); transition: left .15s; }
+  .tick-legend { color: var(--muted); font-size: 12px; margin-top: 6px; }
+  .tick-legend .swatch { display: inline-block; width: 10px; height: 2px; background: var(--green); vertical-align: middle; margin-right: 4px; }
+
   #flash { min-height: 22px; font-weight: 700; text-align: center; margin-top: 15px; }
   .pop { animation: pop .35s; } @keyframes pop { 0% {transform: scale(1.4);} 100% {transform: scale(1);} }
-  
+
   .controls { margin-top: 30px; display: flex; gap: 10px; justify-content: center; }
+  .bias-readout { display: flex; justify-content: space-between; margin-top: 2px; }
 </style>
 
-<div class="hint-bar" id="hint">💡 <b>Try this:</b> The coin is spinning in a 50/50 superposition. Click <b>Slap! (Measure)</b> to collapse it to a definite Heads (0) or Tails (1). Notice the statistics!</div>
+<div class="hint-bar" id="hint">💡 <b>Try this:</b> ① Slap the fair 50/50 coin ~100 times and watch the histogram. ② Then drag the <b>P(Heads)</b> slider to 75%, <b>predict</b> the bars first, and slap ×100 — do they land near the green prediction lines?</div>
 
 <div class="wrap">
   <div class="coin-container">
@@ -68,11 +72,20 @@
 
   <div class="right">
     <div class="panel">
+      <label for="bias">Bias the coin — P(Heads)</label>
+      <input type="range" id="bias" min="0" max="100" step="5" value="50">
+      <div class="bias-readout">
+        <span class="readout" style="color:var(--cyan)">P(Heads) = <span id="pH">50</span>%</span>
+        <span class="readout" style="color:var(--violet)">P(Tails) = <span id="pT">50</span>%</span>
+      </div>
+    </div>
+    <div class="panel">
       <div style="color:var(--muted);margin:8px 0 2px">Measured so far (<span id="shots">0</span> shots):</div>
       <div class="bars">
-        <span>0 (H):</span><div class="track"><div class="fill h0" id="h0bar"></div></div><span class="readout" id="c0">0</span>
-        <span>1 (T):</span><div class="track"><div class="fill h1" id="h1bar"></div></div><span class="readout" id="c1">0</span>
+        <span>0 (H):</span><div class="track"><div class="fill h0" id="h0bar"></div><div class="tick" id="t0"></div></div><span class="readout" id="c0">0</span>
+        <span>1 (T):</span><div class="track"><div class="fill h1" id="h1bar"></div><div class="tick" id="t1"></div></div><span class="readout" id="c1">0</span>
       </div>
+      <div class="tick-legend"><span class="swatch"></span>green line = your predicted probability. Do the bars agree?</div>
       <div style="margin-top: 20px; display: flex; gap: 10px;">
         <button id="m100" class="violet">Slap ×100</button>
         <button id="reset" class="secondary">Reset</button>
@@ -85,7 +98,7 @@
 "use strict";
 const $ = id => document.getElementById(id);
 const coin = $("coin");
-const state = { c0: 0, c1: 0, isSpinning: true };
+const state = { c0: 0, c1: 0, isSpinning: true, pHeads: 0.5 };
 
 function renderStats() {
   const shots = state.c0 + state.c1;
@@ -94,6 +107,15 @@ function renderStats() {
   $("c1").textContent = state.c1;
   $("h0bar").style.width = (shots ? 100 * state.c0 / shots : 0) + "%";
   $("h1bar").style.width = (shots ? 100 * state.c1 / shots : 0) + "%";
+}
+
+function renderBias() {
+  const pct = Math.round(state.pHeads * 100);
+  $("pH").textContent = pct;
+  $("pT").textContent = 100 - pct;
+  // prediction ticks: where the bars SHOULD settle after many slaps
+  $("t0").style.left = "calc(" + pct + "% - 1px)";
+  $("t1").style.left = "calc(" + (100 - pct) + "% - 1px)";
 }
 
 function startSpinning() {
@@ -105,19 +127,25 @@ function startSpinning() {
   $("m1").textContent = "Slap! (Measure ×1)";
 }
 
+function resetStats() {
+  state.c0 = 0; state.c1 = 0;
+  renderStats();
+  startSpinning();
+}
+
 function measure(n) {
   if (n === 1 && !state.isSpinning) {
     // Resume spinning if we just click slap again after it stopped
     startSpinning();
     return;
   }
-  
+
   let last = 0;
   for (let i = 0; i < n; i++) {
-    last = Math.random() < 0.5 ? 0 : 1;
+    last = Math.random() < state.pHeads ? 0 : 1;
     state[last === 0 ? "c0" : "c1"]++;
   }
-  
+
   if (n === 1) {
     state.isSpinning = false;
     coin.classList.remove("spinning");
@@ -126,22 +154,25 @@ function measure(n) {
     coin.style.transform = last === 0 ? "rotateY(0deg)" : "rotateY(180deg)";
     $("m1").textContent = "Spin again";
   }
-  
+
   const f = $("flash");
   f.textContent = n === 1 ? (last === 0 ? "Heads! (0)" : "Tails! (1)") : "→ " + n + " shots sampled";
   f.style.color = last === 0 ? "var(--cyan)" : "var(--violet)";
   f.classList.remove("pop"); void f.offsetWidth; f.classList.add("pop");
-  
+
   renderStats();
 }
 
 $("m1").addEventListener("click", () => measure(1));
 $("m100").addEventListener("click", () => measure(100));
-$("reset").addEventListener("click", () => {
-  state.c0 = 0; state.c1 = 0;
-  renderStats();
-  startSpinning();
+$("reset").addEventListener("click", resetStats);
+$("bias").addEventListener("input", () => {
+  state.pHeads = Number($("bias").value) / 100;
+  renderBias();
+  // A new bias is a new coin: old counts would tell a confusing mixed story
+  resetStats();
 });
 
+renderBias();
 renderStats();
 </script>
