@@ -7,8 +7,14 @@ Usage:
 Rules:
 - notebooks/solutions/NN_name_solutions.ipynb  ->  notebooks/NN_name.ipynb
 - Inside any code cell, the region between '### BEGIN SOLUTION' and
-  '### END SOLUTION' is replaced by a '# ~~~ YOUR CODE HERE ~~~' placeholder
+  '### END SOLUTION' is replaced by a '# YOUR CODE HERE' placeholder
   (indentation preserved).
+- A line of the form '### STUDENT SAFETY: <code>' is a no-op comment in the
+  solutions notebook (harmless, like the BEGIN/END markers), and is turned
+  into real code '<code>' only in the student notebook. Use this to seed a
+  blank with e.g. 'qc_spin = None  # remove None and define your circuit'
+  directly under the blank it belongs to, so the cell still runs before the
+  student fills it in AND the variable name is obvious from context.
 - Cells tagged 'solution-only' (cell metadata tags) are dropped entirely.
 - All outputs and execution counts are cleared in the student copy.
 
@@ -25,15 +31,19 @@ REPO = Path(__file__).resolve().parent.parent
 SOLUTIONS_DIR = REPO / "notebooks" / "solutions"
 STUDENT_DIR = REPO / "notebooks"
 
-PLACEHOLDER = "# ~~~ YOUR CODE HERE ~~~"
+PLACEHOLDER = "# YOUR CODE HERE"
 REGION = re.compile(
     r"^(?P<indent>[ \t]*)### BEGIN SOLUTION.*?^[ \t]*### END SOLUTION[^\n]*",
     re.DOTALL | re.MULTILINE,
 )
+SAFETY_LINE = re.compile(
+    r"^(?P<indent>[ \t]*)### STUDENT SAFETY: (?P<code>.*)$", re.MULTILINE,
+)
 
 
 def strip_solutions(source: str) -> str:
-    return REGION.sub(lambda m: m.group("indent") + PLACEHOLDER, source)
+    source = REGION.sub(lambda m: m.group("indent") + PLACEHOLDER, source)
+    return SAFETY_LINE.sub(lambda m: m.group("indent") + m.group("code"), source)
 
 
 def build_student_notebook(solution_path: Path) -> Path:

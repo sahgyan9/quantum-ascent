@@ -62,7 +62,7 @@ To run the platform or customize the files locally:
 ### C. Notebook & Assignment Generation
 The repository utilizes an automated build script to separate student assignments from the solved instructor versions:
 * **Source files:** Instructors write and test notebooks inside `notebooks/solutions/` containing full solution codes.
-* **Build Script:** Run the python script to strip out the solution codes and replace them with student-facing `### YOUR CODE HERE` blocks and template exceptions:
+* **Build Script:** Run the python script to strip out the solution codes and replace them with student-facing `# YOUR CODE HERE` blocks and template exceptions:
   ```bash
   python tools/build_solutions.py
   ```
