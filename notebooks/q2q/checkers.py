@@ -16,6 +16,7 @@ import numpy as np
 
 __all__ = [
     "CheckError",
+    "run_and_tally",
     "check_statevector",
     "check_counts_close",
     "check_unitary_equiv",
@@ -69,6 +70,36 @@ def _fail(msg: str, hint: str = "", raise_err: bool = True) -> None:
         raise CheckError(msg)
 
 
+def _install_friendly_tracebacks() -> None:
+    """Collapse CheckError tracebacks to one calm line inside IPython/Jupyter.
+
+    The red box rendered by _fail already explains the problem and the fix, so
+    the usual multi-screen traceback wall adds nothing but fear. The exception
+    still propagates as a cell error, so nbclient/pytest/"Restart & Run All"
+    fail hard on wrong answers exactly as before.
+    """
+    if not _in_ipython():
+        return
+    from IPython import get_ipython
+
+    def _one_liner(shell, etype, value, tb, tb_offset=None):
+        # IPython leaves ALL display to a custom handler, so publish the
+        # compact "traceback" ourselves — one calm line for the student,
+        # and the diagnostic for CI logs.
+        stb = [
+            f"CheckError: {value}",
+            "⏸️ Check not passed — use the hint in the red box above, "
+            "adjust your code, and re-run this cell.",
+        ]
+        shell._showtraceback(etype, value, stb)
+        return stb
+
+    get_ipython().set_custom_exc((CheckError,), _one_liner)
+
+
+_install_friendly_tracebacks()
+
+
 # ---------------------------------------------------------------- helpers
 
 def _to_vector(state) -> np.ndarray:
@@ -86,7 +117,60 @@ def _to_vector(state) -> np.ndarray:
 
 
 def _fmt_vec(v: np.ndarray) -> str:
+    if np.all(np.abs(v.imag) < 1e-9):  # spare beginners the "+0.000j" noise
+        return "[" + ", ".join(f"{a.real:.3f}" for a in v) + "]"
     return "[" + ", ".join(f"{a.real:+.3f}{a.imag:+.3f}j" for a in v) + "]"
+
+
+# ---------------------------------------------------------------- runners
+
+def run_and_tally(circuit, shots: int = 1024):
+    """Run a circuit on the Aer simulator and return its counts dictionary.
+
+    Used as the "nothing to change below" plumbing of task cells: it wraps the
+    same four steps taught in the worked examples (simulator -> run -> result
+    -> get_counts), but coaches with a friendly message instead of a raw
+    traceback while the student's circuit above is still unfinished.
+    Returns None (without raising) when the circuit isn't ready.
+    """
+    from qiskit import QuantumCircuit
+
+    if circuit is None:
+        _fail(
+            "Your circuit hasn't been built yet.",
+            "Complete the steps above so your circuit variable holds a "
+            "QuantumCircuit, then re-run this cell.",
+            raise_err=False,
+        )
+        return None
+    if not isinstance(circuit, QuantumCircuit):
+        _fail(
+            f"Expected a QuantumCircuit here, but got {type(circuit).__name__}.",
+            "Make sure the steps above assign a QuantumCircuit to the circuit "
+            "variable, e.g. qc = QuantumCircuit(1).",
+            raise_err=False,
+        )
+        return None
+    if len(circuit.data) == 0:
+        _fail(
+            "Your circuit is empty — no gates or measurements yet.",
+            "Work through the steps above, then re-run this cell.",
+            raise_err=False,
+        )
+        return None
+    if not any(ci.operation.name == "measure" for ci in circuit.data):
+        _fail(
+            "Your circuit has gates but no measurement — the slap is missing!",
+            "Add the measurement as the final step (measure_all()), then re-run.",
+            raise_err=False,
+        )
+        return None
+
+    from qiskit_aer import AerSimulator
+
+    counts = AerSimulator().run(circuit, shots=shots).result().get_counts()
+    print(f"counts = {counts}")
+    return counts
 
 
 # ---------------------------------------------------------------- checkers
@@ -122,7 +206,31 @@ def check_statevector(state, expected, tol: float = 1e-6) -> None:
             "Check the number of qubits: n qubits means 2^n amplitudes.",
         )
     norm = np.linalg.norm(v)
+    w_unit = w / np.linalg.norm(w)
     if abs(norm - 1.0) > 1e-6:
+        # Coach the two classic slips with a targeted hint before falling
+        # back to the generic normalization message (Don Norman feedback).
+        if (np.all(np.abs(v.imag) < 1e-9) and np.all(v.real >= -1e-12)
+                and abs(v.real.sum() - 1.0) < 1e-6):
+            roots = np.sqrt(np.clip(v.real, 0.0, None))
+            if abs(np.vdot(w_unit, roots)) ** 2 > 1.0 - tol:
+                _fail(
+                    f"So close! You wrote the *probabilities* {_fmt_vec(v)} in the "
+                    f"array, but a state is built from *amplitudes* — and amplitudes "
+                    f"are the square roots of the probabilities.",
+                    "Take the square root of each entry, e.g. "
+                    "np.sqrt(np.array([prob_0, prob_1])). Squaring the amplitudes "
+                    "then gives your probabilities back.",
+                )
+        if abs(np.vdot(w_unit, v / norm)) ** 2 > 1.0 - tol:
+            _fail(
+                f"Your amplitudes point in exactly the right direction — but the "
+                f"state is not normalized: its length is {norm:.4f} and a valid "
+                f"quantum state must have length exactly 1.",
+                "Divide the whole array by its length, e.g. "
+                "your_array / np.sqrt((your_array**2).sum()) — for equal "
+                "amplitudes that's the famous 1/sqrt(2) factor.",
+            )
         _fail(
             f"Your state is not normalized: its length is {norm:.4f}, but a valid "
             f"quantum state must have length exactly 1.",

@@ -11,6 +11,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "notebooks"))
 
 from q2q.checkers import (  # noqa: E402
     CheckError,
+    run_and_tally,
     check_statevector,
     check_counts_close,
     check_unitary_equiv,
@@ -52,9 +53,48 @@ def test_statevector_unnormalized_fails_with_hint(capsys):
     assert "normalized" in capsys.readouterr().out
 
 
+def test_statevector_probabilities_as_amplitudes_coached(capsys):
+    # THE classic beginner slip: writing [P(0), P(1)] where amplitudes go.
+    with pytest.raises(CheckError):
+        check_statevector([0.75, 0.25], [np.sqrt(3) / 2, 0.5])
+    assert "square root" in capsys.readouterr().out
+
+
+def test_statevector_right_direction_unnormalized_coached(capsys):
+    with pytest.raises(CheckError):
+        check_statevector([1, 1], [SQ2, SQ2])
+    assert "right direction" in capsys.readouterr().out
+
+
 def test_statevector_wrong_dimension_fails():
     with pytest.raises(CheckError):
         check_statevector([1, 0, 0, 0], [SQ2, SQ2])
+
+
+# ---------------------------------------------------------------- run_and_tally
+
+def test_run_and_tally_none_circuit_coaches_without_raising(capsys):
+    assert run_and_tally(None) is None  # friendly message, no exception
+    assert "hasn't been built" in capsys.readouterr().out
+
+
+def test_run_and_tally_missing_measurement_coaches_without_raising(capsys):
+    from qiskit import QuantumCircuit
+
+    qc = QuantumCircuit(1)
+    qc.h(0)
+    assert run_and_tally(qc) is None
+    assert "measure" in capsys.readouterr().out
+
+
+def test_run_and_tally_valid_circuit_returns_counts():
+    from qiskit import QuantumCircuit
+
+    qc = QuantumCircuit(1)
+    qc.h(0)
+    qc.measure_all()
+    counts = run_and_tally(qc, shots=64)
+    assert sum(counts.values()) == 64
 
 
 # ---------------------------------------------------------------- counts
