@@ -8,5 +8,5 @@ import numpy as np
 _SQ2 = 1 / np.sqrt(2)
 
 # Module 01
-M1_TASK1 = np.array([_SQ2, _SQ2])                       # the |+> state
-M1_TASK3 = np.array([np.sqrt(3) / 2, 1 / 2])            # RY(pi/3)|0>
+M1_PLUS = np.array([_SQ2, _SQ2])                        # the |+> state (worked example)
+M1_TASK2 = np.array([np.sqrt(3) / 2, 1 / 2])            # RY(pi/3)|0> — the 75/25 biased coin
