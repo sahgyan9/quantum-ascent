@@ -3,14 +3,14 @@
 <link rel="stylesheet" href="../_base/widget.css">
 <style>
   .wrap { display: flex; gap: 12px; max-width: 880px; }
-  #sphere { background: radial-gradient(circle at 40% 35%, #16204000, #0b1020), var(--panel);
+  #sphere { background: radial-gradient(circle at 40% 35%, #ffffff, var(--bg2)), var(--panel);
             border: 1px solid var(--line); border-radius: 10px; }
   .right { flex: 1; display: flex; flex-direction: column; gap: 10px; }
   .bars { display: grid; grid-template-columns: 34px 1fr 64px; gap: 6px; align-items: center; }
-  .track { height: 16px; background: #0e1530; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+  .track { height: 16px; background: var(--bg2); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
   .fill  { height: 100%; width: 0%; transition: width .15s; }
   .f0 { background: var(--cyan); } .f1 { background: var(--violet); }
-  .h0 { background: rgba(34,211,238,.45); } .h1 { background: rgba(139,92,246,.45); }
+  .h0 { background: rgba(31,122,77,.55); } .h1 { background: rgba(180,83,9,.55); }
   #flash { min-height: 22px; font-weight: 700; }
   .pop { animation: pop .35s; } @keyframes pop { 0% {transform: scale(1.4);} 100% {transform: scale(1);} }
 </style>
@@ -78,26 +78,44 @@ function project(theta, phi) {
 
 function draw() {
   ctx.clearRect(0, 0, 420, 420);
-  ctx.strokeStyle = "#26304f"; ctx.lineWidth = 1.5;
+  ctx.strokeStyle = "#cdc8bc"; ctx.lineWidth = 1.5;
   ctx.beginPath(); ctx.arc(210, 210, 150, 0, 7); ctx.stroke();       // sphere outline
   ctx.beginPath(); ctx.ellipse(210, 210, 150, 44, 0, 0, 7); ctx.stroke(); // equator
   ctx.setLineDash([4, 5]);                                           // z-axis
   ctx.beginPath(); ctx.moveTo(210, 45); ctx.lineTo(210, 375); ctx.stroke();
   ctx.setLineDash([]);
-  ctx.fillStyle = "#93a1c8"; ctx.font = "16px system-ui";
+  ctx.fillStyle = "#6b6860"; ctx.font = "16px system-ui";
   ctx.fillText("|0⟩", 222, 55); ctx.fillText("|1⟩", 222, 380);
 
   const g = state.collapse !== null
     ? project(state.collapse === 0 ? 0 : 180, 0)
     : project(state.theta, state.phi);
+  
+  const ratio = state.theta / 180;
+  
   const grad = ctx.createLinearGradient(210, 210, g.sx, g.sy);
-  grad.addColorStop(0, "#22d3ee"); grad.addColorStop(1, "#8b5cf6");
+  if (ratio === 0) {
+    grad.addColorStop(0, "#1f7a4d");
+    grad.addColorStop(1, "#1f7a4d");
+  } else if (ratio === 1) {
+    grad.addColorStop(0, "#b45309");
+    grad.addColorStop(1, "#b45309");
+  } else {
+    const split = 1 - ratio;
+    grad.addColorStop(0, "#1f7a4d");
+    grad.addColorStop(split, "#1f7a4d");
+    grad.addColorStop(split, "#b45309");
+    grad.addColorStop(1, "#b45309");
+  }
+
   ctx.strokeStyle = grad; ctx.lineWidth = 4; ctx.lineCap = "round";
   ctx.beginPath(); ctx.moveTo(210, 210); ctx.lineTo(g.sx, g.sy); ctx.stroke();
-  ctx.fillStyle = state.collapse !== null ? "#f87171" : "#22d3ee";
+  
+  const tipColor = ratio === 0 ? "#1f7a4d" : "#b45309";
+  ctx.fillStyle = state.collapse !== null ? "#b3261e" : tipColor;
   ctx.beginPath(); ctx.arc(g.sx, g.sy, 8, 0, 7); ctx.fill();
   if (state.collapse !== null) {
-    ctx.fillStyle = "#f87171"; ctx.font = "bold 15px system-ui";
+    ctx.fillStyle = "#b3261e"; ctx.font = "bold 15px system-ui";
     ctx.fillText("collapsed!", g.sx + 12, g.sy);
   }
 }
