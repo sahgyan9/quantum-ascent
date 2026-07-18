@@ -1,50 +1,89 @@
-/* Quantum Ascent — shared widget look (deep-space theme, matches site.css) */
+/* Quantum Ascent — shared widget look.
+   Matches website/assets/css/site.css: warm editorial "paper", ink text, one
+   forest-green brand accent, amber as the honest second outcome colour. NO
+   neon / deep-space glow — that pop-sci cliché is exactly what this course
+   avoids. Keep these tokens in sync with site.css. */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;1,400&display=swap');
+
 :root {
-  --bg: #0b1020;
-  --panel: #131a30;
-  --line: #26304f;
-  --text: #e6ecff;
-  --muted: #93a1c8;
-  --cyan: #22d3ee;
-  --violet: #8b5cf6;
-  --green: #34d399;
-  --red: #f87171;
+  --bg: #f8f6f1;
+  --bg2: #f1eee6;
+  --panel: #ffffff;
+  --line: #e2dfd8;
+  --text: #1a1a18;
+  --muted: #6b6860;
+
+  --accent: #1f7a4d;
+  --accent-strong: #17603c;
+  --accent-bg: #eaf6ee;
+  --amber: #b45309;
+  --amber-strong: #7c3a06;
+  --amber-bg: #fdf3e7;
+  --danger: #b3261e;
+
+  /* Outcome palette used across the widgets. Two grounded, print-friendly
+     hues (green = outcome 0 / Heads, amber = outcome 1 / Tails) plus ink for
+     the "goal" prediction line. The names are kept from the old theme so the
+     widget markup doesn't have to change — only the values are now on-brand. */
+  --cyan: #1f7a4d;    /* outcome 0 / Heads — brand green */
+  --violet: #b45309;  /* outcome 1 / Tails — amber      */
+  --green: #1a1a18;   /* prediction / "goal" marker — ink */
+  --red: #b3261e;     /* collapse marker — danger        */
+
+  --font-heading: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
 }
+
 * { box-sizing: border-box; margin: 0; }
+
 body {
   background: var(--bg);
   color: var(--text);
-  font: 14px/1.45 "Segoe UI", system-ui, sans-serif;
-  padding: 12px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.55;
+  padding: 14px;
 }
+
 .hint-bar {
-  background: linear-gradient(90deg, rgba(34,211,238,.12), rgba(139,92,246,.12));
-  border: 1px solid var(--line);
+  background: var(--accent-bg);
+  border: 1px solid #cfe6d8;
+  border-left: 4px solid var(--accent);
   border-radius: 8px;
-  padding: 8px 12px;
-  color: var(--muted);
-  margin-bottom: 10px;
+  padding: 9px 13px;
+  color: var(--text);
+  margin-bottom: 12px;
 }
-.hint-bar b { color: var(--cyan); }
+.hint-bar b { color: var(--accent-strong); }
+
 .panel {
   background: var(--panel);
   border: 1px solid var(--line);
   border-radius: 10px;
-  padding: 12px;
+  padding: 14px;
+  box-shadow: 0 1px 3px rgba(26, 26, 24, 0.04);
 }
-label { color: var(--muted); display: block; margin: 8px 0 2px; }
-input[type="range"] { width: 100%; accent-color: var(--cyan); cursor: pointer; }
+
+label { color: var(--muted); display: block; margin: 8px 0 4px; font-weight: 500; }
+input[type="range"] { width: 100%; accent-color: var(--accent); cursor: pointer; }
+
 button {
-  background: var(--cyan);
-  border: 0; border-radius: 8px;
-  color: #06202a; font-weight: 600; font-size: 14px;
-  padding: 8px 14px; margin: 4px 4px 0 0;
+  background: var(--accent);
+  border: 0;
+  border-radius: 8px;
+  color: #fff;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 14px;
+  padding: 9px 15px;
+  margin: 4px 4px 0 0;
   cursor: pointer;
   transition: transform .08s, filter .15s;
 }
-button:hover { filter: brightness(1.12); }
+button:hover { filter: brightness(1.08); }
 button:active { transform: scale(.96); }
 button.secondary { background: transparent; color: var(--muted); border: 1px solid var(--line); }
-button.violet { background: var(--violet); color: #f3edff; }
-.readout { font-variant-numeric: tabular-nums; color: var(--text); }
+button.violet { background: var(--amber); color: #fff; }
+
+.readout { font-variant-numeric: tabular-nums; color: var(--text); font-weight: 600; }
 .big { font-size: 18px; font-weight: 700; }

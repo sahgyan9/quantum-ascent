@@ -3,7 +3,7 @@
 <link rel="stylesheet" href="../_base/widget.css">
 <style>
   .wrap { display: flex; gap: 20px; max-width: 880px; align-items: flex-start; }
-  .coin-container { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #0b1020; border: 1px solid var(--line); border-radius: 10px; padding: 40px; }
+  .coin-container { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; background: var(--bg2); border: 1px solid var(--line); border-radius: 10px; padding: 40px; box-shadow: inset 0 1px 4px rgba(26,26,24,.05); }
 
   .coin {
     width: 150px;
@@ -37,17 +37,19 @@
     border: 8px solid;
   }
 
-  .heads { background: var(--cyan); border-color: #083344; transform: rotateY(0deg); }
-  .tails { background: var(--violet); border-color: #2e1065; transform: rotateY(180deg); }
+  .heads { background: var(--cyan); border-color: var(--accent-strong); transform: rotateY(0deg); }
+  .tails { background: var(--violet); border-color: var(--amber-strong); transform: rotateY(180deg); }
 
   .right { flex: 1; display: flex; flex-direction: column; gap: 10px; width: 100%; }
   .bars { display: grid; grid-template-columns: 50px 1fr 64px; gap: 6px; align-items: center; }
-  .track { height: 16px; background: #0e1530; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; position: relative; }
+  .track { height: 16px; background: var(--bg2); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; position: relative; }
   .fill  { height: 100%; width: 0%; transition: width .15s; }
-  .h0 { background: rgba(34,211,238,.45); } .h1 { background: rgba(139,92,246,.45); }
+  .h0 { background: rgba(31,122,77,.55); } .h1 { background: rgba(180,83,9,.55); }
   .tick { position: absolute; top: -2px; bottom: -2px; width: 2px; background: var(--green); transition: left .15s; }
+  /* A downward triangle caps the line so the "goal" marker reads by shape, not colour alone. */
+  .tick::before { content: ''; position: absolute; top: -6px; left: -4px; border: 5px solid transparent; border-top-color: var(--green); }
   .tick-legend { color: var(--muted); font-size: 12px; margin-top: 6px; }
-  .tick-legend .swatch { display: inline-block; width: 10px; height: 2px; background: var(--green); vertical-align: middle; margin-right: 4px; }
+  .tick-legend .swatch { display: inline-block; color: var(--green); vertical-align: middle; margin-right: 4px; }
 
   #flash { min-height: 22px; font-weight: 700; text-align: center; margin-top: 15px; }
   .pop { animation: pop .35s; } @keyframes pop { 0% {transform: scale(1.4);} 100% {transform: scale(1);} }
@@ -85,7 +87,7 @@
         <span>0 (H):</span><div class="track"><div class="fill h0" id="h0bar"></div><div class="tick" id="t0"></div></div><span class="readout" id="c0">0</span>
         <span>1 (T):</span><div class="track"><div class="fill h1" id="h1bar"></div><div class="tick" id="t1"></div></div><span class="readout" id="c1">0</span>
       </div>
-      <div class="tick-legend"><span class="swatch"></span>green line = your predicted probability. Do the bars agree?</div>
+      <div class="tick-legend"><span class="swatch">▼</span>marks your predicted probability. Do the bars reach it?</div>
       <div style="margin-top: 20px; display: flex; gap: 10px;">
         <button id="m100" class="violet">Slap ×100</button>
         <button id="reset" class="secondary">Reset</button>
