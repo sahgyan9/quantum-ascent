@@ -1,0 +1,18 @@
+{
+  "_note": "Beginner-friendly, myth-free definitions. Order matters: longer phrases are matched before shorter ones. Keep every definition consistent with the notebooks — no 'both 0 and 1 at once'.",
+  "terms": [
+    { "term": "Bloch sphere", "def": "A globe for one qubit. North pole = definitely 0, south pole = definitely 1, and the tilt angle in between sets the bias of the coin." },
+    { "term": "Hadamard gate", "def": "The gate that turns a 'definitely 0' qubit into a perfect 50/50 fair coin (the |+⟩ state) — it sets the coin spinning." },
+    { "term": "Born rule", "def": "The rule that turns amplitudes into probabilities: the chance of an outcome is its amplitude squared." },
+    { "term": "amplitude", "def": "The two numbers (α, β) that describe a qubit. Square them to get the odds of measuring 0 and 1, and they always satisfy |α|²+|β|²=1." },
+    { "term": "superposition", "def": "A qubit set to a chosen blend of 0 and 1 — a spinning coin whose bias you pick. It has definite odds, but no definite value until you measure it." },
+    { "term": "measurement", "def": "Reading a qubit. It forces the spinning coin to land on a plain 0 or 1. You can't predict one result — only the long-run statistics." },
+    { "term": "statevector", "def": "The exact list of a circuit's amplitudes, computed directly — an answer with no measurement noise." },
+    { "term": "entanglement", "def": "A link between qubits so their results are correlated in ways no independent coins ever could be." },
+    { "term": "Hamiltonian", "def": "A description of a system's energy. Many problems are solved by finding the state of lowest energy." },
+    { "term": "variational", "def": "A method that nudges circuit angles step by step, letting a classical optimizer 'descend' toward the best answer." },
+    { "term": "qubit", "def": "The quantum version of a bit. Undetermined until measured — like a spinning coin before you slap it down. Not 'both 0 and 1 at once'." },
+    { "term": "QAOA", "def": "Quantum Approximate Optimization Algorithm — tunes circuit angles to solve hard problems like Max-Cut. The summit of this course." },
+    { "term": "shots", "def": "How many times you run a circuit and measure it. More shots give a clearer picture of the true probabilities." }
+  ]
+}

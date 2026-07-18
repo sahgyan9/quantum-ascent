@@ -73,74 +73,84 @@ a:hover {
   border-bottom-color: currentColor;
 }
 
-/* -------- Navigation Header -------- */
-nav {
+/* -------- Navigation Header — floating glassmorphism pill -------- */
+/* Room for the fixed pill that floats over the top of every page. */
+body { padding-top: 84px; }
+
+#nav {
+  position: fixed;
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 2rem);
+  max-width: 940px;
+  height: 52px;
   display: flex;
   align-items: center;
-  gap: 24px;
-  padding: 18px 40px;
-  border-bottom: 1px solid var(--line);
-  background: var(--bg);
-  position: sticky;
-  top: 0;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 0 clamp(1.25rem, 4vw, 1.75rem);
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 99px;
   z-index: 100;
+  box-shadow: 0 4px 24px rgba(26, 26, 24, 0.06);
+  transition: box-shadow 0.3s ease, background 0.3s ease;
 }
 
-nav .brand {
+#nav.scrolled {
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 8px 32px rgba(26, 26, 24, 0.10);
+}
+
+#nav .nav-name {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   font-family: var(--font-heading);
   font-style: italic;
   font-weight: 400;
-  font-size: 22px;
+  font-size: 20px;
+  color: var(--text);
+  border-bottom: none;
+  white-space: nowrap;
+}
+
+#nav .nav-name img,
+#nav .nav-name svg {
+  width: 24px;
+  height: 24px;
+}
+
+#nav .nav-name span {
   color: var(--text);
 }
 
-nav .brand img,
-nav .brand svg {
-  width: 28px;
-  height: 28px;
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 1.75rem;
 }
 
-nav .brand span {
-  color: var(--text);
-}
-
-nav a.navlink {
+.nav-links a {
   color: var(--muted);
   font-weight: 500;
-  font-size: 15px;
+  font-size: 0.9rem;
   font-family: var(--font-body);
-  padding: 6px 4px;
-  position: relative;
+  border-bottom: none;
   transition: color 0.2s;
 }
 
-nav a.navlink::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 1px;
-  background: var(--accent);
-  transform: scaleX(0);
-  transform-origin: right;
-  transition: transform 0.25s ease;
-}
-
-nav a.navlink:hover, nav a.navlink.active {
+.nav-links a:hover,
+.nav-links a.active {
   color: var(--text);
 }
 
-nav a.navlink:hover::after, nav a.navlink.active::after {
-  transform: scaleX(1);
-  transform-origin: left;
-}
-
-nav .spacer {
-  flex: 1;
+.nav-links a.active {
+  border-bottom: 1px solid var(--accent);
+  padding-bottom: 1px;
 }
 
 #xp-pill {
@@ -155,6 +165,50 @@ nav .spacer {
   display: flex;
   align-items: center;
   gap: 6px;
+}
+
+/* ── Hamburger button (hidden on desktop) ── */
+.nav-burger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  border-bottom: none;
+  cursor: pointer;
+  padding: 4px;
+  z-index: 101;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.nav-burger span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: var(--text);
+  border-radius: 2px;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* X animation when the menu is open (CSS :target, no JS needed) */
+#nav:has(#nav-menu:target) .nav-burger span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+#nav:has(#nav-menu:target) .nav-burger span:nth-child(2) { opacity: 0; }
+#nav:has(#nav-menu:target) .nav-burger span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* Dismiss overlay: covers the page while the mobile menu is open */
+.nav-dismiss {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 98;
+  pointer-events: none;
+  border-bottom: none;
+}
+body:has(#nav-menu:target) .nav-dismiss {
+  display: block;
+  pointer-events: auto;
 }
 
 /* Site is light-only now; the toggle markup is being retired from pages,
@@ -222,6 +276,43 @@ nav .spacer {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+/* Interactive spinning-coin hero: the first thing a visitor can DO */
+.hero-visual-card.coin-card {
+  flex-direction: column;
+  gap: 12px;
+  text-align: center;
+  max-width: 340px;
+}
+.coin-card #hero-coin { display: block; }
+.coin-caption {
+  color: var(--muted);
+  font-size: 14.5px;
+  line-height: 1.5;
+  min-height: 44px;
+}
+.coin-caption b { color: var(--text); }
+.coin-live {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--muted);
+  min-height: 24px;
+}
+.coin-live.pop { animation: coin-pop 0.35s; }
+@keyframes coin-pop { 0% { transform: scale(1.35); } 100% { transform: scale(1); } }
+.coin-tally {
+  font-size: 14px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  min-height: 20px;
+}
+.coin-tally b { color: var(--text); }
+.coin-cta { min-height: 20px; }
+.coin-cta a {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--accent);
 }
 
 /* -------- Buttons -------- */
@@ -350,6 +441,112 @@ h2.section::after {
   margin: 2px;
 }
 
+/* Honest signifier for basecamps not yet built: reads "locked / coming soon",
+   never the ✓ used for completed work. */
+.soon-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid var(--line);
+  color: var(--muted);
+  border-radius: 999px;
+  padding: 2px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+.panel.locked { opacity: 0.72; }
+.panel.locked h3 { color: var(--muted); }
+.marker-lock { color: var(--muted); }
+
+/* Inline glossary term: a quiet dotted underline that reveals a definition
+   on hover, keyboard focus, or tap. */
+.gterm {
+  position: relative;
+  border-bottom: 1px dotted var(--accent);
+  cursor: help;
+  color: inherit;
+}
+.gterm:focus { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 2px; }
+.gtip {
+  position: absolute;
+  left: 0;
+  top: calc(100% + 8px);
+  z-index: 70;
+  width: max-content;
+  max-width: 280px;
+  background: var(--panel);
+  color: var(--text);
+  border: 1px solid var(--accent);
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 13.5px;
+  font-weight: 400;
+  line-height: 1.5;
+  box-shadow: 0 8px 24px rgba(26, 26, 24, 0.16);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-4px);
+  transition: opacity 0.15s, transform 0.15s;
+  pointer-events: none;
+}
+.gterm:hover .gtip,
+.gterm:focus .gtip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+@media (max-width: 520px) { .gtip { max-width: 220px; } }
+
+/* XP pill reads as an interactive control, not just a number */
+#xp-pill:hover { color: var(--text); }
+#xp-pill { transition: color 0.15s; }
+
+/* First-visit orientation bubble pointing at the XP pill */
+.pill-coach {
+  position: fixed;
+  z-index: 60;
+  max-width: 300px;
+  background: var(--panel);
+  border: 1px solid var(--accent);
+  border-radius: 12px;
+  padding: 14px 16px;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--text);
+  box-shadow: 0 8px 28px rgba(26, 26, 24, 0.16);
+  animation: coach-in 0.35s ease-out;
+}
+.pill-coach::before {
+  content: '';
+  position: absolute;
+  top: -7px;
+  right: 22px;
+  width: 12px;
+  height: 12px;
+  background: var(--panel);
+  border-left: 1px solid var(--accent);
+  border-top: 1px solid var(--accent);
+  transform: rotate(45deg);
+}
+.pill-coach button {
+  display: block;
+  margin: 10px 0 0 auto;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+@keyframes coach-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
 /* -------- Ascent Map (SVG styling) -------- */
 #mountain {
   background: var(--panel);
@@ -383,6 +580,34 @@ h2.section::after {
 .camp.available circle.node {
   stroke: var(--accent);
   fill: var(--accent-bg);
+}
+
+/* Locked camps read as not-yet-open (dashed, dimmed) but stay clickable —
+   the module page shows an honest "coming soon" preview of what's inside. */
+.camp.locked { opacity: 0.6; }
+.camp.locked circle.node { stroke-dasharray: 3 4; }
+
+/* "Start here" beacon on the next basecamp you should climb */
+.camp .start-here {
+  fill: var(--accent);
+  font-size: 13px;
+  font-weight: 700;
+}
+.camp .pulse-ring {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2.5;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: camp-pulse 1.8s ease-out infinite;
+}
+@keyframes camp-pulse {
+  0%   { transform: scale(1);   opacity: 0.9; }
+  70%  { transform: scale(1.9); opacity: 0; }
+  100% { transform: scale(1.9); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .camp .pulse-ring { animation: none; opacity: 0.5; }
 }
 
 .camp text {
@@ -436,14 +661,27 @@ h2.section::after {
   background-color: var(--accent-bg);
 }
 
+/* Right/wrong must not rely on colour alone (≈8% of boys are colourblind):
+   pair every colour with a shape glyph. */
 .quiz-opt.correct {
   border-color: var(--accent);
   background: var(--accent-bg);
 }
-
+.quiz-opt.correct::after {
+  content: " ✓";
+  float: right;
+  color: var(--accent);
+  font-weight: 700;
+}
 .quiz-opt.wrong {
   border-color: var(--danger);
   background: var(--danger-bg);
+}
+.quiz-opt.wrong::after {
+  content: " ✗";
+  float: right;
+  color: var(--danger);
+  font-weight: 700;
 }
 
 .quiz-opt[disabled] {
@@ -645,9 +883,6 @@ footer a:hover {
 
 /* -------- Desktop-First Responsive Styles -------- */
 @media (max-width: 1024px) {
-  nav {
-    padding: 16px 24px;
-  }
   .container {
     padding: 32px 20px;
   }
@@ -684,17 +919,53 @@ footer a:hover {
 }
 
 @media (max-width: 640px) {
-  nav {
-    flex-wrap: wrap;
-    gap: 12px 20px;
-    padding: 16px 20px;
+  #nav {
+    gap: 12px;
   }
-  nav .brand {
-    font-size: 19px;
+  #nav .nav-name {
+    font-size: 18px;
   }
-  nav .spacer {
+
+  /* Show the hamburger; collapse the links into a drop-down panel */
+  .nav-burger {
+    display: flex;
+  }
+
+  .nav-links {
     display: none;
+    position: fixed;
+    top: calc(1rem + 52px + 8px);
+    left: 1rem;
+    right: 1rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+    padding: 0.5rem 1.25rem 0.75rem;
+    background: rgba(248, 246, 241, 0.97);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    box-shadow: 0 12px 32px rgba(26, 26, 24, 0.12);
+    z-index: 99;
   }
+
+  #nav-menu:target {
+    display: flex;
+  }
+
+  .nav-links a {
+    display: block;
+    width: 100%;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--line);
+    font-size: 0.95rem;
+  }
+
+  .nav-links #xp-pill {
+    margin-top: 0.75rem;
+  }
+
   .grid3 {
     grid-template-columns: 1fr;
     gap: 16px;
@@ -706,4 +977,46 @@ footer a:hover {
   .btn.ghost {
     margin-bottom: 0;
   }
+}
+
+/* -------- Widget stage — frames an embedded widget so it reads as a special,
+   hands-on instrument rather than a plain box blended into the page. -------- */
+.widget-stage {
+  margin: 16px 0 10px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-top: 3px solid var(--accent);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 8px 28px rgba(26, 26, 24, 0.08);
+  overflow: hidden;
+}
+
+.widget-stage-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 15px;
+  background: var(--accent-bg);
+  border-bottom: 1px solid var(--line);
+  font-size: 13px;
+}
+
+.widget-stage-label {
+  color: var(--accent-strong);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.widget-stage-pop {
+  font-size: 12.5px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.widget-stage iframe {
+  display: block;
+  width: 100%;
+  height: 560px;
+  border: 0;
 }

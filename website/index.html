@@ -9,13 +9,20 @@
 </head>
 <body>
 
-<nav>
-  <a class="brand" href="index.html"><img src="assets/logo.svg" alt="" width="28" height="28"> Quantum <span>Ascent</span></a>
-  <a class="navlink" href="ascent.html">The Ascent</a>
-  <a class="navlink" href="widgets.html">Widget Gallery</a>
-  <a class="navlink" href="analogy-studio.html">Analogy Studio</a>
-  <div class="spacer"></div>
-  <span id="xp-pill">⚡ 0 XP · 0/6</span>
+<!-- Nav dismiss overlay: tap outside the menu to close it -->
+<a href="#" class="nav-dismiss" aria-hidden="true" tabindex="-1"></a>
+
+<nav id="nav">
+  <a href="index.html" class="nav-name"><img src="assets/logo.svg" alt="" width="24" height="24"> Quantum <span>Ascent</span></a>
+  <a href="#nav-menu" class="nav-burger" id="nav-burger" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </a>
+  <div class="nav-links" id="nav-menu">
+    <a href="ascent.html">The Ascent</a>
+    <a href="widgets.html">Widget Gallery</a>
+    <a href="analogy-studio.html">Analogy Studio</a>
+    <span id="xp-pill">⚡ 0 XP · 0/6</span>
+  </div>
 </nav>
 
 <div class="container">
@@ -30,8 +37,14 @@
       <a class="btn ghost" href="module.html?id=01">Jump into Basecamp 1</a>
     </div>
     <div class="hero-visual">
-      <div class="hero-visual-card">
-        <canvas id="hero-bloch" width="340" height="340" aria-hidden="true"></canvas>
+      <div class="hero-visual-card coin-card">
+        <div class="coin-caption" id="coin-caption">A qubit is like a <b>spinning coin</b> — undetermined until you look.</div>
+        <canvas id="hero-coin" width="300" height="300" role="img"
+                aria-label="A spinning quantum coin you can measure"></canvas>
+        <div class="coin-live" id="coin-live" aria-live="polite">…spinning — undetermined…</div>
+        <button class="btn" id="slap-btn">👋 Slap it! <span style="opacity:.85;font-weight:500">— measure</span></button>
+        <div class="coin-tally" id="coin-tally" aria-live="polite"></div>
+        <div class="coin-cta" id="coin-cta"></div>
       </div>
     </div>
   </div>
@@ -57,51 +70,51 @@
   
   <div class="grid3" style="margin-top: 24px;">
     <div class="panel">
-      <h3>Basecamp 1: The Qubit</h3>
+      <h3>Basecamp 1: The Qubit <a href="module.html?id=01" class="soon-chip" style="color:var(--accent);border-color:var(--accent);text-decoration:none;">▶ start now</a></h3>
       <ul style="list-style: none; padding: 0; margin-top: 12px;">
         <li style="display: flex; gap: 8px; font-size: 14px; margin-bottom: 8px; align-items: center;"><span style="color: var(--accent); font-weight: bold;">✓</span> Qubits & Superposition</li>
         <li style="display: flex; gap: 8px; font-size: 14px; margin-bottom: 8px; align-items: center;"><span style="color: var(--accent); font-weight: bold;">✓</span> The Born Rule Statistics</li>
         <li style="display: flex; gap: 8px; font-size: 14px; align-items: center;"><span style="color: var(--accent); font-weight: bold;">✓</span> Bloch Sampler Widget</li>
       </ul>
     </div>
-    <div class="panel">
-      <h3>Basecamp 2: Gates & Circuits</h3>
+    <div class="panel locked">
+      <h3>Basecamp 2: Gates & Circuits <span class="soon-chip">🔒 coming soon</span></h3>
       <ul style="list-style: none; padding: 0; margin-top: 12px;">
-        <li style="display: flex; gap: 8px; font-size: 14px; margin-bottom: 8px; align-items: center;"><span style="color: var(--accent); font-weight: bold;">✓</span> Rotations & Unitary Gates</li>
-        <li style="display: flex; gap: 8px; font-size: 14px; margin-bottom: 8px; align-items: center;"><span style="color: var(--accent); font-weight: bold;">✓</span> Qiskit Endianness Traps</li>
-        <li style="display: flex; gap: 8px; font-size: 14px; align-items: center;"><span style="color: var(--accent); font-weight: bold;">✓</span> Gate Playground Widget</li>
+        <li style="display: flex; gap: 8px; font-size: 14px; margin-bottom: 8px; align-items: center;"><span class="marker-lock">○</span> Rotations & Unitary Gates</li>
+        <li style="display: flex; gap: 8px; font-size: 14px; margin-bottom: 8px; align-items: center;"><span class="marker-lock">○</span> Qiskit Endianness Traps</li>
+        <li style="display: flex; gap: 8px; font-size: 14px; align-items: center;"><span class="marker-lock">○</span> Gate Playground Widget</li>
       </ul>
     </div>
-    <div class="panel">
-      <h3>Basecamp 3: Entanglement</h3>
+    <div class="panel locked">
+      <h3>Basecamp 3: Entanglement <span class="soon-chip">🔒 coming soon</span></h3>
       <ul style="list-style: none; padding: 0; margin-top: 12px;">
-        <li style="display: flex; gap: 8px; font-size: 14px; margin-bottom: 8px; align-items: center;"><span style="color: var(--accent); font-weight: bold;">✓</span> Tensor State Spaces</li>
-        <li style="display: flex; gap: 8px; font-size: 14px; margin-bottom: 8px; align-items: center;"><span style="color: var(--accent); font-weight: bold;">✓</span> Bell State Correlations</li>
-        <li style="display: flex; gap: 8px; font-size: 14px; align-items: center;"><span style="color: var(--accent); font-weight: bold;">✓</span> CHSH Game Widget</li>
+        <li style="display: flex; gap: 8px; font-size: 14px; margin-bottom: 8px; align-items: center;"><span class="marker-lock">○</span> Tensor State Spaces</li>
+        <li style="display: flex; gap: 8px; font-size: 14px; margin-bottom: 8px; align-items: center;"><span class="marker-lock">○</span> Bell State Correlations</li>
+        <li style="display: flex; gap: 8px; font-size: 14px; align-items: center;"><span class="marker-lock">○</span> CHSH Game Widget</li>
       </ul>
     </div>
-    <div class="panel">
-      <h3>Basecamp 4: Hamiltonians</h3>
+    <div class="panel locked">
+      <h3>Basecamp 4: Hamiltonians <span class="soon-chip">🔒 coming soon</span></h3>
       <ul style="list-style: none; padding: 0; margin-top: 12px;">
-        <li style="display: flex; gap: 8px; font-size: 14px; margin-bottom: 8px; align-items: center;"><span style="color: var(--accent); font-weight: bold;">✓</span> Observables & Expectation</li>
-        <li style="display: flex; gap: 8px; font-size: 14px; margin-bottom: 8px; align-items: center;"><span style="color: var(--accent); font-weight: bold;">✓</span> Pauli Strings Encoding</li>
-        <li style="display: flex; gap: 8px; font-size: 14px; align-items: center;"><span style="color: var(--accent); font-weight: bold;">✓</span> Expectation Sampler Widget</li>
+        <li style="display: flex; gap: 8px; font-size: 14px; margin-bottom: 8px; align-items: center;"><span class="marker-lock">○</span> Observables & Expectation</li>
+        <li style="display: flex; gap: 8px; font-size: 14px; margin-bottom: 8px; align-items: center;"><span class="marker-lock">○</span> Pauli Strings Encoding</li>
+        <li style="display: flex; gap: 8px; font-size: 14px; align-items: center;"><span class="marker-lock">○</span> Expectation Sampler Widget</li>
       </ul>
     </div>
-    <div class="panel">
-      <h3>Basecamp 5: Variational</h3>
+    <div class="panel locked">
+      <h3>Basecamp 5: Variational <span class="soon-chip">🔒 coming soon</span></h3>
       <ul style="list-style: none; padding: 0; margin-top: 12px;">
-        <li style="display: flex; gap: 8px; font-size: 14px; margin-bottom: 8px; align-items: center;"><span style="color: var(--accent); font-weight: bold;">✓</span> Parameterized Ansatz</li>
-        <li style="display: flex; gap: 8px; font-size: 14px; margin-bottom: 8px; align-items: center;"><span style="color: var(--accent); font-weight: bold;">✓</span> Optimizer Landscapes</li>
-        <li style="display: flex; gap: 8px; font-size: 14px; align-items: center;"><span style="color: var(--accent); font-weight: bold;">✓</span> QAOA Landscape Widget</li>
+        <li style="display: flex; gap: 8px; font-size: 14px; margin-bottom: 8px; align-items: center;"><span class="marker-lock">○</span> Parameterized Ansatz</li>
+        <li style="display: flex; gap: 8px; font-size: 14px; margin-bottom: 8px; align-items: center;"><span class="marker-lock">○</span> Optimizer Landscapes</li>
+        <li style="display: flex; gap: 8px; font-size: 14px; align-items: center;"><span class="marker-lock">○</span> QAOA Landscape Widget</li>
       </ul>
     </div>
-    <div class="panel" style="border-color: var(--amber);">
-      <h3>🏔️ Basecamp 6: Summit</h3>
+    <div class="panel locked" style="border-color: var(--amber);">
+      <h3>🏔️ Basecamp 6: Summit <span class="soon-chip">🔒 coming soon</span></h3>
       <ul style="list-style: none; padding: 0; margin-top: 12px;">
-        <li style="display: flex; gap: 8px; font-size: 14px; margin-bottom: 8px; align-items: center;"><span style="color: var(--amber); font-weight: bold;">★</span> Max-Cut Formulations</li>
-        <li style="display: flex; gap: 8px; font-size: 14px; margin-bottom: 8px; align-items: center;"><span style="color: var(--amber); font-weight: bold;">★</span> Mixer & Cost Ansätze</li>
-        <li style="display: flex; gap: 8px; font-size: 14px; align-items: center;"><span style="color: var(--amber); font-weight: bold;">★</span> Maxcut Painter Capstone</li>
+        <li style="display: flex; gap: 8px; font-size: 14px; margin-bottom: 8px; align-items: center;"><span style="color: var(--amber);">★</span> Max-Cut Formulations</li>
+        <li style="display: flex; gap: 8px; font-size: 14px; margin-bottom: 8px; align-items: center;"><span style="color: var(--amber);">★</span> Mixer & Cost Ansätze</li>
+        <li style="display: flex; gap: 8px; font-size: 14px; align-items: center;"><span style="color: var(--amber);">★</span> Maxcut Painter Capstone</li>
       </ul>
     </div>
   </div>
@@ -122,42 +135,131 @@
 </footer>
 
 <script src="assets/js/progress.js"></script>
+<script src="assets/js/glossary.js"></script>
+<script>Glossary.enhance(document.querySelector(".container"));</script>
 <script>
-/* Animated Bloch-sphere hero: a qubit state precessing, leaving a glowing trail. */
+/* Interactive hero: the visitor's FIRST act of quantum measurement, before a
+   single word of theory or any login. The spinning coin is undetermined; a
+   "slap" collapses it to a plain 0 or 1, a tally builds toward ~50/50, and only
+   then does the page name what they just did. Play first, formalize second. */
 (() => {
-  const cv = document.getElementById("hero-bloch"), ctx = cv.getContext("2d");
-  const C = 170, R = 130;
-  let t = 0;
-  const trail = [];
-  function project(theta, phi) {
-    const x = Math.sin(theta) * Math.cos(phi), y = Math.sin(theta) * Math.sin(phi),
-          z = Math.cos(theta);
-    return { x: C + R * (x + 0.35 * y), y: C - R * (z - 0.25 * y) };
+  const cv = document.getElementById("hero-coin");
+  if (!cv) return;
+  const ctx = cv.getContext("2d");
+  const C = 150, R = 88;
+  const HEADS = { fill: "#22d3ee", edge: "#0e7490", ink: "#052b36", name: "Heads", digit: "0" };
+  const TAILS = { fill: "#8b5cf6", edge: "#5b21b6", ink: "#f3edff", name: "Tails", digit: "1" };
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const caption = document.getElementById("coin-caption");
+  const live    = document.getElementById("coin-live");
+  const tally   = document.getElementById("coin-tally");
+  const cta     = document.getElementById("coin-cta");
+  const btn     = document.getElementById("slap-btn");
+
+  const S = { mode: "spin", a: 0, speed: 0.30, counts: [0, 0], slaps: 0,
+              from: 0, to: 0, start: 0, dur: 700, outcome: 0 };
+  const easeOut = t => 1 - Math.pow(1 - t, 3);
+
+  function slap() {
+    if (S.mode === "land") return;
+    if (S.mode === "done") { startSpin(); return; }   // "spin again"
+    S.outcome = Math.random() < 0.5 ? 0 : 1;
+    S.counts[S.outcome]++; S.slaps++;
+    // Land flat on the correct face (cos=+1 for heads, -1 for tails), after a
+    // couple more dramatic turns.
+    let t = S.a + 3 * Math.PI;
+    const wantEven = S.outcome === 0;                 // heads flat at even·π
+    while (true) {
+      const k = Math.round(t / Math.PI);
+      if ((k % 2 === 0) === wantEven && k * Math.PI >= t) { t = k * Math.PI; break; }
+      t += Math.PI / 2;
+    }
+    S.from = S.a; S.to = t; S.start = performance.now();
+    S.dur = reduce ? 0 : 700; S.mode = "land";
+    btn.disabled = true; btn.textContent = "…measuring…";
+    live.textContent = "measuring…";
   }
-  (function tick() {
-    ctx.clearRect(0, 0, 340, 340);
-    const line = getComputedStyle(document.documentElement).getPropertyValue("--line");
-    ctx.strokeStyle = line; ctx.lineWidth = 1.5;
-    ctx.beginPath(); ctx.arc(C, C, R, 0, 7); ctx.stroke();
-    ctx.beginPath(); ctx.ellipse(C, C, R, 38, 0, 0, 7); ctx.stroke();
-    const theta = 1.1 + 0.25 * Math.sin(t / 90), phi = t / 40;
-    trail.push(project(theta, phi));
-    if (trail.length > 70) trail.shift();
-    trail.forEach((p, i) => {
-      ctx.fillStyle = `rgba(34,211,238,${(i / trail.length) * 0.5})`;
-      ctx.beginPath(); ctx.arc(p.x, p.y, 2.2, 0, 7); ctx.fill();
-    });
-    const g = trail[trail.length - 1];
-    const grad = ctx.createLinearGradient(C, C, g.x, g.y);
-    grad.addColorStop(0, "#22d3ee"); grad.addColorStop(1, "#8b5cf6");
-    ctx.strokeStyle = grad; ctx.lineWidth = 3.5; ctx.lineCap = "round";
-    ctx.beginPath(); ctx.moveTo(C, C); ctx.lineTo(g.x, g.y); ctx.stroke();
-    ctx.fillStyle = "#22d3ee";
-    ctx.beginPath(); ctx.arc(g.x, g.y, 6, 0, 7); ctx.fill();
-    t++;
-    requestAnimationFrame(tick);
-  })();
+
+  function landed() {
+    S.mode = "done"; S.a = S.to;
+    const f = S.outcome === 0 ? HEADS : TAILS;
+    btn.disabled = false; btn.innerHTML = "🌀 Spin again";
+    live.innerHTML = `<b style="color:${f.fill}">${f.name}! (${f.digit})</b>`;
+    live.classList.remove("pop"); void live.offsetWidth; live.classList.add("pop");
+    tally.innerHTML = `Heads&nbsp;(0): <b>${S.counts[0]}</b> &nbsp;·&nbsp; Tails&nbsp;(1): <b>${S.counts[1]}</b>`;
+
+    if (S.slaps === 1) {
+      caption.innerHTML = "That was a <b>quantum measurement</b> — you forced the coin to decide.";
+    }
+    if (S.slaps >= 6) {
+      caption.innerHTML = `Notice it lands ~50/50 over many slaps — that's a <b>fair qubit</b>. Single results are random; only the statistics are predictable.`;
+    }
+    if (!cta.dataset.shown) {
+      cta.dataset.shown = "1";
+      cta.innerHTML = `<a href="module.html?id=01">You just did quantum measurement — learn why in Basecamp&nbsp;1 →</a>`;
+    }
+  }
+
+  function startSpin() {
+    S.mode = "spin"; S.speed = 0.26 + Math.random() * 0.10;
+    btn.innerHTML = "👋 Slap it! <span style=\"opacity:.85;font-weight:500\">— measure</span>";
+    live.textContent = "…spinning — undetermined…";
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, 300, 300);
+    // soft glow
+    const glow = ctx.createRadialGradient(C, C, 10, C, C, R + 40);
+    glow.addColorStop(0, "rgba(34,211,238,0.10)");
+    glow.addColorStop(1, "rgba(11,16,32,0)");
+    ctx.fillStyle = glow; ctx.fillRect(0, 0, 300, 300);
+
+    if (S.mode === "spin") S.a += S.speed;
+    else if (S.mode === "land") {
+      const t = S.dur ? Math.min(1, (performance.now() - S.start) / S.dur) : 1;
+      S.a = S.from + (S.to - S.from) * easeOut(t);
+      if (t >= 1) landed();
+    }
+
+    const cos = Math.cos(S.a);
+    const rx = Math.max(2, R * Math.abs(cos));
+    const face = cos >= 0 ? HEADS : TAILS;
+
+    // coin body
+    const grad = ctx.createLinearGradient(C - rx, C - R, C + rx, C + R);
+    grad.addColorStop(0, face.fill);
+    grad.addColorStop(1, face.edge);
+    ctx.fillStyle = grad;
+    ctx.strokeStyle = face.edge; ctx.lineWidth = 4;
+    ctx.beginPath(); ctx.ellipse(C, C, rx, R, 0, 0, 7); ctx.fill(); ctx.stroke();
+
+    if (rx > 16) {
+      // digit, squished with the perspective
+      ctx.save(); ctx.translate(C, C); ctx.scale(rx / R, 1);
+      ctx.fillStyle = face.ink;
+      ctx.font = "700 92px 'Segoe UI', system-ui, sans-serif";
+      ctx.textAlign = "center"; ctx.textBaseline = "middle";
+      ctx.globalAlpha = S.mode === "spin" ? 0.55 : 1;
+      ctx.fillText(face.digit, 0, 4);
+      ctx.restore(); ctx.globalAlpha = 1;
+    }
+    if (S.mode === "spin") {   // "?" hint that it's undetermined
+      ctx.fillStyle = "rgba(230,236,255,0.22)";
+      ctx.font = "700 40px 'Segoe UI', system-ui, sans-serif";
+      ctx.textAlign = "center"; ctx.textBaseline = "middle";
+      ctx.fillText("?", C, C - R - 22);
+    }
+    requestAnimationFrame(draw);
+  }
+
+  btn.addEventListener("click", slap);
+  cv.addEventListener("click", slap);
+  cv.style.cursor = "pointer";
+  startSpin();
+  requestAnimationFrame(draw);
 })();
 </script>
+<script src="assets/js/nav.js"></script>
 </body>
 </html>

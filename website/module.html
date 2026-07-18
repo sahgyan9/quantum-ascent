@@ -13,13 +13,20 @@
 </head>
 <body>
 
-<nav>
-  <a class="brand" href="index.html"><img src="assets/logo.svg" alt="" width="28" height="28"> Quantum <span>Ascent</span></a>
-  <a class="navlink" href="ascent.html">The Ascent</a>
-  <a class="navlink" href="widgets.html">Widget Gallery</a>
-  <a class="navlink" href="analogy-studio.html">Analogy Studio</a>
-  <div class="spacer"></div>
-  <span id="xp-pill">⚡ 0 XP · 0/6</span>
+<!-- Nav dismiss overlay: tap outside the menu to close it -->
+<a href="#" class="nav-dismiss" aria-hidden="true" tabindex="-1"></a>
+
+<nav id="nav">
+  <a href="index.html" class="nav-name"><img src="assets/logo.svg" alt="" width="24" height="24"> Quantum <span>Ascent</span></a>
+  <a href="#nav-menu" class="nav-burger" id="nav-burger" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </a>
+  <div class="nav-links" id="nav-menu">
+    <a href="ascent.html">The Ascent</a>
+    <a href="widgets.html">Widget Gallery</a>
+    <a href="analogy-studio.html">Analogy Studio</a>
+    <span id="xp-pill">⚡ 0 XP · 0/6</span>
+  </div>
 </nav>
 
 <div class="container" id="content">
@@ -34,6 +41,7 @@
 <script src="assets/js/progress.js"></script>
 <script src="assets/js/quiz.js"></script>
 <script src="assets/js/confetti.js"></script>
+<script src="assets/js/glossary.js"></script>
 <script>
 "use strict";
 (async () => {
@@ -79,11 +87,11 @@
       <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 12px; font-size: 14.5px;">
         <div style="display: flex; gap: 10px; align-items: flex-start;">
           <span style="color: var(--accent); font-weight: 700; font-family: var(--font-heading); flex-shrink: 0; white-space: nowrap;">Step 1:</span>
-          <span>Scroll down to <b>Section 2</b> and open the <b>Jupyter Notebook</b>. Read it line by line to understand the quantum mechanics theory and complete the code tasks.</span>
+          <span>Start in <b>Section 1</b> below and play with the <b>Interactive Widget</b>. Poke it, make predictions — let your hands build the intuition <i>before</i> any math arrives.</span>
         </div>
         <div style="display: flex; gap: 10px; align-items: flex-start;">
           <span style="color: var(--accent); font-weight: 700; font-family: var(--font-heading); flex-shrink: 0; white-space: nowrap;">Step 2:</span>
-          <span>Return here and play with the <b>Interactive Widget</b> in <b>Section 1</b> to visualize what the theory and math look like in real time.</span>
+          <span>Open the <b>Jupyter Notebook</b> in <b>Section 2</b>. Work through it line by line to name what you just saw, and complete the code tasks yourself.</span>
         </div>
         <div style="display: flex; gap: 10px; align-items: flex-start;">
           <span style="color: var(--accent); font-weight: 700; font-family: var(--font-heading); flex-shrink: 0; white-space: nowrap;">Step 3:</span>
@@ -107,9 +115,13 @@
         <span><b>Observe:</b> Run measurements (shots) to see the random collapse align with probabilities.</span>
       </div>
     </div>
-    <iframe src="widgets/${m.widget}/index.html" style="width:100%;height:560px;
-      border:1px solid var(--line);border-radius:12px" title="${m.widget} interactive widget"></iframe>
-    <p style="margin-top: 8px;"><a href="widgets/${m.widget}/index.html" target="_blank" rel="noopener">Open widget in a new tab ↗</a></p>
+    <figure class="widget-stage">
+      <figcaption class="widget-stage-bar">
+        <span class="widget-stage-label">🎛️ Interactive — poke it, predict, then measure</span>
+        <a class="widget-stage-pop" href="widgets/${m.widget}/index.html" target="_blank" rel="noopener">Open in a new tab ↗</a>
+      </figcaption>
+      <iframe src="widgets/${m.widget}/index.html" title="${m.widget} interactive widget" loading="lazy"></iframe>
+    </figure>
  
     <h2 class="section">2 · Do the physics — the interactive notebook</h2>
     <div class="learning-list" style="margin: 16px 0 24px;">
@@ -126,11 +138,22 @@
         <span><b>No Setup Required:</b> Open directly in Google Colab and run on free cloud servers.</span>
       </div>
     </div>
-    <div style="display: flex; gap: 12px; margin-bottom: 24px;">
-      <a class="btn" href="${colab}" target="_blank" rel="noopener">▶ Open in Google Colab</a>
-      <a class="btn ghost" href="${nbviewer}" target="_blank" rel="noopener">Preview (nbviewer)</a>
+    <div class="panel" style="border-color: var(--accent); background: var(--accent-bg); margin: 4px 0 18px;">
+      <h3 style="font-size: 15px; margin-bottom: 8px; color: var(--text); font-family: var(--font-heading);">🧭 First time opening a notebook? Here's exactly what happens — no surprises:</h3>
+      <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 7px; font-size: 14px;">
+        <li style="display:flex; gap:8px;"><span>1.</span><span>A new tab opens <b>Google Colab</b> — Google's <b>free</b> cloud notebook. There is <b>nothing to install</b>.</span></li>
+        <li style="display:flex; gap:8px;"><span>2.</span><span>You'll be asked to <b>sign in with a Google account</b> (the same one you use for Gmail). That's the only requirement.</span></li>
+        <li style="display:flex; gap:8px;"><span>3.</span><span>Run the cells <b>top to bottom</b> — click a cell, press <b>▶</b> (or Shift+Enter). Start with the "Setup — run me first" cell.</span></li>
+        <li style="display:flex; gap:8px;"><span>4.</span><span>If a pop-up warns the notebook "was not authored by Google," that's normal for shared notebooks — click <b>Run anyway</b>.</span></li>
+        <li style="display:flex; gap:8px;"><span>5.</span><span>When you finish the tasks, <b>come back to this page</b> and take the quiz below to earn your XP and badge. 🏅</span></li>
+      </ul>
+      <p class="muted" style="margin: 10px 0 0; font-size: 13.5px;">Prefer to just look first, without signing in? Use <b>Preview (nbviewer)</b> — it shows the whole notebook read-only.</p>
     </div>
- 
+    <div style="display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap;">
+      <a class="btn" href="${colab}" target="_blank" rel="noopener">▶ Open in Google Colab</a>
+      <a class="btn ghost" href="${nbviewer}" target="_blank" rel="noopener">👀 Preview first (no sign-in)</a>
+    </div>
+
     <h2 class="section" id="quiz">3 · Prove it — the quiz</h2>
     <div id="quiz-box"></div>`}
 
@@ -143,7 +166,10 @@
     Progress.markOpened(id);
     renderQuiz("quiz-box", id, m);
   }
+  // Give first-timers a hover/tap safety net on the key vocabulary.
+  Glossary.enhance(el);
 })();
 </script>
+<script src="assets/js/nav.js"></script>
 </body>
 </html>

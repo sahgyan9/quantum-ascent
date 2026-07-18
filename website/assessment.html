@@ -9,13 +9,20 @@
 </head>
 <body>
 
-<nav>
-  <a class="brand" href="index.html"><img src="assets/logo.svg" alt="" width="28" height="28"> Quantum <span>Ascent</span></a>
-  <a class="navlink" href="ascent.html">The Ascent</a>
-  <a class="navlink" href="widgets.html">Widget Gallery</a>
-  <a class="navlink" href="analogy-studio.html">Analogy Studio</a>
-  <div class="spacer"></div>
-  <span id="xp-pill">⚡ 0 XP · 0/6</span>
+<!-- Nav dismiss overlay: tap outside the menu to close it -->
+<a href="#" class="nav-dismiss" aria-hidden="true" tabindex="-1"></a>
+
+<nav id="nav">
+  <a href="index.html" class="nav-name"><img src="assets/logo.svg" alt="" width="24" height="24"> Quantum <span>Ascent</span></a>
+  <a href="#nav-menu" class="nav-burger" id="nav-burger" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </a>
+  <div class="nav-links" id="nav-menu">
+    <a href="ascent.html">The Ascent</a>
+    <a href="widgets.html">Widget Gallery</a>
+    <a href="analogy-studio.html">Analogy Studio</a>
+    <span id="xp-pill">⚡ 0 XP · 0/6</span>
+  </div>
 </nav>
 
 <div class="container">
@@ -39,5 +46,6 @@
 
 <footer>Built for the WISER Education Challenge 2026</footer>
 <script src="assets/js/progress.js"></script>
+<script src="assets/js/nav.js"></script>
 </body>
 </html>

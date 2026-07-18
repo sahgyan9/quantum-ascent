@@ -9,13 +9,20 @@
 </head>
 <body>
 
-<nav>
-  <a class="brand" href="index.html"><img src="assets/logo.svg" alt="" width="28" height="28"> Quantum <span>Ascent</span></a>
-  <a class="navlink active" href="ascent.html">The Ascent</a>
-  <a class="navlink" href="widgets.html">Widget Gallery</a>
-  <a class="navlink" href="analogy-studio.html">Analogy Studio</a>
-  <div class="spacer"></div>
-  <span id="xp-pill">⚡ 0 XP · 0/6</span>
+<!-- Nav dismiss overlay: tap outside the menu to close it -->
+<a href="#" class="nav-dismiss" aria-hidden="true" tabindex="-1"></a>
+
+<nav id="nav">
+  <a href="index.html" class="nav-name"><img src="assets/logo.svg" alt="" width="24" height="24"> Quantum <span>Ascent</span></a>
+  <a href="#nav-menu" class="nav-burger" id="nav-burger" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </a>
+  <div class="nav-links" id="nav-menu">
+    <a href="ascent.html" class="active">The Ascent</a>
+    <a href="widgets.html">Widget Gallery</a>
+    <a href="analogy-studio.html">Analogy Studio</a>
+    <span id="xp-pill">⚡ 0 XP · 0/6</span>
+  </div>
 </nav>
 
 <div class="container">
@@ -54,6 +61,10 @@ async function build() {
   const trails = document.getElementById("trails");
   const svgNS = "http://www.w3.org/2000/svg";
 
+  // The first available basecamp you haven't finished is where you should click next.
+  const nextIdx = data.modules.findIndex(
+    m => m.status === "available" && !p.modules[m.id]?.completed);
+
   data.modules.forEach((m, i) => {
     const [x, y] = POS[i];
     const done = p.modules[m.id]?.completed;
@@ -68,10 +79,14 @@ async function build() {
     }
 
     const g = document.createElementNS(svgNS, "g");
-    g.setAttribute("class", "camp " + (done ? "done" : m.status === "available" ? "available" : ""));
+    g.setAttribute("class", "camp " + (done ? "done" : m.status === "available" ? "available" : "locked"));
+    const r = i === 5 ? 26 : 20;
+    const isNext = i === nextIdx;
     g.innerHTML = `
-      <circle class="node" cx="${x}" cy="${y}" r="${i === 5 ? 26 : 20}"></circle>
-      <text x="${x}" y="${y + 5}" text-anchor="middle">${done ? "✓" : m.id}</text>
+      ${isNext ? `<circle class="pulse-ring" cx="${x}" cy="${y}" r="${r}"></circle>
+      <text class="start-here" x="${x}" y="${y - r - 12}" text-anchor="middle">▶ Start here</text>` : ""}
+      <circle class="node" cx="${x}" cy="${y}" r="${r}"></circle>
+      <text x="${x}" y="${y + 5}" text-anchor="middle">${done ? "✓" : m.status === "coming-soon" ? "🔒" : m.id}</text>
       <text x="${x}" y="${y + 44}" text-anchor="middle">${i === 5 ? "🏔️ " : ""}${m.title}</text>
       <text class="sub" x="${x}" y="${y + 62}" text-anchor="middle">${m.minutes} min · ${m.status === "coming-soon" ? "coming soon" : m.xp + " XP"}</text>`;
     g.addEventListener("click", () => location.href = `module.html?id=${m.id}`);
@@ -84,5 +99,6 @@ async function build() {
 }
 build();
 </script>
+<script src="assets/js/nav.js"></script>
 </body>
 </html>
