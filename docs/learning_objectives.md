@@ -10,7 +10,7 @@ By the end of the **Quantum Ascent** course, climbers will transition from theor
   * Formulate measurement outcomes using the Born Rule ($P = |\text{amplitude}|^2$) and differentiate between pre-measurement amplitudes and post-measurement collapses.
 * **Skill Outcomes:**
   * Calculate probability distributions and sample measurement counts for basic state vectors.
-  * Operate the Bloch Sampler widget to visualize how state vectors map to probabilities.
+  * Operate the Bloch Sampler widget to visualize how state vectors map to exact probabilities through proportional color segments.
 
 ---
 

@@ -19,6 +19,7 @@ graph TD
 ## 1. Play First, Formalize Second (Intuition Sandbox)
 * **The Problem:** Abstract mathematical notations (like Dirac braket notation $|\psi\rangle = \alpha|0\rangle + \beta|1\rangle$) create immediate cognitive friction.
 * **The Method:** Every basecamp begins with a lightweight, browser-based widget. Before reading formulas, students interact with sliders, buttons, and visual graphs (e.g., tilting a vector on the Bloch sphere and seeing histograms build up).
+* **Direct Visual Intuition:** We ground mathematical abstractions into literal visual ratios. For example, rather than an abstract line pointing on a Bloch sphere, the vector stick itself becomes a physical pie chart—divided into exact green/orange color proportions to match the underlying probability amplitudes of the quantum state.
 * **The Result:** The student builds a visual, concrete mental model of physical behaviors (e.g., rotation, probability density, and statistical fluctuations) *before* the formal math is introduced. The math then simply names what the student has already seen and controlled.
 
 ## 2. Gap-Fill Active Coding (Rigorous Notebooks)

@@ -91,7 +91,7 @@ When building user-facing interfaces (web, CLI, or otherwise), you MUST adhere t
 
 ## Pedagogical & Content Preferences
 
-**The Moat (Core Competitive Advantage):** This platform differentiates itself by strictly avoiding pop-science myths (e.g., "qubits are 0 and 1 at the same time") and overwhelming jargon. Instead, the focus is strictly on highly interactive, deeply grounded physical analogies (e.g., the spinning coin) coupled with step-by-step guidance. This approach MUST be documented and prioritized across all educational content.
+**The Moat (Core Competitive Advantage):** This platform differentiates itself by strictly avoiding pop-science myths (e.g., "qubits are 0 and 1 at the same time") and overwhelming jargon. Instead, the focus is strictly on highly interactive, deeply grounded physical analogies (e.g., the spinning coin) and **direct visual intuitions (e.g., visualizing state probabilities as exact physical color proportions on the state vector)**, coupled with step-by-step guidance. This approach MUST be documented and prioritized across all educational content.
 
 When authoring or modifying educational Jupyter Notebooks and web resources:
 1. **Beginner Friendliness & Counselling**: Adopt a supportive, reassuring, and encouraging tone throughout. 
