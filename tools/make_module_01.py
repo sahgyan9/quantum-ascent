@@ -419,6 +419,21 @@ cells.append(analogy_callout(
     ),
 ))
 
+# ----------------------------------------------------------------- claim code
+cells.append(md(r"""## 🎓 Log your climb — claim your completion code
+
+You built the 75/25 biased coin three ways and verified each one. Now let's make
+it count on the mountain! Run the cell below: it re-checks your **Task 1** and
+**Task 2** circuits right here in this kernel and — if they pass — prints a
+personal **completion code**.
+
+Copy that code into the **“Log your notebook”** box on the
+[Basecamp 1 page](https://quantum-ascent-77617.web.app/module.html?id=01#claim)
+to light up this camp on your Ascent map and bank your climber XP. Finishing the
+notebook is the one thing the website can't verify for you — so it's the one
+thing you get to prove. 🏔️"""))
+cells.append(code("progress.claim_basecamp_1(qc_spin, qc3)"))
+
 # ----------------------------------------------------------------- footer
 cells.append(basecamp_footer(
     1,

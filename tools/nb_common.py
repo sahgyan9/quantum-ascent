@@ -45,13 +45,13 @@ def _ensure_q2q():
     base = ("https://raw.githubusercontent.com/sahgyan9/quantum-ascent/"
             "main/notebooks/q2q/")
     os.makedirs("q2q", exist_ok=True)
-    for fname in ("__init__.py", "checkers.py", "widgets.py",
-                  "oracles.py", "latex_macros.py", "targets.py", "quiz.py"):
+    for fname in ("__init__.py", "checkers.py", "widgets.py", "oracles.py",
+                  "latex_macros.py", "targets.py", "quiz.py", "progress.py"):
         urllib.request.urlretrieve(base + fname, os.path.join("q2q", fname))
     sys.path.insert(0, os.path.abspath("."))
 
 _ensure_q2q()
-from q2q import checkers, quiz, targets
+from q2q import checkers, quiz, targets, progress
 from q2q.widgets import show_widget
 print("Setup complete — you're ready to climb. 🏔️")'''
 
