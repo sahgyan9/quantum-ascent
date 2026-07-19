@@ -90,5 +90,51 @@
       "answer": 1,
       "explain": "Qiskit is little-endian: qubit 0 is the rightmost character of the bitstring. Flipping qubit 0 lights up that rightmost bit, giving '01'. Read Qiskit bitstrings right-to-left and this trap disappears."
     }
+  ],
+  "03": [
+    {
+      "q": "You prepare the Bell pair $\\frac{1}{\\sqrt{2}}(|00\\rangle + |11\\rangle)$ and measure both qubits many times. Which outcomes appear?",
+      "options": [
+        "All four (00, 01, 10, 11), each about 25%",
+        "Only 00 and 11, each about 50% — the qubits always agree",
+        "Only 00 — the qubits are frozen",
+        "Only 01 and 10 — the qubits always disagree"
+      ],
+      "answer": 1,
+      "explain": "$|\\Phi^+\\rangle$ has amplitude only on $|00\\rangle$ and $|11\\rangle$, so a mismatch is impossible: you get 00 or 11, about half each. Each qubit measured alone is still a fair 50/50 — it is the *link between them* that is certain, not either coin."
+    },
+    {
+      "q": "What makes a two-qubit state <b>entangled</b>?",
+      "options": [
+        "Both qubits are in superposition at the same time",
+        "The state cannot be written as 'qubit A does X' and separately 'qubit B does Y' — only the pair has a description",
+        "The two qubits are physically close together",
+        "Measuring one qubit sends a signal to the other"
+      ],
+      "answer": 1,
+      "explain": "Entanglement is un-factorability. A product state like $|+\\rangle \\otimes |+\\rangle$ splits into two independent stories; $\\frac{1}{\\sqrt{2}}(|00\\rangle+|11\\rangle)$ does not — no description of A alone plus B alone reproduces it. Superposition and proximity are not the point; un-splittability is."
+    },
+    {
+      "q": "The <b>CNOT</b> gate has a control qubit and a target qubit. What does it do?",
+      "options": [
+        "It always flips both qubits",
+        "It flips the target only when the control is $|1\\rangle$; otherwise it does nothing",
+        "It measures the control qubit",
+        "It swaps the two qubits"
+      ],
+      "answer": 1,
+      "explain": "CNOT = 'controlled-NOT': if the control is $|1\\rangle$, flip the target; if the control is $|0\\rangle$, leave it alone. Apply it to a control that is in superposition (via H first) and the 'flip / don't flip' gets tied to the control's coin-flip — that knot is exactly what creates entanglement."
+    },
+    {
+      "q": "Alice and Bob each hold one qubit of a Bell pair, far apart. Alice measures hers and gets 1. Can she use this to send Bob a message faster than light?",
+      "options": [
+        "Yes — Bob's qubit instantly becomes 1, so information travelled",
+        "No — Bob's results look completely random until the two compare notes over an ordinary (light-speed-limited) channel",
+        "Yes, but only if they measured at exactly the same time",
+        "No, because the qubits were never really linked"
+      ],
+      "answer": 1,
+      "explain": "Alice learns Bob's value, but learning is not sending. On its own, Bob's stream of results is perfectly random 50/50 — nothing Alice does is detectable on his side. The correlation only becomes visible when the two result lists are laid side by side, which requires a normal message. Real link, no telephone: entanglement never carries a signal."
+    }
   ]
 }

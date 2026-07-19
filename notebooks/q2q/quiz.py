@@ -172,6 +172,74 @@ _BANK: dict[str, dict] = {
             "rightmost bit. So the answer is a definite '01'.",
         ],
     ),
+    # ------------------------------------------------ Module 03
+    "m3-bell-outcomes": dict(
+        question=(
+            "In the Explorer you set the link to <b>Correlated (Bell pair)</b> "
+            "and measure many times. Which pairs of outcomes actually show up?"
+        ),
+        options=[
+            "All four: 00, 01, 10, 11 — each about 25%",
+            "Only 00 and 11, each about 50%",
+            "Only 00 — the qubits are stuck",
+        ],
+        correct=1,
+        feedback=[
+            "That's the <i>independent</i> link, not the entangled one. Switch to "
+            "Correlated and watch 01 and 10 vanish — the two qubits stop being "
+            "free to disagree.",
+            "Right. The Bell pair Φ⁺ only ever gives 00 or 11, so the two coins "
+            "<b>always agree</b>. Each individual coin is still a fair 50/50 — "
+            "it's the <i>link between them</i> that's certain.",
+            "They're not stuck — each qubit alone is a perfectly fair 50/50. What's "
+            "fixed is only the <i>relationship</i>: whenever you look, the two "
+            "match. So both 00 and 11 appear, about half the time each.",
+        ],
+    ),
+    "m3-measure-partner": dict(
+        question=(
+            "Two qubits are in the Bell pair Φ⁺. You measure <b>only qubit A</b> "
+            "and get a <b>0</b>. Without touching qubit B, what can you say about it?"
+        ),
+        options=[
+            "Nothing — B is still a 50/50 coin flip",
+            "B is now certainly 0 too — the outcomes are locked together",
+            "B is now certainly 1 — measuring flips its partner",
+        ],
+        correct=1,
+        feedback=[
+            "Before you measured, yes — B alone looked 50/50. But Φ⁺ only allows "
+            "00 and 11, so the instant A reads 0, the pair must be 00, and B is "
+            "pinned to 0.",
+            "Exactly. Φ⁺ = (|00⟩+|11⟩)/√2 has no 01 or 10 term, so matching is "
+            "guaranteed: A = 0 forces B = 0. (This is correlation, not a signal — "
+            "you can't use it to send a message, as you'll see.)",
+            "Close, but this is the <i>correlated</i> pair, not the anti-correlated "
+            "one. Φ⁺ makes them <b>agree</b>, so A = 0 means B = 0. The 'always "
+            "disagree' behaviour is the other Bell pair, Ψ⁺.",
+        ],
+    ),
+    "m3-entangled-or-not": dict(
+        question=(
+            "Which two-qubit state is <b>entangled</b> — impossible to describe as "
+            "'qubit A is doing X <i>and</i> qubit B is doing Y' separately?"
+        ),
+        options=[
+            "Both qubits fair and independent: ½(|00⟩+|01⟩+|10⟩+|11⟩)",
+            "The Bell pair (|00⟩+|11⟩)/√2",
+            "Both qubits definitely 0: |00⟩",
+        ],
+        correct=1,
+        feedback=[
+            "This one <i>factors</i>: it's just |+⟩ on A and |+⟩ on B, two separate "
+            "stories side by side. Independent, not entangled.",
+            "Correct. (|00⟩+|11⟩)/√2 can't be split into 'A does this, B does that' "
+            "— the only way to describe it is as one joint state. That "
+            "unfactorable-ness <b>is</b> entanglement.",
+            "|00⟩ factors cleanly into 'A is 0' and 'B is 0' — two independent "
+            "certainties. No entanglement there.",
+        ],
+    ),
 }
 
 

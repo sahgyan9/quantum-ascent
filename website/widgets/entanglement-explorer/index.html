@@ -1,0 +1,216 @@
+<meta charset="utf-8">
+<title>Entanglement Explorer — Quantum Ascent</title>
+<link rel="stylesheet" href="../_base/widget.css">
+<style>
+  .wrap { display: flex; gap: 16px; max-width: 920px; align-items: flex-start; flex-wrap: wrap; }
+  .left { display: flex; flex-direction: column; gap: 12px; flex: 0 0 260px; }
+  .right { flex: 1; display: flex; flex-direction: column; gap: 12px; min-width: 280px; }
+
+  /* the two qubits, shown as coin discs (green = 0, amber = 1) */
+  .coins { display: flex; gap: 14px; justify-content: center; align-items: center; }
+  .coin-col { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .coin { width: 74px; height: 74px; border-radius: 50%; display: flex; align-items: center;
+          justify-content: center; font: 700 30px/1 var(--font-code); color: #fff;
+          background: var(--bg2); border: 2px solid var(--line); color: var(--muted);
+          transition: background .15s, border-color .15s, color .15s; }
+  .coin.v0 { background: var(--accent); border-color: var(--accent-strong); color: #fff; }
+  .coin.v1 { background: var(--amber); border-color: var(--amber-strong); color: #fff; }
+  .coin-label { font-size: 13px; color: var(--muted); font-weight: 600; }
+  .link-icon { font-size: 22px; color: var(--muted); }
+
+  .choices { display: flex; flex-direction: column; gap: 6px; }
+  .choice { display: flex; gap: 8px; align-items: flex-start; padding: 8px 10px; cursor: pointer;
+            border: 1.5px solid var(--line); border-radius: 8px; background: var(--panel); }
+  .choice:hover { border-color: var(--accent); }
+  .choice.sel { border-color: var(--accent); background: var(--accent-bg); }
+  .choice input { margin-top: 3px; }
+  .choice .t { font-weight: 700; }
+  .choice .d { font-size: 12.5px; color: var(--muted); }
+
+  .state { font-family: var(--font-code); font-size: 15px; background: var(--bg2);
+           border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; text-align: center; }
+
+  /* joint-outcome histogram: each row labels its bits by colour, fill = observed freq,
+     ink tick = the exact probability it should converge to (the Born goal). */
+  .hist { display: grid; grid-template-columns: 54px 1fr 74px; gap: 7px 8px; align-items: center; }
+  .lab { display: flex; gap: 3px; }
+  .cell { width: 20px; height: 20px; border-radius: 4px; font: 700 12px/20px var(--font-code);
+          text-align: center; color: #fff; }
+  .cell.b0 { background: var(--accent); } .cell.b1 { background: var(--amber); }
+  .track { position: relative; height: 18px; background: var(--bg2); border: 1px solid var(--line);
+           border-radius: 9px; overflow: hidden; }
+  .fill { height: 100%; width: 0%; background: var(--accent); transition: width .18s; opacity: .78; }
+  .tick { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--green); }
+  .readout { font-family: var(--font-code); font-size: 12.5px; color: var(--muted); white-space: nowrap; }
+
+  .stat { display: flex; justify-content: space-between; align-items: baseline; gap: 10px;
+          font-size: 14px; }
+  .stat b { font-family: var(--font-code); font-size: 18px; color: var(--accent-strong); }
+  .insight { min-height: 20px; font-size: 13.5px; color: var(--muted); }
+  .legend { font-size: 12px; color: var(--muted); display: flex; gap: 14px; flex-wrap: wrap; }
+  .dot { display: inline-block; width: 10px; height: 10px; border-radius: 3px; vertical-align: middle; }
+</style>
+
+<div class="hint-bar" id="hint">💡 <b>Link two qubits, then measure.</b> Pick a link on the left, <b>predict</b> which pairs can appear,
+then hit <b>Measure ×100</b>. ① Try <b>Independent</b> — all four pairs show up. ② Switch to <b>Correlated</b> — where did
+<b>01</b> and <b>10</b> go? ③ The two coins now share <i>one</i> fate: measuring one tells you the other, every time.</div>
+
+<div class="wrap">
+  <div class="left">
+    <div class="panel">
+      <div class="coins">
+        <div class="coin-col"><div class="coin" id="cA">?</div><span class="coin-label">Qubit A</span></div>
+        <span class="link-icon" id="linkIcon">⇢</span>
+        <div class="coin-col"><div class="coin" id="cB">?</div><span class="coin-label">Qubit B</span></div>
+      </div>
+      <div class="state" id="stateText" style="margin-top:12px">?</div>
+    </div>
+
+    <div class="panel">
+      <label>Choose the link between them:</label>
+      <div class="choices" id="choices">
+        <label class="choice sel"><input type="radio" name="link" value="ind" checked>
+          <span><span class="t">Independent</span><br><span class="d">Two separate spins. One tells you nothing about the other.</span></span></label>
+        <label class="choice"><input type="radio" name="link" value="phi">
+          <span><span class="t">Correlated (a Bell pair)</span><br><span class="d">One shared fate — they always <b>agree</b>.</span></span></label>
+        <label class="choice"><input type="radio" name="link" value="psi">
+          <span><span class="t">Anti-correlated</span><br><span class="d">Entangled the other way — they always <b>disagree</b>.</span></span></label>
+      </div>
+    </div>
+  </div>
+
+  <div class="right">
+    <div class="panel">
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+        <button class="g-h" id="one">Measure once</button>
+        <button class="g-h" id="many">Measure ×100</button>
+        <button class="secondary" id="reset" style="margin-left:auto">Reset</button>
+      </div>
+      <div class="hist" id="hist"></div>
+      <div class="legend" style="margin-top:10px">
+        <span><span class="dot" style="background:var(--accent)"></span> bit = 0</span>
+        <span><span class="dot" style="background:var(--amber)"></span> bit = 1</span>
+        <span><span class="dot" style="background:var(--green)"></span> ideal probability (the goal)</span>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="stat"><span>Total measurements</span><b id="nTot">0</b></div>
+      <div class="stat" style="margin-top:6px"><span>How often the two coins <b>agreed</b> (A = B)</span><b id="matchRate">—</b></div>
+      <div class="insight" id="insight" style="margin-top:10px">Pick a link and start measuring. Watch the bars climb toward their ink goal marks — that's the Born rule from Basecamp 1, now for a <i>pair</i>.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+"use strict";
+const $ = id => document.getElementById(id);
+
+// Outcomes are written "AB": first digit = Qubit A, second = Qubit B (read left→right).
+const OUTS = ["00", "01", "10", "11"];
+
+// The three links, as exact probabilities over the four joint outcomes.
+// (These are the Born probabilities of the states shown in stateText.)
+const LINKS = {
+  ind: { probs: { "00": .25, "01": .25, "10": .25, "11": .25 },
+         state: "½ (|00⟩ + |01⟩ + |10⟩ + |11⟩)", icon: "⇢",
+         line: "Two independent fair coins. Knowing A leaves B a total coin-flip." },
+  phi: { probs: { "00": .5, "01": 0, "10": 0, "11": .5 },
+         state: "(|00⟩ + |11⟩) / √2", icon: "🔗",
+         line: "The Bell pair Φ⁺. Only 00 and 11 ever appear — measure one coin and you instantly know the other. They share a single state, not two." },
+  psi: { probs: { "00": 0, "01": .5, "10": .5, "11": 0 }, state: "(|01⟩ + |10⟩) / √2", icon: "🔗",
+         line: "The Bell pair Ψ⁺, entangled the opposite way. Only 01 and 10 appear — the coins always land on <i>different</i> faces." },
+};
+
+let link = "ind";
+let counts = { "00": 0, "01": 0, "10": 0, "11": 0 };
+let nTot = 0, nMatch = 0;
+
+// Build the histogram rows once; we only update fills/ticks/readouts afterwards.
+function buildHist() {
+  const h = $("hist"); h.innerHTML = "";
+  for (const o of OUTS) {
+    const lab = document.createElement("div"); lab.className = "lab";
+    for (const bit of o) {
+      const c = document.createElement("span");
+      c.className = "cell b" + bit; c.textContent = bit; lab.appendChild(c);
+    }
+    const trackWrap = document.createElement("div"); trackWrap.className = "track";
+    const fill = document.createElement("div"); fill.className = "fill"; fill.id = "fill-" + o;
+    const tick = document.createElement("div"); tick.className = "tick"; tick.id = "tick-" + o;
+    tick.title = "ideal probability";
+    trackWrap.appendChild(fill); trackWrap.appendChild(tick);
+    const ro = document.createElement("div"); ro.className = "readout"; ro.id = "ro-" + o;
+    h.appendChild(lab); h.appendChild(trackWrap); h.appendChild(ro);
+  }
+}
+
+function sampleOnce() {
+  const p = LINKS[link].probs;
+  let r = Math.random(), acc = 0, pick = OUTS[OUTS.length - 1];
+  for (const o of OUTS) { acc += p[o]; if (r <= acc) { pick = o; break; } }
+  return pick;
+}
+
+function showCoins(outcome) {
+  const a = outcome[0], b = outcome[1];
+  $("cA").className = "coin v" + a; $("cA").textContent = a;
+  $("cB").className = "coin v" + b; $("cB").textContent = b;
+}
+
+function measure(n) {
+  for (let i = 0; i < n; i++) {
+    const o = sampleOnce();
+    counts[o]++; nTot++; if (o[0] === o[1]) nMatch++;
+    if (i === n - 1) showCoins(o);
+  }
+  render();
+}
+
+function render() {
+  const p = LINKS[link].probs;
+  for (const o of OUTS) {
+    const frac = nTot ? counts[o] / nTot : 0;
+    $("fill-" + o).style.width = (100 * frac) + "%";
+    $("tick-" + o).style.left = "calc(" + (100 * p[o]) + "% - 1px)";
+    $("ro-" + o).textContent = counts[o] + " · " + (nTot ? Math.round(100 * frac) : 0) + "%";
+  }
+  $("nTot").textContent = nTot;
+  $("matchRate").textContent = nTot ? Math.round(100 * nMatch / nTot) + "%" : "—";
+
+  // Insight: connect what they see to the concept, matching the current link.
+  const L = LINKS[link];
+  if (!nTot) {
+    $("insight").innerHTML = L.line;
+  } else if (link === "ind") {
+    $("insight").innerHTML = "All four pairs appear ~25%. The coins are <b>independent</b> — the match rate hovers near 50%, pure chance.";
+  } else if (link === "phi") {
+    $("insight").innerHTML = "Only <b>00</b> and <b>11</b> ever appear, so the coins <b>agree 100%</b> of the time. Neither coin decided in advance — yet they're perfectly linked. That link is <b>entanglement</b>.";
+  } else {
+    $("insight").innerHTML = "Only <b>01</b> and <b>10</b> appear, so the coins <b>disagree 100%</b> of the time — entangled to always mismatch. Still a single shared state.";
+  }
+}
+
+function reset(keepLink) {
+  counts = { "00": 0, "01": 0, "10": 0, "11": 0 };
+  nTot = 0; nMatch = 0;
+  $("cA").className = "coin"; $("cA").textContent = "?";
+  $("cB").className = "coin"; $("cB").textContent = "?";
+  $("stateText").innerHTML = LINKS[link].state;
+  $("linkIcon").textContent = LINKS[link].icon;
+  render();
+}
+
+$("choices").addEventListener("change", e => {
+  link = e.target.value;
+  [...document.querySelectorAll(".choice")].forEach(c =>
+    c.classList.toggle("sel", c.querySelector("input").checked));
+  reset(true);
+});
+$("one").addEventListener("click", () => measure(1));
+$("many").addEventListener("click", () => measure(100));
+$("reset").addEventListener("click", () => reset(true));
+
+buildHist();
+reset(true);
+</script>

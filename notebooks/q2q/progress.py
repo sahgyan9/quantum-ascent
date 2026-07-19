@@ -17,7 +17,7 @@ from __future__ import annotations
 
 import numpy as np
 
-__all__ = ["code_for", "claim_basecamp_1", "claim_basecamp_2"]
+__all__ = ["code_for", "claim_basecamp_1", "claim_basecamp_2", "claim_basecamp_3"]
 
 # Shared with the website — DO NOT change without updating progress.js in lockstep
 # (tests/test_progress.py cross-checks the two implementations).
@@ -208,4 +208,57 @@ def claim_basecamp_2(qc_flip=None, qc_endian=None):
 
     code = code_for("02")
     _celebrate("02", code)
+    return code
+
+
+def _counts_frac(circuit, keys, shots: int = 512) -> float:
+    """Fraction of shots landing on any bitstring in `keys` (spaces stripped)."""
+    try:
+        from qiskit_aer import AerSimulator
+        counts = AerSimulator().run(circuit, shots=shots).result().get_counts()
+        counts = {k.replace(" ", ""): v for k, v in counts.items()}
+        total = sum(counts.values())
+        return sum(counts.get(k, 0) for k in keys) / total if total else 0.0
+    except Exception:
+        return 0.0
+
+
+def claim_basecamp_3(qc_bell=None, qc_anti=None):
+    """Verify the Basecamp 3 tasks in this kernel and, if correct, print the
+    website completion code. Returns the code string on success, else None.
+
+    - qc_bell (Task 1): a 2-qubit circuit preparing the Φ+ Bell pair
+      (|00> + |11>)/√2 — H on qubit 0, then CNOT 0->1, no measurement.
+    - qc_anti (Task 2): a 2-qubit circuit (with measurement) whose outcomes are
+      anti-correlated — only '01' and '10' ever appear.
+    """
+    from .targets import M3_BELL
+    try:
+        from qiskit import QuantumCircuit
+    except ImportError:            # no qiskit (shouldn't happen post-bootstrap)
+        QuantumCircuit = None
+
+    reasons = []
+    ok_bell = (QuantumCircuit is not None and isinstance(qc_bell, QuantumCircuit)
+               and qc_bell.num_qubits == 2 and _statevector_matches(qc_bell, M3_BELL))
+    if not ok_bell:
+        reasons.append("<b>Task 1</b>: build <code>qc_bell</code> — a 2-qubit "
+                       "circuit with <code>.h(0)</code> then <code>.cx(0, 1)</code> "
+                       "(the Φ+ Bell pair). Don't measure it here.")
+
+    ok_anti = (QuantumCircuit is not None and isinstance(qc_anti, QuantumCircuit)
+               and qc_anti.num_qubits == 2
+               and _counts_frac(qc_anti, {"01", "10"}) > 0.9)
+    if not ok_anti:
+        reasons.append("<b>Task 2</b>: build <code>qc_anti</code> — the Bell recipe "
+                       "plus one <code>.x(1)</code> so the two qubits always "
+                       "<i>disagree</i>, then <code>.measure_all()</code> (only "
+                       "'01' and '10' should appear).")
+
+    if reasons:
+        _nudge(reasons)
+        return None
+
+    code = code_for("03")
+    _celebrate("03", code)
     return code
