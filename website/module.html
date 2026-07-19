@@ -154,6 +154,17 @@
       <a class="btn ghost" href="${nbviewer}" target="_blank" rel="noopener">👀 Preview first (no sign-in)</a>
     </div>
 
+    <div class="panel" id="claim" style="border-color: var(--accent); background: var(--accent-bg); margin: 4px 0 28px;">
+      <h3 style="font-size: 16px; margin-bottom: 6px; color: var(--text); font-family: var(--font-heading); display: flex; align-items: center; gap: 8px;">⛏️ Finished the notebook? Log your climb</h3>
+      <p class="muted" style="margin: 0 0 12px; font-size: 14px;">The notebook's last cell prints a personal <b>completion code</b> once your Task 1 &amp; Task 2 circuits pass. Paste it here to log the notebook on your <a href="ascent.html">Ascent map</a> and bank your climber XP. (Finishing the notebook is the one thing the quiz can't check for you — so it's the one thing you get to prove.)</p>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+        <input id="claim-input" type="text" placeholder="QA-${m.id}-XXXX-XXXX" autocomplete="off" spellcheck="false" aria-label="Notebook completion code"
+          style="flex: 1; min-width: 200px; font-family: var(--font-code); font-size: 15px; letter-spacing: 0.5px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); color: var(--text); text-transform: uppercase;">
+        <button class="btn" id="claim-btn" type="button">Log it 🚩</button>
+      </div>
+      <div id="claim-msg" style="margin-top: 10px; font-size: 14px; min-height: 20px;" aria-live="polite"></div>
+    </div>
+
     <h2 class="section" id="quiz">3 · Prove it — the quiz</h2>
     <div id="quiz-box"></div>`}
 
@@ -162,9 +173,42 @@
       <span>${next ? `<a href="module.html?id=${next.id}">Basecamp ${next.id}: ${next.title} →</a>` : ""}</span>
     </div>`;
 
+  // The "Log your climb" box redeems the code the notebook prints — closing the
+  // web↔Colab loop with clear, kind feedback for every outcome (Norman).
+  function renderClaim(mid) {
+    const input = document.getElementById("claim-input");
+    const btn = document.getElementById("claim-btn");
+    const msg = document.getElementById("claim-msg");
+    if (!input || !btn) return;
+    const ok = t => `<span style="color:var(--accent-strong)">${t}</span>`;
+    const bad = t => `<span style="color:var(--danger)">${t}</span>`;
+    // Show current state up front (visibility of system status).
+    if (Progress.get().modules[mid]?.notebookDone) {
+      msg.innerHTML = ok("✓ Notebook already logged for this basecamp — you're all set.");
+    }
+    const submit = () => {
+      const res = Progress.redeemCode(input.value);
+      if (res.ok && res.moduleId === mid && !res.already) {
+        msg.innerHTML = ok(`🎉 Logged! +${res.gained} climber XP — this camp now shows a ⛏️ on your <a href="ascent.html">Ascent map</a>.`);
+        if (window.confettiBurst) window.confettiBurst();
+      } else if (res.ok && res.moduleId === mid) {
+        msg.innerHTML = ok("✓ Already logged — nothing more to do here.");
+      } else if (res.ok) {
+        msg.innerHTML = `<span style="color:var(--amber)">That code is valid — but it's for Basecamp ${res.moduleId}. <a href="module.html?id=${res.moduleId}#claim">Log it there →</a></span>`;
+      } else if (res.reason === "format") {
+        msg.innerHTML = bad(`That doesn't look like a code yet. It should read <b>QA-${mid}-XXXX-XXXX</b> — copy the whole line from the notebook's last cell.`);
+      } else {
+        msg.innerHTML = bad("That code didn't verify. Copy it exactly from <i>this</i> basecamp's notebook — it only prints once both tasks pass.");
+      }
+    };
+    btn.addEventListener("click", submit);
+    input.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); submit(); } });
+  }
+
   if (!soon) {
     Progress.markOpened(id);
     renderQuiz("quiz-box", id, m);
+    renderClaim(id);
   }
   // Give first-timers a hover/tap safety net on the key vocabulary.
   Glossary.enhance(el);

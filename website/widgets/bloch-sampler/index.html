@@ -87,32 +87,35 @@ function draw() {
   ctx.fillStyle = "#6b6860"; ctx.font = "16px system-ui";
   ctx.fillText("|0⟩", 222, 55); ctx.fillText("|1⟩", 222, 380);
 
-  const g = state.collapse !== null
+  const collapsed = state.collapse !== null;
+  const g = collapsed
     ? project(state.collapse === 0 ? 0 : 180, 0)
     : project(state.theta, state.phi);
-  
-  const ratio = state.theta / 180;
-  
-  const grad = ctx.createLinearGradient(210, 210, g.sx, g.sy);
-  if (ratio === 0) {
-    grad.addColorStop(0, "#1f7a4d");
-    grad.addColorStop(1, "#1f7a4d");
-  } else if (ratio === 1) {
-    grad.addColorStop(0, "#b45309");
-    grad.addColorStop(1, "#b45309");
-  } else {
-    const split = 1 - ratio;
-    grad.addColorStop(0, "#1f7a4d");
-    grad.addColorStop(split, "#1f7a4d");
-    grad.addColorStop(split, "#b45309");
-    grad.addColorStop(1, "#b45309");
-  }
 
-  ctx.strokeStyle = grad; ctx.lineWidth = 4; ctx.lineCap = "round";
+  // The arrow is split by the Born-rule probabilities themselves: the green
+  // (|0⟩) segment is *exactly* P(0) of its length, the amber (|1⟩) segment
+  // exactly P(1). So the state vector literally IS the probability bar, drawn
+  // in physical space, and it agrees hue-for-hue with the P(0)/P(1) bars on
+  // the right. (Splitting by the tilt angle θ/180 instead looks right at 90°
+  // but drifts everywhere else, since P = sin²(θ/2), not θ/180.)
+  const [pz0, pz1] = probs();
+  ctx.lineWidth = 4; ctx.lineCap = "round";
+  if (collapsed) {
+    ctx.strokeStyle = state.collapse === 0 ? "#1f7a4d" : "#b45309";
+  } else {
+    const grad = ctx.createLinearGradient(210, 210, g.sx, g.sy);
+    grad.addColorStop(0, "#1f7a4d");
+    grad.addColorStop(pz0, "#1f7a4d");
+    grad.addColorStop(pz0, "#b45309");
+    grad.addColorStop(1, "#b45309");
+    ctx.strokeStyle = grad;
+  }
   ctx.beginPath(); ctx.moveTo(210, 210); ctx.lineTo(g.sx, g.sy); ctx.stroke();
-  
-  const tipColor = ratio === 0 ? "#1f7a4d" : "#b45309";
-  ctx.fillStyle = state.collapse !== null ? "#b3261e" : tipColor;
+
+  const tipColor = collapsed
+    ? (state.collapse === 0 ? "#1f7a4d" : "#b45309")
+    : (pz1 === 0 ? "#1f7a4d" : "#b45309");
+  ctx.fillStyle = collapsed ? "#b3261e" : tipColor;
   ctx.beginPath(); ctx.arc(g.sx, g.sy, 8, 0, 7); ctx.fill();
   if (state.collapse !== null) {
     ctx.fillStyle = "#b3261e"; ctx.font = "bold 15px system-ui";

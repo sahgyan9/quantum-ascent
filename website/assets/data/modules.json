@@ -6,7 +6,7 @@
       "title": "The Qubit & Superposition",
       "subtitle": "Amplitudes, the Born rule, your first circuit",
       "concepts": ["qubit as vector", "superposition", "Born rule", "shots & statistics", "H and RY gates"],
-      "minutes": 45,
+      "minutes": 50,
       "notebook": "notebooks/01_qubits_and_superposition.ipynb",
       "widget": "bloch-sampler",
       "xp": 100,

@@ -87,3 +87,11 @@ button.violet { background: var(--amber); color: #fff; }
 
 .readout { font-variant-numeric: tabular-nums; color: var(--text); font-weight: 600; }
 .big { font-size: 18px; font-weight: 700; }
+
+/* A fixed-size canvas (e.g. the Bloch sphere) must never spill past its frame. */
+canvas { max-width: 100%; height: auto; }
+
+/* On a phone-width embed, stack the widget's columns instead of squishing them. */
+@media (max-width: 560px) {
+  .wrap { flex-direction: column; }
+}
