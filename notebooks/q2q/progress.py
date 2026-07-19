@@ -17,7 +17,7 @@ from __future__ import annotations
 
 import numpy as np
 
-__all__ = ["code_for", "claim_basecamp_1"]
+__all__ = ["code_for", "claim_basecamp_1", "claim_basecamp_2"]
 
 # Shared with the website — DO NOT change without updating progress.js in lockstep
 # (tests/test_progress.py cross-checks the two implementations).
@@ -147,4 +147,65 @@ def claim_basecamp_1(qc_spin=None, qc3=None):
 
     code = code_for("01")
     _celebrate("01", code)
+    return code
+
+
+def _unitary_matches(circuit, expected, tol: float = 1e-6) -> bool:
+    """True if `circuit` implements the `expected` matrix up to global phase."""
+    try:
+        from qiskit.quantum_info import Operator
+        U = Operator(circuit).data
+        V = np.asarray(expected, dtype=complex)
+        if U.shape != V.shape:
+            return False
+        return abs(np.trace(U.conj().T @ V)) / U.shape[0] > 1.0 - tol
+    except Exception:
+        return False
+
+
+def _top_bitstring(circuit, shots: int = 256):
+    """The most frequent measurement outcome (spaces stripped), or None."""
+    try:
+        from qiskit_aer import AerSimulator
+        counts = AerSimulator().run(circuit, shots=shots).result().get_counts()
+        return max(counts, key=counts.get).replace(" ", "")
+    except Exception:
+        return None
+
+
+def claim_basecamp_2(qc_flip=None, qc_endian=None):
+    """Verify the Basecamp 2 tasks in this kernel and, if correct, print the
+    website completion code. Returns the code string on success, else None.
+
+    - qc_flip   (Task 1): a 1-qubit circuit H·Z·H, which equals the X gate.
+    - qc_endian (Task 2): a 2-qubit circuit with X on qubit 0 + measurement,
+      which Qiskit reads out as the bitstring '01'.
+    """
+    from .targets import M2_FLIP
+    try:
+        from qiskit import QuantumCircuit
+    except ImportError:            # no qiskit (shouldn't happen post-bootstrap)
+        QuantumCircuit = None
+
+    reasons = []
+    ok_flip = (QuantumCircuit is not None and isinstance(qc_flip, QuantumCircuit)
+               and qc_flip.num_qubits == 1 and _unitary_matches(qc_flip, M2_FLIP))
+    if not ok_flip:
+        reasons.append("<b>Task 1</b>: build <code>qc_flip</code> — apply "
+                       "<code>.h(0)</code>, <code>.z(0)</code>, <code>.h(0)</code> "
+                       "on one qubit (it equals X).")
+
+    ok_end = (QuantumCircuit is not None and isinstance(qc_endian, QuantumCircuit)
+              and qc_endian.num_qubits == 2 and _top_bitstring(qc_endian) == "01")
+    if not ok_end:
+        reasons.append("<b>Task 2</b>: build <code>qc_endian</code> — a 2-qubit "
+                       "circuit with <code>.x(0)</code> then <code>.measure_all()</code>, "
+                       "so it reads <code>'01'</code>.")
+
+    if reasons:
+        _nudge(reasons)
+        return None
+
+    code = code_for("02")
+    _celebrate("02", code)
     return code

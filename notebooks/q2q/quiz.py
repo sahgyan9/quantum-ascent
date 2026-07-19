@@ -103,6 +103,75 @@ _BANK: dict[str, dict] = {
             "slapped coin's face — gets written down.",
         ],
     ),
+    # ------------------------------------------------ Module 02
+    "m2-order-matters": dict(
+        question=(
+            "In the Gate Playground you build <b>H then Z</b>. Then you Reset "
+            "and build <b>Z then H</b>. Do the two circuits leave the qubit in "
+            "the same state?"
+        ),
+        options=[
+            "Yes — same gates, so the result is the same",
+            "No — the order you apply gates in can change the result",
+            "Only if you measure in between",
+        ],
+        correct=1,
+        feedback=[
+            "Same ingredients, different recipe! Watch the arrow: H-then-Z "
+            "lands it somewhere different from Z-then-H. Gates are actions, and "
+            "(like 'socks then shoes' vs 'shoes then socks') the order matters.",
+            "Exactly — quantum gates generally <i>don't commute</i>. H-then-Z "
+            "sends |0⟩ to a different state than Z-then-H. The order is part of "
+            "the circuit, not an afterthought.",
+            "Measurement isn't the issue — even with no measurement at all, the "
+            "final <i>state</i> depends on the order. Build both in the widget "
+            "and compare the arrow.",
+        ],
+    ),
+    "m2-unitary-undo": dict(
+        question=(
+            "You apply the <b>H</b> gate to a qubit, then apply <b>H</b> again. "
+            "Where does the qubit end up?"
+        ),
+        options=[
+            "Right back where it started — two H's cancel",
+            "Twice as far — the effect doubles",
+            "In an error state — you can't repeat a gate",
+        ],
+        correct=0,
+        feedback=[
+            "Right! H is its own undo (H·H = identity). Every quantum gate is "
+            "<b>reversible</b> — that's what 'unitary' means, and it's why a "
+            "quantum computer never quietly loses information.",
+            "Gates aren't like walking — repeating one doesn't 'go further'. H "
+            "is its own inverse, so the second H exactly undoes the first, "
+            "landing you back at the start.",
+            "Repeating a gate is perfectly fine! In fact H·H does something very "
+            "tidy: it returns the qubit to exactly where it began.",
+        ],
+    ),
+    "m2-endianness": dict(
+        question=(
+            "You make a <b>2-qubit</b> circuit and apply <b>X to qubit 0</b> "
+            "only, then measure. In Qiskit's output, which bitstring appears?"
+        ),
+        options=[
+            "'10'",
+            "'01'",
+            "Either one — it's ambiguous",
+        ],
+        correct=1,
+        feedback=[
+            "This is <i>the</i> classic trap. Qiskit writes qubit 0 on the "
+            "<b>right</b>, so flipping qubit 0 lights up the rightmost bit: "
+            "'01', not '10'.",
+            "Correct — Qiskit is 'little-endian': qubit 0 is the <b>rightmost</b> "
+            "character. X on qubit 0 gives '01'. Read bitstrings right-to-left "
+            "and this trap disappears.",
+            "It isn't ambiguous — Qiskit has a firm rule: qubit 0 is the "
+            "rightmost bit. So the answer is a definite '01'.",
+        ],
+    ),
 }
 
 

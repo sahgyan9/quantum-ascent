@@ -1,0 +1,212 @@
+<meta charset="utf-8">
+<title>Gate Playground — Quantum Ascent</title>
+<link rel="stylesheet" href="../_base/widget.css">
+<style>
+  .wrap { display: flex; gap: 16px; max-width: 900px; align-items: flex-start; }
+  #stage { background: radial-gradient(circle at 40% 35%, #ffffff, var(--bg2)), var(--panel);
+           border: 1px solid var(--line); border-radius: 10px; flex-shrink: 0; }
+  .right { flex: 1; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+
+  .palette { display: flex; flex-wrap: wrap; gap: 8px; }
+  .gate-btn { font-family: var(--font-code); font-weight: 700; font-size: 16px;
+              min-width: 44px; padding: 10px 12px; }
+  .gate-btn.g-x { background: var(--amber); }
+  .gate-btn.g-z, .gate-btn.g-s { background: #6d4bb6; }  /* phase gates — a third, clearly non-outcome hue */
+
+  .wire { display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+          min-height: 46px; padding: 8px 10px; background: var(--bg2);
+          border: 1px dashed var(--line); border-radius: 8px; }
+  .wire .start { color: var(--muted); font-family: var(--font-code); }
+  .chip { font-family: var(--font-code); font-weight: 700; color: #fff;
+          background: var(--accent); border-radius: 6px; padding: 4px 9px; font-size: 14px; }
+  .chip.g-x { background: var(--amber); } .chip.g-z, .chip.g-s { background: #6d4bb6; }
+  .wire .empty { color: var(--muted); font-style: italic; }
+
+  .bars { display: grid; grid-template-columns: 42px 1fr 60px; gap: 6px; align-items: center; }
+  .track { height: 16px; background: var(--bg2); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+  .fill { height: 100%; width: 0%; transition: width .2s; }
+  .f0 { background: var(--cyan); } .f1 { background: var(--violet); }
+
+  .state { font-family: var(--font-code); font-size: 15px; background: var(--bg2);
+           border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; }
+  .a0 { color: var(--accent-strong); } .a1 { color: var(--amber-strong); }
+  .insight { min-height: 20px; font-size: 13.5px; color: var(--muted); }
+  .insight b { color: #6d4bb6; }
+</style>
+
+<div class="hint-bar" id="hint">💡 <b>Build a circuit!</b> Click gates to drop them on the wire and watch the arrow move.
+① Add <b>H</b> — the coin starts spinning (equator). ② Then add <b>Z</b> — did the probabilities change? Watch closely.
+③ Hit <b>Reset</b>, then try the gates in a <i>different order</i>. Does order matter?</div>
+
+<div class="wrap">
+  <canvas id="stage" width="300" height="300" role="img" aria-label="Bloch arrow showing the current qubit state"></canvas>
+
+  <div class="right">
+    <div class="panel">
+      <label>Add a gate to the wire:</label>
+      <div class="palette">
+        <button class="gate-btn g-h" id="gH" title="Hadamard — tips |0⟩ down to the equator (a fair spin).">H</button>
+        <button class="gate-btn g-x" id="gX" title="Pauli-X — the bit flip |0⟩↔|1⟩ (a half turn).">X</button>
+        <button class="gate-btn g-z" id="gZ" title="Pauli-Z — flips the phase of |1⟩. Leaves probabilities untouched!">Z</button>
+        <button class="gate-btn g-s" id="gS" title="S gate — a quarter turn of phase on |1⟩.">S</button>
+        <button class="secondary" id="undo" title="Remove the last gate" style="margin-left:auto">↶ Undo</button>
+        <button class="secondary" id="reset">Reset</button>
+      </div>
+      <div style="margin:10px 0 4px;color:var(--muted)">Your circuit (runs left → right on a qubit that starts at |0⟩):</div>
+      <div class="wire" id="wire"><span class="start">|0⟩ →</span><span class="empty" id="empty">…click a gate above…</span></div>
+    </div>
+
+    <div class="panel">
+      <div class="bars">
+        <span>P(0)</span><div class="track"><div class="fill f0" id="p0bar"></div></div><span class="readout" id="p0">100%</span>
+        <span>P(1)</span><div class="track"><div class="fill f1" id="p1bar"></div></div><span class="readout" id="p1">0%</span>
+      </div>
+      <div class="state" style="margin-top:10px">
+        |ψ⟩ = <span class="a0" id="amp0">1</span> |0⟩ + <span class="a1" id="amp1">0</span> |1⟩
+      </div>
+      <div class="insight" id="insight" style="margin-top:8px">This arrow is your qubit. Its <b style="color:var(--accent-strong)">green</b> part is how likely you are to measure a <b>0</b>; its <b style="color:var(--amber-strong)">amber</b> part, how likely a <b>1</b>. Tap a gate above and watch it move!</div>
+    </div>
+  </div>
+</div>
+
+<script>
+"use strict";
+const $ = id => document.getElementById(id);
+
+/* --- tiny complex-number statevector sim (a qubit = two complex amplitudes) --- */
+const cadd = (a, b) => [a[0] + b[0], a[1] + b[1]];
+const cmul = (a, b) => [a[0] * b[0] - a[1] * b[1], a[0] * b[1] + a[1] * b[0]];
+const R = 1 / Math.sqrt(2);
+const GATES = {
+  H: { m: [[[R, 0], [R, 0]], [[R, 0], [-R, 0]]], cls: "g-h" },
+  X: { m: [[[0, 0], [1, 0]], [[1, 0], [0, 0]]], cls: "g-x" },
+  Z: { m: [[[1, 0], [0, 0]], [[0, 0], [-1, 0]]], cls: "g-z" },
+  S: { m: [[[1, 0], [0, 0]], [[0, 0], [0, 1]]], cls: "g-s" },
+};
+const applyGate = (st, m) => [
+  cadd(cmul(m[0][0], st[0]), cmul(m[0][1], st[1])),
+  cadd(cmul(m[1][0], st[0]), cmul(m[1][1], st[1])),
+];
+
+let circuit = [];
+function stateOf(list) {
+  let st = [[1, 0], [0, 0]];               // |0⟩
+  for (const g of list) st = applyGate(st, GATES[g].m);
+  return st;
+}
+
+/* Factor out the global phase so α is real ≥ 0 — only the *relative* phase is
+   physical, and this makes the |ψ⟩ readout clean and unambiguous. */
+function normGlobal(st) {
+  const ref = (st[0][0] * st[0][0] + st[0][1] * st[0][1]) > 1e-12 ? st[0] : st[1];
+  const ph = Math.atan2(ref[1], ref[0]);
+  const e = [Math.cos(-ph), Math.sin(-ph)];
+  return [cmul(st[0], e), cmul(st[1], e)];
+}
+
+const prob = c => c[0] * c[0] + c[1] * c[1];
+const f = x => (Math.abs(x) < 1e-9 ? 0 : x);
+function fmtC(c) {
+  const re = f(c[0]).toFixed(2), im = f(c[1]).toFixed(2);
+  if (Math.abs(c[1]) < 1e-9) return re;
+  if (Math.abs(c[0]) < 1e-9) return (im === "1.00" ? "" : im === "-1.00" ? "-" : im) + "i";
+  return re + (c[1] >= 0 ? "+" : "") + im + "i";
+}
+
+/* --- Bloch arrow drawing (matches bloch-sampler's look) --- */
+const cv = $("stage"), ctx = cv.getContext("2d"), C = 150;
+function project(theta, phi) {
+  const t = theta, p = phi;
+  const x = Math.sin(t) * Math.cos(p), y = Math.sin(t) * Math.sin(p), z = Math.cos(t);
+  return { sx: C + 108 * (x + 0.35 * y), sy: C - 108 * (z - 0.25 * y) };
+}
+function draw(st) {
+  ctx.clearRect(0, 0, 300, 300);
+  ctx.strokeStyle = "#cdc8bc"; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.arc(C, C, 108, 0, 7); ctx.stroke();
+  ctx.beginPath(); ctx.ellipse(C, C, 108, 32, 0, 0, 7); ctx.stroke();
+  ctx.setLineDash([4, 5]); ctx.beginPath(); ctx.moveTo(C, C - 118); ctx.lineTo(C, C + 118); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = "#6b6860"; ctx.font = "14px system-ui";
+  ctx.fillText("|0⟩", C + 8, C - 108); ctx.fillText("|1⟩", C + 8, C + 120);
+
+  const p0 = prob(st[0]);
+  const theta = 2 * Math.acos(Math.min(1, Math.sqrt(p0)));
+  const phi = Math.atan2(st[1][1], st[1][0]) - Math.atan2(st[0][1], st[0][0]);
+  const g = project(theta, phi);
+
+  const grad = ctx.createLinearGradient(C, C, g.sx, g.sy);
+  grad.addColorStop(0, "#1f7a4d");
+  grad.addColorStop(p0, "#1f7a4d");
+  grad.addColorStop(p0, "#b45309");
+  grad.addColorStop(1, "#b45309");
+  ctx.strokeStyle = grad; ctx.lineWidth = 4; ctx.lineCap = "round";
+  ctx.beginPath(); ctx.moveTo(C, C); ctx.lineTo(g.sx, g.sy); ctx.stroke();
+  ctx.fillStyle = prob(st[1]) < 1e-9 ? "#1f7a4d" : "#b45309";
+  ctx.beginPath(); ctx.arc(g.sx, g.sy, 7, 0, 7); ctx.fill();
+}
+
+const DEFAULT_INSIGHT = 'This arrow is your qubit. Its <b style="color:var(--accent-strong)">green</b> part is how likely you are to measure a <b>0</b>; its <b style="color:var(--amber-strong)">amber</b> part, how likely a <b>1</b>. Tap a gate above and watch it move!';
+
+/* Describe the CURRENT state in plain words, so the explanation always matches
+   what the student sees on screen (the P(0)/P(1) bars and the arrow). */
+function describeState(p0) {
+  const a = Math.round(p0 * 100);
+  if (p0 > 0.999) return 'a <b>definite 0</b> (arrow straight up)';
+  if (p0 < 0.001) return 'a <b>definite 1</b> (arrow straight down)';
+  if (Math.abs(p0 - 0.5) < 0.005) return 'a <b>fair 50/50 spin</b> (arrow on the equator)';
+  return `about <b>${a}%</b> chance of 0 and <b>${100 - a}%</b> chance of 1`;
+}
+function insightFor(last, p0) {
+  if (!last) return DEFAULT_INSIGHT;
+  const now = describeState(p0);
+  if (last === 'H') return `<b style="color:var(--accent-strong)">H</b> — the Hadamard, quantum's most famous gate. It swaps “definite” and “spinning”, so your qubit is now ${now}. <i>(Tap H again to snap right back.)</i>`;
+  if (last === 'X') return `<b style="color:var(--amber-strong)">X</b> — the bit-flip. It swaps 0 and 1, so your qubit is now ${now}.`;
+  if (last === 'Z') return `<b>Z</b> — a phase-flip on |1⟩. The chances don't change (still ${now}), but the hidden <b>phase</b> does — the seed of <b>interference</b>, the star of Basecamp 3.`;
+  if (last === 'S') return `<b>S</b> — a quarter-turn of phase on |1⟩. The chances stay put (still ${now}), but the <b>phase</b> turns — the fuel for <b>interference</b> later.`;
+  return DEFAULT_INSIGHT;
+}
+
+function render() {
+  const st = normGlobal(stateOf(circuit));
+  const p0 = prob(st[0]), p1 = prob(st[1]);
+  $("p0").textContent = Math.round(p0 * 100) + "%";
+  $("p1").textContent = Math.round(p1 * 100) + "%";
+  $("p0bar").style.width = 100 * p0 + "%";
+  $("p1bar").style.width = 100 * p1 + "%";
+  $("amp0").textContent = fmtC(st[0]);
+  $("amp1").textContent = fmtC(st[1]);
+  draw(st);
+
+  // Circuit strip
+  const wire = $("wire");
+  wire.innerHTML = '<span class="start">|0⟩ →</span>';
+  if (!circuit.length) {
+    wire.innerHTML += '<span class="empty">…click a gate above…</span>';
+  } else {
+    for (const gname of circuit) {
+      const chip = document.createElement("span");
+      chip.className = "chip " + GATES[gname].cls;
+      chip.textContent = gname;
+      wire.appendChild(chip);
+    }
+  }
+
+  // Feedback for EVERY gate (Norman): name the gate AND describe the result the
+  // student is looking at right now, so the words and the screen always agree.
+  $("insight").innerHTML = insightFor(circuit[circuit.length - 1], p0);
+}
+
+function add(g) {
+  circuit.push(g);
+  render();
+}
+$("gH").addEventListener("click", () => add("H"));
+$("gX").addEventListener("click", () => add("X"));
+$("gZ").addEventListener("click", () => add("Z"));
+$("gS").addEventListener("click", () => add("S"));
+$("undo").addEventListener("click", () => { circuit.pop(); render(); });
+$("reset").addEventListener("click", () => { circuit = []; render(); });
+
+render();
+</script>

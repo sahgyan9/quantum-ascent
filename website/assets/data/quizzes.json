@@ -44,5 +44,51 @@
       "answer": 1,
       "explain": "$RY(\\theta)|0\\rangle = \\cos(\\theta/2)|0\\rangle + \\sin(\\theta/2)|1\\rangle$, so $P(1) = \\sin^2(\\theta/2) = 1/4$ needs $\\theta/2 = \\pi/6$, i.e. $\\theta = \\pi/3$ ($60^\\circ$). Angles map to probabilities through $\\sin^2$ of the HALF-angle — the widget's slider showed you this curve."
     }
+  ],
+  "02": [
+    {
+      "q": "You apply the $Z$ gate to the fair state $\\frac{1}{\\sqrt{2}}|0\\rangle + \\frac{1}{\\sqrt{2}}|1\\rangle$. What happens to the measurement probabilities $P(0)$ and $P(1)$?",
+      "options": [
+        "They swap: $P(0) \\leftrightarrow P(1)$",
+        "Nothing — both stay $1/2$; $Z$ flips the phase of $|1\\rangle$, not the odds",
+        "Both become 0",
+        "$P(1)$ doubles"
+      ],
+      "answer": 1,
+      "explain": "$Z$ sends $|1\\rangle \\to -|1\\rangle$, so the state becomes $\\frac{1}{\\sqrt{2}}|0\\rangle - \\frac{1}{\\sqrt{2}}|1\\rangle = |-\\rangle$. Probabilities are the squared magnitudes, and $|{-}\\frac{1}{\\sqrt{2}}|^2 = 1/2$ — unchanged. Only the hidden sign (phase) moved, and that is exactly what powers interference later."
+    },
+    {
+      "q": "Starting from $|0\\rangle$, is 'H then Z' the same circuit as 'Z then H'?",
+      "options": [
+        "Yes — they use the same two gates",
+        "H-then-Z gives $|-\\rangle$, but Z-then-H gives $|+\\rangle$ — order matters",
+        "Both give $|+\\rangle$",
+        "The order never matters for quantum gates"
+      ],
+      "answer": 1,
+      "explain": "$H|0\\rangle = |+\\rangle$, then $Z|+\\rangle = |-\\rangle$. But $Z|0\\rangle = |0\\rangle$, then $H|0\\rangle = |+\\rangle$. Same ingredients, different results: quantum gates generally do not commute, so order is part of the circuit."
+    },
+    {
+      "q": "You apply $H$, then $Z$, then $H$ (in that order) to one qubit. What single gate does this sequence equal?",
+      "options": [
+        "$Z$ again — nothing really changed",
+        "$X$, the bit-flip",
+        "$H$",
+        "The identity (it does nothing)"
+      ],
+      "answer": 1,
+      "explain": "Sandwiching the phase-flip $Z$ between two Hadamards turns it into the bit-flip: $H \\cdot Z \\cdot H = X$. The Hadamards rotate the frame so that a 'phase' change becomes a visible 'bit' change — your first glimpse of why hidden phases matter."
+    },
+    {
+      "q": "In Qiskit you build a 2-qubit circuit, apply $X$ to qubit 0, and measure. Which bitstring appears?",
+      "options": [
+        "'10', because qubit 0 is written first",
+        "'01', because Qiskit puts qubit 0 on the right (little-endian)",
+        "'11'",
+        "'00'"
+      ],
+      "answer": 1,
+      "explain": "Qiskit is little-endian: qubit 0 is the rightmost character of the bitstring. Flipping qubit 0 lights up that rightmost bit, giving '01'. Read Qiskit bitstrings right-to-left and this trap disappears."
+    }
   ]
 }
