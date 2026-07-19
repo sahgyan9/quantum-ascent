@@ -182,5 +182,51 @@
       "answer": 1,
       "explain": "$\\Phi^+$ only ever gives 00 or 11 — agreement on every shot — so every score is $+1$ and $\\langle ZZ\\rangle = +1$. $\\langle ZZ\\rangle$ scores the *pair*, not either coin (each qubit alone is still fair). Flip one qubit to get $\\Psi^+$ and they always disagree instead: $\\langle ZZ\\rangle = -1$. This 'agreement energy' is the seed of the cost Hamiltonians you'll minimize at the summit."
     }
+  ],
+  "05": [
+    {
+      "q": "You want the <b>lowest-energy</b> state of a Hamiltonian but don't know which state it is. What is the <b>variational</b> strategy?",
+      "options": [
+        "Measure $|0\\rangle$ once and accept whatever comes out",
+        "Build a state with a tunable knob $\\theta$, read its energy, and adjust $\\theta$ to push the energy down",
+        "Solve the Schrödinger equation by hand for every possible state",
+        "Pick a random state and hope it is the ground state"
+      ],
+      "answer": 1,
+      "explain": "A **parameterized circuit** gives you a dial. You prepare $|\\psi(\\theta)\\rangle$, measure its energy $\\langle H\\rangle$, then nudge $\\theta$ to lower that energy and repeat — descending the landscape toward the ground state instead of guessing or brute-forcing."
+    },
+    {
+      "q": "In the variational loop the quantum computer prepares $|\\psi(\\theta)\\rangle$ and reports its energy. Who decides the <b>next</b> $\\theta$ to try?",
+      "options": [
+        "The quantum computer, by measuring more shots",
+        "A classical optimizer (e.g. COBYLA) running on an ordinary computer",
+        "The Hamiltonian chooses it automatically",
+        "It is fixed at the start and never changes"
+      ],
+      "answer": 1,
+      "explain": "It is a **hybrid** loop. Quantum hardware is the energy meter — it evaluates $\\langle H\\rangle$ at a given $\\theta$, which is the hard part. A plain classical optimizer reads those energies and picks the next $\\theta$, walking downhill until it reaches the valley floor."
+    },
+    {
+      "q": "For the ansatz $RY(\\theta)|0\\rangle$ and cost Hamiltonian $H = Z + 0.5\\,X$, the energy is $E(\\theta) = \\cos\\theta + 0.5\\sin\\theta$. What is $E(0)$ (the state $|0\\rangle$)?",
+      "options": [
+        "$0$",
+        "$+1$",
+        "$-1.118$",
+        "$+1.5$"
+      ],
+      "answer": 1,
+      "explain": "$E(0) = \\cos 0 + 0.5\\sin 0 = 1 + 0 = +1$. Starting at $|0\\rangle$ sits you high on the hillside; the whole job is to turn the knob until the energy drops to the bottom of the valley."
+    },
+    {
+      "q": "Your optimizer keeps lowering the energy and stops at $E = -1.118$, unable to go lower. What have you found, and why isn't the ground state just $|1\\rangle$?",
+      "options": [
+        "A bug — energy can never be negative",
+        "The ground state; for $H = Z + 0.5X$ it is a tilted mix of $|0\\rangle$ and $|1\\rangle$, not a basis state",
+        "The state $|1\\rangle$, which is always the ground state",
+        "The highest-energy state"
+      ],
+      "answer": 1,
+      "explain": "$-1.118 = -\\sqrt{1.25}$ is the smallest eigenvalue of $Z + 0.5X$ — the **ground energy**. Because the $X$ term tilts the Hamiltonian, the lowest-energy state is a rotated blend, not $|1\\rangle$. That is exactly why you had to *search* with a tunable angle instead of reading off an obvious answer — and for a cost Hamiltonian, that bottom encodes the solution to your problem."
+    }
   ]
 }

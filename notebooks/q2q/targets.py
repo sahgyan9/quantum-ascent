@@ -20,3 +20,8 @@ M3_BELL = np.array([_SQ2, 0, 0, _SQ2])                 # (|00> + |11>)/√2 — 
 # Module 04
 M4_Z75 = 0.5                                           # <Z> of RY(pi/3)|0> (the 75/25 state): 3/4 - 1/4
 M4_ZZ_ANTI = -1.0                                      # <ZZ> of the anti-correlated Bell pair: always disagree
+
+# Module 05 — variational principle. Cost Hamiltonian H = Z + 0.5 X, ansatz RY(theta)|0>,
+# so E(theta) = cos(theta) + 0.5 sin(theta). Its ground (lowest) energy is -sqrt(1.25).
+M5_E_HALF = 0.5                                         # E(pi/2) = cos(pi/2) + 0.5 sin(pi/2) — a landscape sanity point
+M5_GROUND = -np.sqrt(1.25)                              # -1.118034 — smallest eigenvalue of Z + 0.5 X

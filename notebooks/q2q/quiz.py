@@ -311,6 +311,77 @@ _BANK: dict[str, dict] = {
             "always <b>agrees</b> (00 or 11), so its ZZ energy is +1, not −1.",
         ],
     ),
+    # ------------------------------------------------ Module 05
+    "m5-why-parameter": dict(
+        question=(
+            "You want the state with the <b>lowest energy</b> under some "
+            "Hamiltonian, but you don't know which state that is. What's the "
+            "<b>variational</b> strategy?"
+        ),
+        options=[
+            "Measure the |0⟩ state once — whatever you get is the answer",
+            "Build a state with a tunable knob θ, read its energy, and adjust θ "
+            "to push the energy down",
+            "Try all infinitely many states one by one until you find the lowest",
+        ],
+        correct=1,
+        feedback=[
+            "A single measurement of a fixed state can't search — it just reports "
+            "one state's behaviour. The whole point is to <i>vary</i> the state and "
+            "hunt for the best one.",
+            "Exactly. A <b>parameterized circuit</b> gives you a dial (or several). "
+            "You read the energy at your current setting, nudge the dial to lower "
+            "it, and repeat — descending the landscape toward the ground state.",
+            "You can't enumerate infinitely many states. Instead you make the state "
+            "depend on a knob and let a smart search follow the slope downhill — "
+            "far fewer evaluations than brute force.",
+        ],
+    ),
+    "m5-who-does-what": dict(
+        question=(
+            "In the variational loop, the quantum computer prepares the state and "
+            "reports its <b>energy</b>. Who decides the <b>next</b> angle to try?"
+        ),
+        options=[
+            "The quantum computer, by measuring harder",
+            "A classical optimizer running on your laptop",
+            "Nobody — the angle is fixed from the start",
+        ],
+        correct=1,
+        feedback=[
+            "The quantum device is the <i>energy meter</i>, not the navigator. It "
+            "tells you how high you are; it doesn't choose where to step next.",
+            "Right — it's a partnership. Quantum hardware evaluates the energy at a "
+            "given θ (a job classical computers find hard), and a plain classical "
+            "optimizer (like COBYLA) uses those readings to pick the next θ. Back "
+            "and forth until it reaches the valley floor.",
+            "If the angle never changed there'd be no search at all. The angle is "
+            "exactly what the classical optimizer keeps adjusting.",
+        ],
+    ),
+    "m5-ground-state": dict(
+        question=(
+            "Your optimizer keeps lowering the energy and finally stops at "
+            "<b>E = −1.118</b>, unable to go lower. What have you found?"
+        ),
+        options=[
+            "A mistake — energy should never be negative",
+            "The ground state: the lowest-energy state the Hamiltonian allows",
+            "The |1⟩ state, always",
+        ],
+        correct=1,
+        feedback=[
+            "Negative energy is perfectly normal here — the Z scoreboard pays −1 "
+            "for outcome 1, so energies routinely go below zero. Nothing broke.",
+            "Yes. The lowest point of the landscape is the <b>ground state</b>, and "
+            "its energy is the smallest eigenvalue of the Hamiltonian. Reaching it "
+            "is the goal — and for a cost Hamiltonian, that bottom encodes the "
+            "answer to your problem.",
+            "Not necessarily |1⟩ — for H = Z + 0.5·X the ground state is a tilted "
+            "mix, not a basis state. That's exactly why we needed to <i>search</i> "
+            "for it instead of guessing.",
+        ],
+    ),
 }
 
 

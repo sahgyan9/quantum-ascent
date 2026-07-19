@@ -18,7 +18,7 @@ from __future__ import annotations
 import numpy as np
 
 __all__ = ["code_for", "claim_basecamp_1", "claim_basecamp_2",
-           "claim_basecamp_3", "claim_basecamp_4"]
+           "claim_basecamp_3", "claim_basecamp_4", "claim_basecamp_5"]
 
 # Shared with the website — DO NOT change without updating progress.js in lockstep
 # (tests/test_progress.py cross-checks the two implementations).
@@ -321,4 +321,51 @@ def claim_basecamp_4(qc_z=None, qc_zz=None, tol: float = 1e-2):
 
     code = code_for("04")
     _celebrate("04", code)
+    return code
+
+
+def claim_basecamp_5(energy_fn=None, theta_star=None, tol: float = 1e-2):
+    """Verify the Basecamp 5 tasks in this kernel and, if correct, print the
+    website completion code. Returns the code string on success, else None.
+
+    - energy_fn (Task 1): the cost function energy(theta) that returns
+      <H> for RY(theta)|0> with H = Z + 0.5 X. We probe it at two known
+      angles: E(0) = +1 and E(pi/2) = +0.5.
+    - theta_star (Task 2): the angle your optimizer landed on. We feed it back
+      through your own cost function and confirm it reached the ground energy
+      -sqrt(1.25) ~ -1.1180 (the deepest point of the landscape).
+    """
+    from .targets import M5_E_HALF, M5_GROUND
+
+    reasons = []
+    ok_fn = False
+    if callable(energy_fn):
+        try:
+            ok_fn = (abs(float(energy_fn(0.0)) - 1.0) < tol
+                     and abs(float(energy_fn(np.pi / 2)) - M5_E_HALF) < tol)
+        except Exception:
+            ok_fn = False
+    if not ok_fn:
+        reasons.append("<b>Task 1</b>: complete <code>energy(theta)</code> so it "
+                       "returns <code>&lt;H&gt;</code> for <code>RY(theta)|0&gt;</code> "
+                       "with <code>H = Z + 0.5 X</code> (check: E(0)=+1, E(&pi;/2)=+0.5).")
+
+    ok_min = False
+    if ok_fn and theta_star is not None:
+        try:
+            ok_min = float(energy_fn(float(theta_star))) < M5_GROUND + tol
+        except Exception:
+            ok_min = False
+    if not ok_min:
+        reasons.append("<b>Task 2</b>: run the optimizer and pass its "
+                       "<code>theta_star</code> — it must reach the ground energy "
+                       "<code>-&radic;1.25 &asymp; -1.118</code> (the bottom of the "
+                       "valley).")
+
+    if reasons:
+        _nudge(reasons)
+        return None
+
+    code = code_for("05")
+    _celebrate("05", code)
     return code

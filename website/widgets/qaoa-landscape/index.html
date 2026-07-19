@@ -1,0 +1,196 @@
+<meta charset="utf-8">
+<title>Energy Landscape — Quantum Ascent</title>
+<link rel="stylesheet" href="../_base/widget.css">
+<style>
+  .wrap { display: flex; gap: 16px; max-width: 940px; align-items: flex-start; flex-wrap: wrap; }
+  .left { display: flex; flex-direction: column; gap: 12px; flex: 0 0 260px; }
+  .right { flex: 1; display: flex; flex-direction: column; gap: 12px; min-width: 320px; }
+
+  /* qubit state as exact Born proportions (green = P(0), amber = P(1)) — same
+     visual language as the Energy Meter, so the two basecamps read as one story */
+  .statebar { display: flex; height: 34px; border: 1px solid var(--line); border-radius: 8px;
+              overflow: hidden; font: 700 12px/34px var(--font-code); color: #fff; }
+  .statebar .p0 { background: var(--accent); text-align: center; transition: width .12s; overflow: hidden; }
+  .statebar .p1 { background: var(--amber); text-align: center; transition: width .12s; overflow: hidden; }
+
+  .sliderrow label { font-size: 13px; color: var(--muted); font-weight: 600; }
+  .sliderrow input[type=range] { width: 100%; }
+
+  .readgrid { display: grid; grid-template-columns: 1fr auto; gap: 6px 10px; font-size: 13px; align-items: baseline; }
+  .readgrid b { font-family: var(--font-code); font-size: 16px; color: var(--accent-strong); }
+  .readgrid b.ink { color: var(--ink); }
+
+  svg { width: 100%; height: auto; display: block; background: var(--bg2);
+        border: 1px solid var(--line); border-radius: 10px; }
+  .curve { fill: none; stroke: var(--accent-strong); stroke-width: 2.5; }
+  .zeroline { stroke: var(--line); stroke-width: 1; }
+  .goalline { stroke: var(--ink); stroke-width: 1.5; stroke-dasharray: 5 4; }
+  .goaltxt { fill: var(--ink); font: 700 11px var(--font-code); }
+  .axtxt { fill: var(--muted); font: 600 11px var(--font-code); }
+  .ball { fill: var(--panel); stroke: var(--accent-strong); stroke-width: 3; }
+  .droptrail { stroke: var(--amber-strong); stroke-width: 1.5; stroke-dasharray: 2 3; opacity: .6; }
+  .insight { min-height: 20px; font-size: 13.5px; color: var(--muted); margin-top: 8px; }
+  .legend { font-size: 12px; color: var(--muted); display: flex; gap: 14px; flex-wrap: wrap; margin-top: 8px; }
+  .dot { display: inline-block; width: 10px; height: 10px; border-radius: 3px; vertical-align: middle; }
+</style>
+
+<div class="hint-bar" id="hint">💡 <b>Find the bottom of the valley.</b> The curve is the energy of your qubit for every angle θ of the tuning knob
+(cost Hamiltonian <b>H = Z + 0.5·X</b>). ① Drag the <b>θ slider</b> and watch the ball ride the landscape. ② <b>Predict</b> where
+the lowest point is, then hit <b>Let the optimizer descend</b> — a classical optimizer rolls the ball downhill to the
+<b>ground state</b> (the ink goal line). No single spot beats it.</div>
+
+<div class="wrap">
+  <div class="left">
+    <div class="panel">
+      <label style="font-size:13px;color:var(--muted);font-weight:600">The qubit's state at this θ (Born proportions)</label>
+      <div class="statebar" style="margin-top:8px">
+        <div class="p0" id="barP0">0</div>
+        <div class="p1" id="barP1">1</div>
+      </div>
+      <div class="sliderrow" style="margin-top:12px">
+        <label>Tuning knob θ = <span id="thetaLab">30°</span></label>
+        <input type="range" id="theta" min="0" max="360" step="1" value="30">
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="readgrid">
+        <span>Energy here E(θ)</span><b id="eNow">+1.12</b>
+        <span>Ground energy (goal)</span><b id="eGoal" class="ink">−1.12</b>
+        <span>Best found so far</span><b id="eBest">—</b>
+        <span>Optimizer steps</span><b id="steps" style="color:var(--muted)">0</b>
+      </div>
+    </div>
+  </div>
+
+  <div class="right">
+    <div class="panel">
+      <svg id="plot" viewBox="0 0 420 230" role="img" aria-label="energy landscape">
+        <line id="zero" class="zeroline"></line>
+        <line id="goal" class="goalline"></line>
+        <text id="goalTxt" class="goaltxt">ground energy</text>
+        <polyline id="curve" class="curve"></polyline>
+        <line id="trail" class="droptrail"></line>
+        <circle id="ball" class="ball" r="7"></circle>
+        <text class="axtxt" x="34" y="224">0</text>
+        <text class="axtxt" x="196" y="224">π</text>
+        <text class="axtxt" x="386" y="224">2π</text>
+        <text class="axtxt" x="6" y="24">+1.25</text>
+        <text class="axtxt" x="6" y="205">−1.25</text>
+      </svg>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">
+        <button class="g-h" id="descend">Let the optimizer descend ⛷️</button>
+        <button class="secondary" id="reset" style="margin-left:auto">Reset</button>
+      </div>
+      <div class="legend">
+        <span><span class="dot" style="background:var(--accent-strong)"></span> energy landscape E(θ)</span>
+        <span><span class="dot" style="background:var(--ink)"></span> ground energy (the goal)</span>
+      </div>
+      <div class="insight" id="insight">Drag the knob to feel the landscape, predict the lowest point, then let the optimizer descend.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+"use strict";
+const $ = id => document.getElementById(id);
+const TAU = Math.PI * 2;
+
+// The cost Hamiltonian H = Z + 0.5 X gives this energy for the state RY(theta)|0>.
+// (Exactly the E(theta) the Basecamp 5 notebook computes with Qiskit.)
+const E = t => Math.cos(t) + 0.5 * Math.sin(t);
+const dE = t => -Math.sin(t) + 0.5 * Math.cos(t);   // slope, for gradient descent
+const GROUND = -Math.sqrt(1.25);                    // deepest point: -1.118
+const ARGMIN = Math.PI + Math.atan(0.5);            // where the valley bottom sits
+
+// --- plot geometry: theta (0..2pi) -> x, energy (-1.25..+1.25) -> y ---------
+const X0 = 34, X1 = 400, YTOP = 18, YBOT = 200, ESPAN = 1.25;
+const X = t => X0 + (t / TAU) * (X1 - X0);
+const Y = e => YTOP + (ESPAN - e) / (2 * ESPAN) * (YBOT - YTOP);
+
+let theta = 30 * Math.PI / 180;
+let best = Infinity, steps = 0, timer = null;
+
+function fmt(v) { return (v >= 0 ? "+" : "−") + Math.abs(v).toFixed(2); }
+
+function buildStatic() {
+  // the energy curve, sampled densely
+  let pts = [];
+  for (let i = 0; i <= 160; i++) { const t = i / 160 * TAU; pts.push(X(t) + "," + Y(E(t))); }
+  $("curve").setAttribute("points", pts.join(" "));
+  // zero-energy reference line
+  $("zero").setAttribute("x1", X0); $("zero").setAttribute("x2", X1);
+  $("zero").setAttribute("y1", Y(0)); $("zero").setAttribute("y2", Y(0));
+  // ground-energy goal line + label
+  $("goal").setAttribute("x1", X0); $("goal").setAttribute("x2", X1);
+  $("goal").setAttribute("y1", Y(GROUND)); $("goal").setAttribute("y2", Y(GROUND));
+  $("goalTxt").setAttribute("x", X0 + 4); $("goalTxt").setAttribute("y", Y(GROUND) + 13);
+  $("goalTxt").textContent = "ground energy " + fmt(GROUND);
+  $("eGoal").textContent = fmt(GROUND);
+}
+
+function render() {
+  const e = E(theta);
+  // ball on the curve
+  $("ball").setAttribute("cx", X(theta)); $("ball").setAttribute("cy", Y(e));
+  // vertical drop line from ball to the ground goal, so "how far above the bottom" is visible
+  $("trail").setAttribute("x1", X(theta)); $("trail").setAttribute("x2", X(theta));
+  $("trail").setAttribute("y1", Y(e)); $("trail").setAttribute("y2", Y(GROUND));
+  // qubit state bar: P(0)=cos^2(theta/2), P(1)=sin^2(theta/2)
+  const p0 = Math.cos(theta / 2) ** 2, pct0 = Math.round(p0 * 100), pct1 = 100 - pct0;
+  $("barP0").style.width = pct0 + "%"; $("barP0").textContent = pct0 ? pct0 + "%" : "";
+  $("barP1").style.width = pct1 + "%"; $("barP1").textContent = pct1 ? pct1 + "%" : "";
+  // readouts
+  $("thetaLab").textContent = Math.round(theta * 180 / Math.PI) + "°";
+  $("eNow").textContent = fmt(e);
+  $("eBest").textContent = best === Infinity ? "—" : fmt(best);
+  $("steps").textContent = steps;
+  // insight
+  const gap = e - GROUND;
+  if (gap < 0.01) {
+    $("insight").innerHTML = "🎯 <b>Ground state reached!</b> Energy " + fmt(e) +
+      " — the lowest the Hamiltonian allows. No angle does better. This is what the variational algorithm hunts for.";
+  } else if (gap < 0.3) {
+    $("insight").innerHTML = "Almost at the bottom — energy " + fmt(e) + ", just above the ground goal. Keep descending.";
+  } else {
+    $("insight").innerHTML = "Energy here is " + fmt(e) + ", well above the ground energy " + fmt(GROUND) +
+      ". You're up the hillside — slide downhill or let the optimizer find the valley.";
+  }
+}
+
+function setTheta(t, track) {
+  theta = ((t % TAU) + TAU) % TAU;
+  if (track) best = Math.min(best, E(theta));
+  render();
+}
+
+function stopTimer() { if (timer) { clearInterval(timer); timer = null; } $("descend").disabled = false; }
+
+function descend() {
+  stopTimer();
+  $("descend").disabled = true;
+  const lr = 0.35;
+  timer = setInterval(() => {
+    let g = dE(theta);
+    if (Math.abs(g) < 1e-3) g += 0.02;            // nudge off a flat spot (e.g. the hilltop)
+    setTheta(theta - lr * g, true);               // step downhill
+    steps++;
+    if (E(theta) - GROUND < 1e-3 || steps > 80) { stopTimer(); }
+    $("steps").textContent = steps;
+  }, 110);
+}
+
+function reset() {
+  stopTimer();
+  best = Infinity; steps = 0;
+  $("theta").value = 30;
+  setTheta(30 * Math.PI / 180, false);
+}
+
+$("theta").addEventListener("input", e => { stopTimer(); setTheta((+e.target.value) * Math.PI / 180, true); });
+$("descend").addEventListener("click", descend);
+$("reset").addEventListener("click", reset);
+
+buildStatic();
+setTheta(theta, false);
+</script>
