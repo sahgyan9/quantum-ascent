@@ -46,19 +46,21 @@ pytest                                                    # verify everything
 - `website/widgets/` — self-contained HTML/JS interactives (zero dependencies)
 - `tools/` — deterministic scripts (notebook generation, student-copy builder, local server)
 - `tests/` — checker unit tests, full notebook execution, widget smoke tests
-- `docs/` — target audience, learning objectives, methodology, user guide (in progress)
+- `docs/` — target audience, learning objectives, methodology, technologies, AI-use
+  disclosure, user guide, future improvements
 
 ## Status
 
-🚧 Basecamp 1 (The Qubit & Superposition) is complete with the Bloch Sampler widget,
-quiz, and Analogy Studio. Basecamps 2–6 are being carved out of the mountain —
-follow the [ascent map](https://quantum-ascent-77617.web.app/ascent.html).
+🚧 Basecamps 1–2 (The Qubit & Superposition; Gates & Circuits) are live — each with its
+interactive widget, gap-fill notebook, quiz, and completion-code handshake. Basecamps 3–6
+are being carved out of the mountain — follow the
+[ascent map](https://quantum-ascent-77617.web.app/ascent.html).
 
 ## License & attribution
 
-Code: Apache-2.0 · Content: CC-BY-4.0 (formal LICENSE files land with the v1 release).
+Code: [Apache-2.0](LICENSE) · Content: [CC-BY-4.0](LICENSE-CONTENT.md).
 Pedagogy inspired by [QWorld's QNickel](https://qworld.net) gap-fill methodology and
 [NVIDIA CUDA-Q Academic's](https://github.com/NVIDIA/cuda-q-academic) widget-first
 teaching. AI assistance (Claude Code) is used for development and documented in
-`docs/ai_use.md` (forthcoming); all physics is human-verified against standard
-references and executable tests.
+[`docs/ai_use.md`](docs/ai_use.md); all physics is human-verified against standard
+references and executable tests. Full stack: [`docs/technologies.md`](docs/technologies.md).
