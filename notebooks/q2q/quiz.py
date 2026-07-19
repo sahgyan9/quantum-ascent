@@ -240,6 +240,77 @@ _BANK: dict[str, dict] = {
             "certainties. No entanglement there.",
         ],
     ),
+    # ------------------------------------------------ Module 04
+    "m4-z-scoreboard": dict(
+        question=(
+            "The <b>Z observable</b> is a scoreboard: it hands the outcome "
+            "<b>0</b> a score of <b>+1</b> and the outcome <b>1</b> a score of "
+            "<b>−1</b>. A qubit is in state |0⟩. What is its Z-score?"
+        ),
+        options=[
+            "0 — because the qubit is |0⟩",
+            "+1 — Z scores the outcome 0 as +1",
+            "−1 — because 0 is the 'off' state",
+        ],
+        correct=1,
+        feedback=[
+            "Careful — the <i>label</i> is 0, but the <i>score</i> Z assigns to "
+            "outcome 0 is +1, not 0. Z isn't reading the bit value; it's looking "
+            "up a payout on its scoreboard.",
+            "Exactly. Z pays +1 for outcome 0 and −1 for outcome 1. A qubit that "
+            "always reads 0 always scores +1, so its average Z-score (its energy) "
+            "is +1. It's a lookup, not the bit itself.",
+            "That's the score for outcome <i>1</i>, not 0. Z's scoreboard is "
+            "0 → +1 and 1 → −1 — the opposite sign to what the bit labels might "
+            "suggest.",
+        ],
+    ),
+    "m4-expectation-average": dict(
+        question=(
+            "You put a qubit in the fair state |+⟩ (a 50/50 coin) and ask for its "
+            "<b>expectation value</b> ⟨Z⟩. Each single measurement can only be "
+            "+1 or −1, so what is ⟨Z⟩?"
+        ),
+        options=[
+            "Impossible — you can never actually measure the value 0",
+            "0 — it's the long-run <i>average</i> score: half +1, half −1",
+            "+1 — measurement always rounds up",
+        ],
+        correct=1,
+        feedback=[
+            "True that no single shot ever <i>reads</i> 0 — but ⟨Z⟩ isn't one "
+            "shot. It's the average over many, and averaging +1 and −1 in equal "
+            "amounts lands squarely on 0.",
+            "Right. ⟨Z⟩ = (+1)·P(0) + (−1)·P(1) = ½ − ½ = 0. No single slap gives "
+            "0, yet the <i>average</i> does — exactly the predict-the-statistics "
+            "move from Basecamp 1, now measuring energy instead of counting heads.",
+            "Not quite — measurement doesn't round. Half the shots give +1 and "
+            "half give −1; their average is 0, the honest expectation value.",
+        ],
+    ),
+    "m4-zz-agreement": dict(
+        question=(
+            "The <b>ZZ</b> Hamiltonian scores a two-qubit outcome +1 when the "
+            "qubits <b>agree</b> (00 or 11) and −1 when they <b>disagree</b> (01 "
+            "or 10). For the Bell pair (|00⟩+|11⟩)/√2, what is the energy ⟨ZZ⟩?"
+        ),
+        options=[
+            "0 — each qubit alone is a fair 50/50",
+            "+1 — the qubits always agree, so every shot scores +1",
+            "−1 — entangled qubits always disagree",
+        ],
+        correct=1,
+        feedback=[
+            "Each qubit <i>alone</i> is 50/50, true — but ⟨ZZ⟩ scores the "
+            "<b>pair</b>, not either coin. The Bell pair only ever gives 00 or 11, "
+            "so it agrees every time.",
+            "Exactly. Φ⁺ gives only 00 or 11 — agreement on every shot — so every "
+            "score is +1 and the average energy is +1. Flip one qubit (the Ψ⁺ "
+            "pair) and they always disagree instead: ⟨ZZ⟩ = −1.",
+            "That's the <i>anti</i>-correlated pair Ψ⁺. The plain Bell pair Φ⁺ "
+            "always <b>agrees</b> (00 or 11), so its ZZ energy is +1, not −1.",
+        ],
+    ),
 }
 
 

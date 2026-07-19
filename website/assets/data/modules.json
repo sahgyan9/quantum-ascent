@@ -44,10 +44,10 @@
       "concepts": ["observables", "SparsePauliOp", "expectation values", "cost Hamiltonians"],
       "minutes": 50,
       "notebook": "notebooks/04_hamiltonians_and_expectation.ipynb",
-      "widget": "bloch-sampler",
+      "widget": "energy-meter",
       "xp": 120,
       "badge": null,
-      "status": "coming-soon"
+      "status": "available"
     },
     {
       "id": "05",

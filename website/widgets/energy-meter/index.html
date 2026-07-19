@@ -1,0 +1,190 @@
+<meta charset="utf-8">
+<title>Energy Meter — Quantum Ascent</title>
+<link rel="stylesheet" href="../_base/widget.css">
+<style>
+  .wrap { display: flex; gap: 16px; max-width: 920px; align-items: flex-start; flex-wrap: wrap; }
+  .left { display: flex; flex-direction: column; gap: 12px; flex: 0 0 280px; }
+  .right { flex: 1; display: flex; flex-direction: column; gap: 12px; min-width: 300px; }
+
+  /* the qubit state as an EXACT Born-proportion bar: green share = P(0), amber = P(1) */
+  .statebar { display: flex; height: 40px; border: 1px solid var(--line); border-radius: 8px;
+              overflow: hidden; font: 700 13px/40px var(--font-code); color: #fff; }
+  .statebar .p0 { background: var(--accent); text-align: center; transition: width .18s; white-space: nowrap; overflow: hidden; }
+  .statebar .p1 { background: var(--amber); text-align: center; transition: width .18s; white-space: nowrap; overflow: hidden; }
+  .amp { font-family: var(--font-code); font-size: 14px; background: var(--bg2);
+         border: 1px solid var(--line); border-radius: 8px; padding: 9px 12px; text-align: center; }
+  .sliderrow label { font-size: 13px; color: var(--muted); font-weight: 600; }
+  .sliderrow input[type=range] { width: 100%; }
+
+  .scoreboard { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 10px; font-size: 13px; }
+  .score { display: flex; justify-content: space-between; align-items: baseline; gap: 6px; }
+  .score .pill { font: 700 13px/1 var(--font-code); padding: 3px 7px; border-radius: 6px; }
+  .pill.plus { background: var(--accent-bg); color: var(--accent-strong); }
+  .pill.minus { background: var(--amber-bg); color: var(--amber-strong); }
+
+  /* the energy meter: a −1 … 0 … +1 axis. Ink goal tick = the exact ⟨Z⟩ the
+     running average must converge to; the needle = what the shots have measured so far. */
+  .meter { position: relative; height: 56px; margin: 6px 2px 2px; }
+  .axis { position: absolute; top: 26px; left: 0; right: 0; height: 8px; border-radius: 5px;
+          background: linear-gradient(90deg, var(--amber) 0%, var(--bg2) 50%, var(--accent) 100%);
+          border: 1px solid var(--line); }
+  .zero { position: absolute; top: 18px; bottom: 14px; left: 50%; width: 2px; background: var(--line); }
+  .goal { position: absolute; top: 12px; height: 34px; width: 3px; background: var(--ink);
+          transition: left .18s; }
+  .goal::after { content: "⟨Z⟩ goal"; position: absolute; top: -16px; left: 50%; transform: translateX(-50%);
+          font: 700 11px/1 var(--font-code); color: var(--ink); white-space: nowrap; }
+  .needle { position: absolute; top: 20px; width: 16px; height: 16px; border-radius: 50%;
+            background: var(--panel); border: 3px solid var(--accent-strong);
+            transform: translateX(-8px); transition: left .18s, border-color .18s; opacity: .35; }
+  .needle.live { opacity: 1; }
+  .ticks { position: absolute; top: 40px; left: 0; right: 0; display: flex; justify-content: space-between;
+           font: 600 11px/1 var(--font-code); color: var(--muted); }
+
+  .bignum { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; font-size: 14px; }
+  .bignum b { font-family: var(--font-code); font-size: 22px; color: var(--accent-strong); }
+  .insight { min-height: 20px; font-size: 13.5px; color: var(--muted); margin-top: 8px; }
+  .legend { font-size: 12px; color: var(--muted); display: flex; gap: 14px; flex-wrap: wrap; margin-top: 8px; }
+  .dot { display: inline-block; width: 10px; height: 10px; border-radius: 3px; vertical-align: middle; }
+</style>
+
+<div class="hint-bar" id="hint">💡 <b>Energy = an average score.</b> The <b>Z</b> observable pays <b>+1</b> for outcome 0 and <b>−1</b> for outcome 1.
+Set the qubit with the slider, <b>predict</b> where the ⟨Z⟩ goal mark sits, then hit <b>Measure ×100</b> and watch the needle climb toward it.
+① Slide to all-green (|0⟩) → energy <b>+1</b>. ② Slide to the middle (fair coin) → energy <b>0</b>. ③ 75% green → energy <b>+0.5</b>.</div>
+
+<div class="wrap">
+  <div class="left">
+    <div class="panel">
+      <label style="font-size:13px;color:var(--muted);font-weight:600">The qubit's state (exact Born proportions)</label>
+      <div class="statebar" style="margin-top:8px">
+        <div class="p0" id="barP0">0</div>
+        <div class="p1" id="barP1">1</div>
+      </div>
+      <div class="amp" id="ampText" style="margin-top:10px">?</div>
+      <div class="sliderrow" style="margin-top:12px">
+        <label>Chance of outcome <b>0</b> (green): <span id="p0lab">50%</span></label>
+        <input type="range" id="p0" min="0" max="100" step="1" value="50">
+      </div>
+    </div>
+
+    <div class="panel">
+      <label style="font-size:13px;color:var(--muted);font-weight:600">Scoreboard</label>
+      <div class="scoreboard" style="margin-top:8px">
+        <div class="score"><span>Outcome 0</span><span class="pill plus">+1</span></div>
+        <div class="score"><span>Outcome 1</span><span class="pill minus">−1</span></div>
+        <div class="score"><span>Green shots</span><b id="n0">0</b></div>
+        <div class="score"><span>Amber shots</span><b id="n1">0</b></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="right">
+    <div class="panel">
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">
+        <button class="g-h" id="one">Measure once</button>
+        <button class="g-h" id="many">Measure ×100</button>
+        <button class="secondary" id="reset" style="margin-left:auto">Reset</button>
+      </div>
+
+      <div class="meter">
+        <div class="axis"></div>
+        <div class="zero"></div>
+        <div class="goal" id="goal"></div>
+        <div class="needle" id="needle"></div>
+        <div class="ticks"><span>−1</span><span>0</span><span>+1</span></div>
+      </div>
+
+      <div class="legend">
+        <span><span class="dot" style="background:var(--ink)"></span> exact energy ⟨Z⟩ (the goal)</span>
+        <span><span class="dot" style="background:var(--accent-strong)"></span> measured average so far</span>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="bignum"><span>Measured average score (energy)</span><b id="avg">—</b></div>
+      <div class="bignum" style="margin-top:6px"><span>Exact energy ⟨Z⟩ = P(0) − P(1)</span><b id="goalNum" style="color:var(--ink)">+1.00</b></div>
+      <div class="bignum" style="margin-top:6px"><span>Total measurements</span><b id="nTot" style="color:var(--muted)">0</b></div>
+      <div class="insight" id="insight">No single slap ever <i>reads</i> "0.5" — each shot is just +1 or −1. But their <b>average</b> settles onto the exact energy. Predict it, then measure.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+"use strict";
+const $ = id => document.getElementById(id);
+
+let p0 = 0.5;                 // P(outcome 0) — set by the slider
+let n0 = 0, n1 = 0, sum = 0;  // green shots, amber shots, running sum of scores
+
+const goalOf = () => p0 - (1 - p0);          // ⟨Z⟩ = P(0)·(+1) + P(1)·(−1)
+const toLeft = v => ((v + 1) / 2 * 100) + "%"; // map a value in [−1,+1] to a left%
+
+function fmt(v) { return (v >= 0 ? "+" : "−") + Math.abs(v).toFixed(2); }
+
+function sampleOnce() {
+  // one Born-rule shot: outcome 0 (score +1) with prob p0, else outcome 1 (score −1)
+  if (Math.random() < p0) { n0++; sum += 1; return +1; }
+  n1++; sum -= 1; return -1;
+}
+
+function measure(n) {
+  for (let i = 0; i < n; i++) sampleOnce();
+  render();
+}
+
+function renderState() {
+  const pct0 = Math.round(p0 * 100), pct1 = 100 - pct0;
+  $("barP0").style.width = pct0 + "%"; $("barP0").textContent = pct0 ? pct0 + "%" : "";
+  $("barP1").style.width = pct1 + "%"; $("barP1").textContent = pct1 ? pct1 + "%" : "";
+  $("p0lab").textContent = pct0 + "%";
+  // amplitudes are the square roots of the probabilities (callback to Basecamp 1)
+  const a0 = Math.sqrt(p0).toFixed(2), a1 = Math.sqrt(1 - p0).toFixed(2);
+  $("ampText").innerHTML = a0 + " |0⟩ + " + a1 + " |1⟩";
+  const g = goalOf();
+  $("goal").style.left = toLeft(g);
+  $("goalNum").textContent = fmt(g);
+}
+
+function render() {
+  const nTot = n0 + n1;
+  $("n0").textContent = n0; $("n1").textContent = n1; $("nTot").textContent = nTot;
+  if (nTot) {
+    const avg = sum / nTot;
+    $("avg").textContent = fmt(avg);
+    $("needle").style.left = toLeft(avg);
+    $("needle").classList.add("live");
+  } else {
+    $("avg").textContent = "—";
+    $("needle").style.left = "50%";
+    $("needle").classList.remove("live");
+  }
+  const g = goalOf();
+  let msg;
+  if (!nTot) {
+    msg = "Predict where the needle will land, then measure. It should converge on the ink ⟨Z⟩ goal.";
+  } else if (Math.abs(g - 1) < 1e-9) {
+    msg = "Every shot is green (+1), so the energy is pinned at <b>+1</b> — the lowest-uncertainty, all-agree state.";
+  } else if (Math.abs(g + 1) < 1e-9) {
+    msg = "Every shot is amber (−1), so the energy sits at <b>−1</b>. The state is certain, just the other way.";
+  } else if (Math.abs(g) < 1e-9) {
+    msg = "A fair coin averages half +1 and half −1 → energy <b>0</b>. No shot ever reads 0, yet the <i>average</i> does.";
+  } else {
+    msg = "The needle wobbles (shot noise) but homes in on the exact energy <b>" + fmt(g) +
+          "</b> — a weighted average of +1 and −1.";
+  }
+  $("insight").innerHTML = msg;
+}
+
+function resetCounts() { n0 = 0; n1 = 0; sum = 0; render(); }
+
+$("p0").addEventListener("input", e => {
+  p0 = (+e.target.value) / 100;
+  resetCounts();       // changing the state invalidates old shots
+  renderState();
+});
+$("one").addEventListener("click", () => measure(1));
+$("many").addEventListener("click", () => measure(100));
+$("reset").addEventListener("click", () => { $("p0").value = 50; p0 = 0.5; resetCounts(); renderState(); });
+
+renderState();
+render();
+</script>

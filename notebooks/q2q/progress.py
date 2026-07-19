@@ -17,7 +17,8 @@ from __future__ import annotations
 
 import numpy as np
 
-__all__ = ["code_for", "claim_basecamp_1", "claim_basecamp_2", "claim_basecamp_3"]
+__all__ = ["code_for", "claim_basecamp_1", "claim_basecamp_2",
+           "claim_basecamp_3", "claim_basecamp_4"]
 
 # Shared with the website — DO NOT change without updating progress.js in lockstep
 # (tests/test_progress.py cross-checks the two implementations).
@@ -261,4 +262,63 @@ def claim_basecamp_3(qc_bell=None, qc_anti=None):
 
     code = code_for("03")
     _celebrate("03", code)
+    return code
+
+
+def _expectation(circuit, pauli: str):
+    """<pauli> for the state a (measurement-free) circuit prepares, or None.
+
+    Uses the exact state vector — no shots, no noise — so the completion check
+    is as sharp as the check_expectation the student just ran on their answer.
+    """
+    try:
+        from qiskit.quantum_info import SparsePauliOp, Statevector
+        val = Statevector(circuit).expectation_value(SparsePauliOp(pauli))
+        return float(np.real(val))
+    except Exception:
+        return None
+
+
+def claim_basecamp_4(qc_z=None, qc_zz=None, tol: float = 1e-2):
+    """Verify the Basecamp 4 tasks in this kernel and, if correct, print the
+    website completion code. Returns the code string on success, else None.
+
+    - qc_z  (Task 1): a 1-qubit state (no measurement) whose energy under the
+      Z observable is <Z> = +0.5 — the 75/25 state RY(pi/3)|0> from Basecamp 1.
+    - qc_zz (Task 2): a 2-qubit state (no measurement) whose energy under the
+      ZZ "agreement" Hamiltonian is <ZZ> = -1 — the anti-correlated Bell pair.
+    """
+    from .targets import M4_Z75, M4_ZZ_ANTI
+    try:
+        from qiskit import QuantumCircuit
+    except ImportError:            # no qiskit (shouldn't happen post-bootstrap)
+        QuantumCircuit = None
+
+    reasons = []
+    ez = _expectation(qc_z, "Z") if isinstance(qc_z, QuantumCircuit) else None
+    ok_z = (QuantumCircuit is not None and isinstance(qc_z, QuantumCircuit)
+            and qc_z.num_qubits == 1 and ez is not None
+            and abs(ez - M4_Z75) < tol)
+    if not ok_z:
+        reasons.append("<b>Task 1</b>: build <code>qc_z</code> — the 75/25 state "
+                       "<code>.ry(np.pi/3, 0)</code> (no measurement), whose energy "
+                       "under <code>Z</code> is <code>&lt;Z&gt; = +0.5</code>.")
+
+    ezz = _expectation(qc_zz, "ZZ") if isinstance(qc_zz, QuantumCircuit) else None
+    ok_zz = (QuantumCircuit is not None and isinstance(qc_zz, QuantumCircuit)
+             and qc_zz.num_qubits == 2 and ezz is not None
+             and abs(ezz - M4_ZZ_ANTI) < tol)
+    if not ok_zz:
+        reasons.append("<b>Task 2</b>: build <code>qc_zz</code> — the "
+                       "anti-correlated Bell pair (<code>.h(0)</code>, "
+                       "<code>.cx(0, 1)</code>, <code>.x(1)</code>, no measurement), "
+                       "whose energy under <code>ZZ</code> is "
+                       "<code>&lt;ZZ&gt; = -1</code>.")
+
+    if reasons:
+        _nudge(reasons)
+        return None
+
+    code = code_for("04")
+    _celebrate("04", code)
     return code

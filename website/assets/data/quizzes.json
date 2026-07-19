@@ -136,5 +136,51 @@
       "answer": 1,
       "explain": "Alice learns Bob's value, but learning is not sending. On its own, Bob's stream of results is perfectly random 50/50 — nothing Alice does is detectable on his side. The correlation only becomes visible when the two result lists are laid side by side, which requires a normal message. Real link, no telephone: entanglement never carries a signal."
     }
+  ],
+  "04": [
+    {
+      "q": "The $Z$ observable is a scoreboard: it scores the outcome $0$ as $+1$ and the outcome $1$ as $-1$. A qubit is in the state $|0\\rangle$. What energy does $Z$ report for it?",
+      "options": [
+        "$0$, because the qubit is labelled $|0\\rangle$",
+        "$+1$ — $Z$ assigns the score $+1$ to outcome $0$",
+        "$-1$, because $0$ is the 'off' state",
+        "It is undefined until you measure"
+      ],
+      "answer": 1,
+      "explain": "$Z$ is a lookup table, not the bit value: outcome $0 \\to +1$, outcome $1 \\to -1$. A qubit that always reads $0$ always scores $+1$, so its expectation value (energy) is $\\langle Z\\rangle = +1$. Watch the sign — the label $0$ maps to the score $+1$, not $0$."
+    },
+    {
+      "q": "For a fair qubit $|+\\rangle = \\frac{1}{\\sqrt{2}}(|0\\rangle+|1\\rangle)$, every single measurement returns $+1$ or $-1$. What is the expectation value $\\langle Z\\rangle$?",
+      "options": [
+        "Impossible to define — you can never actually measure $0$",
+        "$0$ — the long-run average of half $+1$ and half $-1$",
+        "$+1$ — measurement rounds up",
+        "$+0.5$ — halfway to certain"
+      ],
+      "answer": 1,
+      "explain": "$\\langle Z\\rangle = (+1)P(0) + (-1)P(1) = \\tfrac12 - \\tfrac12 = 0$. No single shot ever reads $0$, yet the *average* of many shots does — the same predict-the-statistics move from Basecamp 1, now reading energy instead of counting heads."
+    },
+    {
+      "q": "You build the state $RY(\\pi/3)|0\\rangle$, the 75/25 biased coin ($P(0)=\\tfrac34$, $P(1)=\\tfrac14$). What is its energy $\\langle Z\\rangle$?",
+      "options": [
+        "$+0.75$, equal to $P(0)$",
+        "$+0.5$, from $\\tfrac34(+1) + \\tfrac14(-1)$",
+        "$0$, because it is in superposition",
+        "$+1$, because green wins"
+      ],
+      "answer": 1,
+      "explain": "$\\langle Z\\rangle = P(0)\\cdot(+1) + P(1)\\cdot(-1) = \\tfrac34 - \\tfrac14 = +0.5$. It is a weighted average of the two scores, not just $P(0)$. Superposition does not force the energy to $0$ — only a *fair* coin does that."
+    },
+    {
+      "q": "The $ZZ$ Hamiltonian scores a two-qubit outcome $+1$ when the qubits <b>agree</b> (00 or 11) and $-1$ when they <b>disagree</b> (01 or 10). What is $\\langle ZZ\\rangle$ for the Bell pair $\\frac{1}{\\sqrt{2}}(|00\\rangle+|11\\rangle)$?",
+      "options": [
+        "$0$, because each qubit alone is a fair 50/50",
+        "$+1$ — the pair always agrees, so every shot scores $+1$",
+        "$-1$ — entangled qubits always disagree",
+        "$+0.5$, halfway between agree and disagree"
+      ],
+      "answer": 1,
+      "explain": "$\\Phi^+$ only ever gives 00 or 11 — agreement on every shot — so every score is $+1$ and $\\langle ZZ\\rangle = +1$. $\\langle ZZ\\rangle$ scores the *pair*, not either coin (each qubit alone is still fair). Flip one qubit to get $\\Psi^+$ and they always disagree instead: $\\langle ZZ\\rangle = -1$. This 'agreement energy' is the seed of the cost Hamiltonians you'll minimize at the summit."
+    }
   ]
 }
