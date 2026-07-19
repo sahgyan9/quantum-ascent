@@ -4,8 +4,8 @@
 The point is not to read it verbatim — it's to hit every beat that scores with the judges
 without rambling or running long.
 
-- **Target length:** ~7 minutes (brief allows 5–10; 7 leaves breathing room and respects
-  the judge's time).
+- **Target length:** ~8 minutes (brief allows 5–10; 8 leaves room for the summit payoff while
+  respecting the judge's time). If you must trim, cut Beat 2 or the LLM paste in Beat 5 first.
 - **Format:** screen recording + your voice (a small webcam corner is optional but warms it
   up). 1080p, record the browser at a comfortable zoom so text is legible.
 - **Golden rule:** *show, don't tell.* Every claim should happen on screen while you say it.
@@ -52,8 +52,8 @@ with it first, then code it, then make it personal. Let me show you the climb."*
 🎬 Open the **Ascent map** (`ascent.html`). Point at the six basecamps, XP, badges.
 
 🎙️ *"The course is a mountain. Six basecamps, from your first qubit up to solving a real
-optimization problem with QAOA at the summit. You earn XP and badges as you climb — self-paced,
-all saved right in your browser, no account needed."*
+optimization problem with QAOA at the summit — and all six are live. You earn XP and badges as
+you climb — self-paced, all saved right in your browser, no account needed."*
 
 > Short. The map is eye candy; let it breathe, don't over-narrate.
 
@@ -120,31 +120,52 @@ prompt. It costs nothing to run and works offline."*
 
 ---
 
-## Beat 6 — Under the hood: correctness & reproducibility (5:30–6:20) 🎯 *Documentation, Technical accuracy, Scalability*
+## Beat 6 — The Summit: solve a real problem with QAOA (5:30–6:45) 🎯 *Educational impact, Technical accuracy, Creativity*
+
+🎬 Open **Basecamp 6 (Summit)**. Land on the **Max-Cut Painter** widget — click a couple of
+nodes so edges light up, then hit **"Show QAOA's answer"** to snap to the checkerboard, all 4
+edges cut. Then cut to the **Colab notebook** for BC6 and run the final QAOA cells: the
+optimizer's energy dropping, then the sampled result printing **"approximation ratio 1.00."**
+
+🎙️ *"This is what the whole climb is for. Max-Cut: split a graph to cut the most edges — an
+NP-hard problem. First you feel it — click nodes into two teams and watch the cuts. Then, in
+the notebook, we encode that exact problem as an energy — reusing the cost Hamiltonian from
+Basecamp 4 — and build the QAOA algorithm ourselves, layer by layer. A classical optimizer
+tunes the angles, we measure, and the circuit hands back the best cut: approximation ratio one
+point zero. Every idea from the ascent — superposition, gates, entanglement, energy, the
+variational loop — meets here, in one algorithm the learner assembled by hand."*
+
+> This is the payoff beat: it proves the course *builds to something real* and that the
+> earlier basecamps were load-bearing, not decorative. Let the "approximation ratio 1.00" land.
+
+---
+
+## Beat 7 — Under the hood: correctness & reproducibility (6:45–7:35) 🎯 *Documentation, Technical accuracy, Scalability*
 
 🎬 Switch to the repo / terminal. Run **`pytest`** live and let it finish — show the green
-**"68 passed."** Flash the `docs/` folder and `tools/` briefly.
+**"88 passed."** Flash the `docs/` folder and `tools/` briefly.
 
 🎙️ *"Everything you just saw is backed by a test suite. One command runs it: it executes every
-solution notebook end to end, smoke-tests every widget, and even checks that the Python and
-JavaScript versions of that completion code agree. Sixty-eight tests, all green. We build
-tests first, then features — so an educator can clone this repo, run one install, and trust
-that every notebook works."*
+solution notebook end to end — including that full QAOA pipeline — smoke-tests every widget,
+and even checks that the Python and JavaScript versions of that completion code agree.
+Eighty-eight tests, all green. We build tests first, then features — so an educator can clone
+this repo, run one install, and trust that every notebook works."*
 
 > Running the suite live is worth more than any slide claiming "well-tested." This is your
 > reproducibility and adoption proof.
 
 ---
 
-## Beat 7 — Close: roadmap, AI disclosure, sign-off (6:20–7:00) 🎯 *Scalability, AI attribution*
+## Beat 8 — Close: reach, AI disclosure, sign-off (7:35–8:15) 🎯 *Scalability, AI attribution*
 
-🎬 Back to the Ascent map showing basecamps lit. Optionally the `docs/ai_use.md` on screen.
+🎬 Back to the Ascent map with **all six basecamps lit**. Optionally the `docs/ai_use.md` on screen.
 
-🎙️ *"Two basecamps are live today; the pipeline that generated them makes the climb to the
-summit a matter of authoring, not re-engineering. We built this with the Claude Code assistant
-and documented exactly how in our AI-use disclosure — but every piece of physics is
-human-verified and pinned by those tests. That's Quantum Ascent: play it, code it, make it
-yours — hard ideas made clear, and proven correct. Thanks for climbing with us."*
+🎙️ *"All six basecamps are live — a complete ascent from a single qubit to a working quantum
+optimizer, and the authoring pipeline behind them makes new content a matter of writing, not
+re-engineering. We built this with the Claude Code assistant and documented exactly how in our
+AI-use disclosure — but every piece of physics is human-verified and pinned by those tests.
+That's Quantum Ascent: play it, code it, make it yours — hard ideas made clear, and proven
+correct. Thanks for climbing with us."*
 
 > End on the one-message. Don't trail off — a crisp sign-off reads as confidence.
 

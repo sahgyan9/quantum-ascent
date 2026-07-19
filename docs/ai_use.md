@@ -13,7 +13,8 @@ drafting assistant** throughout: writing website code, scaffolding notebooks, dr
 and building the test infrastructure. **No AI runs at runtime** — the shipped course does not
 call any model. Every piece of physics is **human-directed, human-reviewed, and pinned down by
 an executable test suite** that anyone can re-run with a single `pytest` command
-(currently **68 passing tests**).
+(currently **88 passing tests**, covering all six basecamps end to end — including the full
+QAOA Max-Cut capstone).
 
 ## Where AI was used
 
@@ -51,8 +52,9 @@ is a stack of independent checks:
    independent re-derivation catches mistakes a single author (human or AI) would miss.
 3. **Human verification against standard references.** The physics is checked against
    established sources (Nielsen & Chuang; Qiskit and PennyLane documentation) — e.g. the
-   Born rule $P=|\text{amplitude}|^2$, $H\cdot Z\cdot H = X$, and Qiskit's little-endian bit
-   ordering are all independently confirmed and pinned by tests.
+   Born rule $P=|\text{amplitude}|^2$, $H\cdot Z\cdot H = X$, Qiskit's little-endian bit
+   ordering, and the QAOA Max-Cut ground energy are all independently confirmed and pinned by
+   tests (the capstone's answer is cross-checked against a brute-force maximum cut).
 4. **A myth-avoidance style rule.** Our pedagogy explicitly *rejects* common AI/pop-science
    errors (e.g. "a qubit is 0 and 1 at the same time"). The AI was steered away from these,
    and reviewers watched for them, because catching that failure mode is a core design goal.
