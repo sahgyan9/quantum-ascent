@@ -228,5 +228,51 @@
       "answer": 1,
       "explain": "$-1.118 = -\\sqrt{1.25}$ is the smallest eigenvalue of $Z + 0.5X$ — the **ground energy**. Because the $X$ term tilts the Hamiltonian, the lowest-energy state is a rotated blend, not $|1\\rangle$. That is exactly why you had to *search* with a tunable angle instead of reading off an obvious answer — and for a cost Hamiltonian, that bottom encodes the solution to your problem."
     }
+  ],
+  "06": [
+    {
+      "q": "In <b>Max-Cut</b> you split a graph's nodes into two groups. Which edges count toward your score?",
+      "options": [
+        "Edges with both endpoints in the same group",
+        "Edges whose endpoints land in different groups (they cross the divide)",
+        "Every edge in the graph",
+        "Only edges connected to node 0"
+      ],
+      "answer": 1,
+      "explain": "A **cut** edge crosses between the two groups. Max-Cut asks for the split that severs the *most* edges. On the 4-node ring the best you can do is the checkerboard, cutting all 4 — an edge with both ends in one group scores nothing."
+    },
+    {
+      "q": "Each node gets a qubit and we use the cost $H_C = \\sum_{\\text{edges}} Z_iZ_j$, where $Z_iZ_j$ scores $+1$ when the two qubits agree and $-1$ when they disagree. Why does <b>minimizing</b> $\\langle H_C\\rangle$ solve Max-Cut?",
+      "options": [
+        "It doesn't — minimizing agreement would ruin the cut",
+        "A cut edge means the qubits disagree, scoring $-1$, so the lowest total energy has the most cut edges",
+        "Minimizing $\\langle H_C\\rangle$ always selects the state $|0000\\rangle$",
+        "Because $H_C$ counts the number of nodes, not edges"
+      ],
+      "answer": 1,
+      "explain": "This is the whole encoding, straight from Basecamp 4: a cut edge = two nodes in different groups = qubits disagree = score $-1$. More cuts means lower energy, so the ground state of $H_C$ is the maximum cut. 'Solve Max-Cut' becomes 'find the ground state' — and that's the variational job from Basecamp 5. ($|0000\\rangle$ cuts nothing and sits at the *highest* energy, $+4$.)"
+    },
+    {
+      "q": "A QAOA layer has a <b>cost</b> unitary (built from the edges) and a <b>mixer</b> unitary (RX rotations on every qubit). What goes wrong if you drop the mixer?",
+      "options": [
+        "Nothing — the cost unitary alone finds the answer",
+        "The cost unitary only adds phases to $|+\\rangle^{\\otimes n}$, so the measured bitstrings stay uniformly random — the mixer is what turns those phases into a real preference",
+        "The circuit becomes invalid and cannot run",
+        "It measures the wrong number of qubits"
+      ],
+      "answer": 1,
+      "explain": "The cost unitary is diagonal: on $|+\\rangle^{\\otimes n}$ it stamps a phase on each configuration but leaves every measurement probability equal. Phases are invisible to a Z-measurement until the **mixer** rotates them into amplitude differences (interference). Cost *marks* the good cuts; the mixer *makes them likely*. You need both — this is why QAOA alternates the two."
+    },
+    {
+      "q": "Your optimized QAOA circuit is sampled 2048 times and the most frequent bitstring is <b>0101</b>. What does the <b>approximation ratio</b> being $1.0$ tell you?",
+      "options": [
+        "The circuit used exactly one layer",
+        "Your solution cuts as many edges as the true maximum — it's an optimal cut",
+        "The optimizer failed and returned a random guess",
+        "Exactly 1 out of every 2048 shots was useful"
+      ],
+      "answer": 1,
+      "explain": "The approximation ratio is (edges your solution cuts) ÷ (edges the best possible solution cuts). A ratio of $1.0$ means you matched the true maximum — here 0101 is the checkerboard, cutting all 4 edges. You just solved a real optimization problem end to end with QAOA. 🏔️ Summit reached."
+    }
   ]
 }

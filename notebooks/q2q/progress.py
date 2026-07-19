@@ -18,7 +18,8 @@ from __future__ import annotations
 import numpy as np
 
 __all__ = ["code_for", "claim_basecamp_1", "claim_basecamp_2",
-           "claim_basecamp_3", "claim_basecamp_4", "claim_basecamp_5"]
+           "claim_basecamp_3", "claim_basecamp_4", "claim_basecamp_5",
+           "claim_basecamp_6"]
 
 # Shared with the website — DO NOT change without updating progress.js in lockstep
 # (tests/test_progress.py cross-checks the two implementations).
@@ -368,4 +369,59 @@ def claim_basecamp_5(energy_fn=None, theta_star=None, tol: float = 1e-2):
 
     code = code_for("05")
     _celebrate("05", code)
+    return code
+
+
+# The summit graph: a 4-node ring. Its maximum cut is 4 (the checkerboard).
+_M6_EDGES = [(0, 1), (1, 2), (2, 3), (3, 0)]
+
+
+def _cut_value(bitstring, edges) -> int:
+    """Number of edges whose endpoints fall in different groups (Qiskit order)."""
+    b = str(bitstring).strip()[::-1]        # qubit 0 is the rightmost character
+    return sum(1 for (i, j) in edges if b[i] != b[j])
+
+
+def claim_basecamp_6(cut_energy=None, best=None, tol: float = 1e-2):
+    """Verify the Basecamp 6 (Summit) tasks in this kernel and, if correct, print
+    the website completion code. Returns the code string on success, else None.
+
+    - cut_energy (Task 1): <H_C> of the checkerboard cut |0101>, which is -4
+      (all four edges cut, each scoring -1 under the ZZ cost Hamiltonian).
+    - best (Task 2): the most-frequent bitstring your optimized QAOA circuit
+      produced. It must achieve the maximum cut of the ring (4 edges).
+    """
+    from .targets import M6_CUT_ENERGY
+
+    reasons = []
+    ok_energy = cut_energy is not None
+    if ok_energy:
+        try:
+            ok_energy = abs(float(cut_energy) - M6_CUT_ENERGY) < tol
+        except (TypeError, ValueError):
+            ok_energy = False
+    if not ok_energy:
+        reasons.append("<b>Task 1</b>: compute <code>&lt;H_C&gt;</code> for the "
+                       "checkerboard cut <code>|0101&gt;</code> — every edge is cut, "
+                       "so the energy is <code>-4</code>.")
+
+    n = 4
+    ok_cut = False
+    if best is not None:
+        bs = str(best).strip()
+        if len(bs) == n and set(bs) <= {"0", "1"}:
+            best_possible = max(_cut_value(format(x, f"0{n}b"), _M6_EDGES)
+                                for x in range(2 ** n))
+            ok_cut = _cut_value(bs, _M6_EDGES) == best_possible
+    if not ok_cut:
+        reasons.append("<b>Task 2</b>: pass <code>best</code>, the most-frequent "
+                       "bitstring from your optimized QAOA circuit — it must reach "
+                       "the maximum cut (4 edges) of the ring.")
+
+    if reasons:
+        _nudge(reasons)
+        return None
+
+    code = code_for("06")
+    _celebrate("06", code)
     return code

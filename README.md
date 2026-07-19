@@ -51,10 +51,19 @@ pytest                                                    # verify everything
 
 ## Status
 
-🚧 Basecamps 1–2 (The Qubit & Superposition; Gates & Circuits) are live — each with its
-interactive widget, gap-fill notebook, quiz, and completion-code handshake. Basecamps 3–6
-are being carved out of the mountain — follow the
-[ascent map](https://quantum-ascent-77617.web.app/ascent.html).
+🏔️ **All six basecamps are live** — the full ascent from a single qubit to a QAOA Max-Cut
+summit. Each one ships an interactive widget, a gap-fill notebook, a quiz, and a
+completion-code handshake that lights up the [ascent map](https://quantum-ascent-77617.web.app/ascent.html):
+
+1. **The Qubit & Superposition** — amplitudes, the Born rule, your first circuit
+2. **Gates & Circuits** — rotations, unitarity, the endianness trap
+3. **Entanglement** — Bell pairs, correlations, and the no-faster-than-light-signalling myth
+4. **Hamiltonians & Energy** — observables, expectation values, the ZZ cost Hamiltonian
+5. **The Variational Principle** — a parameterized ansatz + a classical optimizer descending an energy landscape
+6. **Summit: QAOA for Max-Cut** — encode, build the ansatz, optimize, and sample a maximum cut end to end
+
+The full pytest suite (88 checks) executes every solutions notebook end to end and
+cross-checks the web↔notebook completion codes.
 
 ## License & attribution
 

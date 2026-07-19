@@ -1,0 +1,119 @@
+<meta charset="utf-8">
+<title>Max-Cut Painter — Quantum Ascent</title>
+<link rel="stylesheet" href="../_base/widget.css">
+<style>
+  .wrap { display: flex; gap: 16px; max-width: 900px; align-items: flex-start; flex-wrap: wrap; }
+  .left { flex: 0 0 320px; }
+  .right { flex: 1; display: flex; flex-direction: column; gap: 12px; min-width: 260px; }
+
+  svg { width: 100%; height: auto; display: block; background: var(--bg2);
+        border: 1px solid var(--line); border-radius: 10px; }
+  .edge { stroke: var(--line); stroke-width: 4; transition: stroke .15s, stroke-width .15s; }
+  .edge.cut { stroke: var(--accent-strong); stroke-width: 7; }
+  .node circle { stroke-width: 3; cursor: pointer; transition: fill .15s, stroke .15s; }
+  .node.g0 circle { fill: var(--accent); stroke: var(--accent-strong); }
+  .node.g1 circle { fill: var(--amber); stroke: var(--amber-strong); }
+  .node text { fill: #fff; font: 700 18px var(--font-code); pointer-events: none; user-select: none; }
+  .edgetag { fill: var(--accent-strong); font: 700 12px var(--font-code); opacity: 0; transition: opacity .15s; }
+  .edgetag.on { opacity: 1; }
+
+  .bignum { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; font-size: 14px; }
+  .bignum b { font-family: var(--font-code); font-size: 24px; color: var(--accent-strong); }
+  .bignum b.goal { color: var(--ink); font-size: 18px; }
+  .insight { min-height: 22px; font-size: 13.5px; color: var(--muted); margin-top: 8px; }
+  .legend { font-size: 12px; color: var(--muted); display: flex; gap: 14px; flex-wrap: wrap; margin-top: 8px; }
+  .dot { display: inline-block; width: 11px; height: 11px; border-radius: 50%; vertical-align: middle; }
+</style>
+
+<div class="hint-bar" id="hint">💡 <b>Split the nodes into two groups; cut as many edges as you can.</b> <b>Click a node</b> to move it between the green
+and amber groups. An edge lights up green when its two ends land in <b>different</b> groups (a <b>cut</b>). ① Try to cut all
+4 edges by hand. ② Notice the winner is a <b>checkerboard</b>. ③ That best split is exactly what QAOA searches for.</div>
+
+<div class="wrap">
+  <div class="left">
+    <div class="panel">
+      <svg id="graph" viewBox="0 0 320 300" role="img" aria-label="graph to cut">
+        <!-- edges (drawn first, behind nodes) -->
+        <line class="edge" id="e0" x1="90" y1="80"  x2="230" y2="80"></line>
+        <line class="edge" id="e1" x1="230" y1="80" x2="230" y2="220"></line>
+        <line class="edge" id="e2" x1="230" y1="220" x2="90" y2="220"></line>
+        <line class="edge" id="e3" x1="90" y1="220" x2="90" y2="80"></line>
+        <!-- "cut" tags near each edge midpoint -->
+        <text class="edgetag" id="t0" x="160" y="70"  text-anchor="middle">✂ cut</text>
+        <text class="edgetag" id="t1" x="238" y="154">✂ cut</text>
+        <text class="edgetag" id="t2" x="160" y="240" text-anchor="middle">✂ cut</text>
+        <text class="edgetag" id="t3" x="46"  y="154" text-anchor="end">✂ cut</text>
+        <!-- nodes -->
+        <g class="node g0" id="n0" data-i="0"><circle cx="90"  cy="80"  r="26"></circle><text x="90"  y="87"  text-anchor="middle">0</text></g>
+        <g class="node g0" id="n1" data-i="1"><circle cx="230" cy="80"  r="26"></circle><text x="230" y="87"  text-anchor="middle">1</text></g>
+        <g class="node g0" id="n2" data-i="2"><circle cx="230" cy="220" r="26"></circle><text x="230" y="227" text-anchor="middle">2</text></g>
+        <g class="node g0" id="n3" data-i="3"><circle cx="90"  cy="220" r="26"></circle><text x="90"  y="227" text-anchor="middle">3</text></g>
+      </svg>
+      <div class="legend">
+        <span><span class="dot" style="background:var(--accent)"></span> group A</span>
+        <span><span class="dot" style="background:var(--amber)"></span> group B</span>
+        <span><span class="dot" style="background:var(--accent-strong);border-radius:2px;width:16px;height:5px"></span> a cut edge</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="right">
+    <div class="panel">
+      <div class="bignum"><span>Edges cut by your split</span><b id="cut">0</b></div>
+      <div class="bignum" style="margin-top:6px"><span>Best possible (the max cut)</span><b id="max" class="goal">4</b></div>
+      <div class="insight" id="insight">Click the nodes to sort them into two groups. Every edge that ends up split between the groups is a cut.</div>
+    </div>
+    <div class="panel">
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="g-h" id="solve">Show QAOA's answer ⛰️</button>
+        <button class="secondary" id="reset" style="margin-left:auto">Reset</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+"use strict";
+const $ = id => document.getElementById(id);
+
+const EDGES = [[0, 1], [1, 2], [2, 3], [3, 0]];   // the 4-node ring
+let group = [0, 0, 0, 0];                         // which group each node is in
+
+// brute-force the maximum cut so the goal is honest, not hard-coded
+function cutOf(g) { return EDGES.reduce((s, [i, j]) => s + (g[i] !== g[j] ? 1 : 0), 0); }
+let MAXCUT = 0;
+for (let m = 0; m < 16; m++) {
+  const g = [0, 1, 2, 3].map(k => (m >> k) & 1);
+  MAXCUT = Math.max(MAXCUT, cutOf(g));
+}
+
+function render() {
+  for (let i = 0; i < 4; i++) {
+    const n = $("n" + i); n.classList.toggle("g0", group[i] === 0); n.classList.toggle("g1", group[i] === 1);
+  }
+  let cut = 0;
+  EDGES.forEach(([i, j], e) => {
+    const isCut = group[i] !== group[j];
+    if (isCut) cut++;
+    $("e" + e).classList.toggle("cut", isCut);
+    $("t" + e).classList.toggle("on", isCut);
+  });
+  $("cut").textContent = cut;
+  $("max").textContent = MAXCUT;
+  if (cut === MAXCUT) {
+    $("insight").innerHTML = "🎉 <b>Maximum cut!</b> You cut all " + MAXCUT +
+      " edges — the best any split can do. It's a <b>checkerboard</b>: neighbours always land in opposite groups. This is the state QAOA drives its measurement toward.";
+  } else {
+    $("insight").innerHTML = "You're cutting <b>" + cut + "</b> of " + MAXCUT +
+      ". Look for a node with an <i>uncut</i> edge and try flipping its group — can you reach a full checkerboard?";
+  }
+}
+
+function toggle(i) { group[i] ^= 1; render(); }
+
+[0, 1, 2, 3].forEach(i => $("n" + i).addEventListener("click", () => toggle(i)));
+$("reset").addEventListener("click", () => { group = [0, 0, 0, 0]; render(); });
+$("solve").addEventListener("click", () => { group = [0, 1, 0, 1]; render(); });  // the checkerboard
+
+render();
+</script>

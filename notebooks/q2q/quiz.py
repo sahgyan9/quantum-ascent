@@ -382,6 +382,83 @@ _BANK: dict[str, dict] = {
             "for it instead of guessing.",
         ],
     ),
+    # ------------------------------------------------ Module 06 (Summit)
+    "m6-maxcut-goal": dict(
+        question=(
+            "In <b>Max-Cut</b> you split a graph's nodes into two groups. Which "
+            "edges score a point for your cut?"
+        ),
+        options=[
+            "Edges whose two endpoints are in the <b>same</b> group",
+            "Edges whose two endpoints are in <b>different</b> groups (they cross "
+            "the divide)",
+            "All edges, always",
+        ],
+        correct=1,
+        feedback=[
+            "The opposite — an edge inside a single group is <i>not</i> cut. You "
+            "score only when an edge is severed by the split.",
+            "Right. A cut edge crosses between the two groups. Max-Cut asks for the "
+            "split that severs the <b>most</b> edges — and on the 4-node ring the "
+            "best you can do is the checkerboard, cutting all 4.",
+            "Not all — an edge with both ends in the same group stays intact and "
+            "scores nothing. Only edges that <i>straddle</i> the two groups count.",
+        ],
+    ),
+    "m6-cost-encoding": dict(
+        question=(
+            "We give each node a qubit and use the cost $H_C = \\sum_{\\text{edges}} "
+            "Z_iZ_j$. Recall $Z_iZ_j$ scores $+1$ when two qubits <b>agree</b> and "
+            "$-1$ when they <b>disagree</b>. Why does <b>minimizing</b> $\\langle "
+            "H_C\\rangle$ solve Max-Cut?"
+        ),
+        options=[
+            "It doesn't — minimizing agreement destroys the cut",
+            "A cut edge = two nodes in different groups = qubits disagree = score "
+            "−1, so the lowest energy has the most cut edges",
+            "Minimizing energy just picks the state |0000⟩",
+        ],
+        correct=1,
+        feedback=[
+            "Look again at the signs: disagreeing qubits (a cut edge) score −1, so "
+            "<i>more</i> cuts means <i>lower</i> energy. Minimizing is exactly what "
+            "we want.",
+            "Exactly — this is the whole encoding. Each cut edge is a disagreement "
+            "worth −1, so the state with the lowest total energy is the one that "
+            "cuts the most edges. Max-Cut becomes 'find the ground state', and "
+            "that's a job for the variational loop from Basecamp 5.",
+            "|0000⟩ puts every node in the same group — zero cuts — which is the "
+            "<i>highest</i> energy (+4 here), not the lowest. Minimizing drives you "
+            "toward the checkerboard instead.",
+        ],
+    ),
+    "m6-qaoa-mixer": dict(
+        question=(
+            "A QAOA layer has a <b>cost</b> part (built from the edges) and a "
+            "<b>mixer</b> part (RX rotations on every qubit). What breaks if you "
+            "leave out the mixer?"
+        ),
+        options=[
+            "Nothing — the cost layer alone solves it",
+            "The cost layer only adds phases to |+⟩ⁿ, so measurement stays a "
+            "uniform coin-flip — the mixer is what turns those phases into a real "
+            "preference",
+            "The circuit won't run at all",
+        ],
+        correct=1,
+        feedback=[
+            "If only that were true! The cost layer is diagonal — on its own it "
+            "leaves the measurement probabilities of |+⟩ⁿ perfectly uniform. No "
+            "answer emerges.",
+            "Exactly. The cost layer stamps a phase onto each configuration, but "
+            "phases are invisible to a Z-measurement until the <b>mixer</b> rotates "
+            "them into amplitude differences (interference). Cost marks the good "
+            "solutions; mixer makes them <i>likely</i>. You need both.",
+            "It runs fine — that's the trap. It runs and returns useless uniform "
+            "noise, because without the mixer there's no interference to "
+            "concentrate probability on the good cuts.",
+        ],
+    ),
 }
 
 

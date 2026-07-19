@@ -25,3 +25,8 @@ M4_ZZ_ANTI = -1.0                                      # <ZZ> of the anti-correl
 # so E(theta) = cos(theta) + 0.5 sin(theta). Its ground (lowest) energy is -sqrt(1.25).
 M5_E_HALF = 0.5                                         # E(pi/2) = cos(pi/2) + 0.5 sin(pi/2) — a landscape sanity point
 M5_GROUND = -np.sqrt(1.25)                              # -1.118034 — smallest eigenvalue of Z + 0.5 X
+
+# Module 06 — QAOA Max-Cut on the 4-node ring, edges (0,1),(1,2),(2,3),(3,0).
+# Cost Hamiltonian H_C = sum of Z_i Z_j over edges; minimizing <H_C> maximizes the cut.
+# The checkerboard |0101> cuts all 4 edges, each contributing -1, so <H_C> = -4 (the ground).
+M6_CUT_ENERGY = -4.0                                    # <H_C> of the perfect checkerboard cut
