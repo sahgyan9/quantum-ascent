@@ -1,0 +1,126 @@
+{
+  "title": "Concept Diagnostic",
+  "note": "Ten questions, one per core idea of the route. Taken once BEFORE Basecamp 1 and again AFTER the Summit, the difference between the two scores is the only honest evidence that this course teaches anything. Several options are deliberately the popular myth, stated the way it is usually stated.",
+  "questions": [
+    {
+      "id": "superposition",
+      "concept": "Superposition",
+      "basecamp": "01",
+      "q": "A qubit is in superposition. Which statement describes it best?",
+      "options": [
+        "It is 0 and 1 at the same time.",
+        "It has no definite value yet, but a definite recipe of amplitudes that fixes the odds of each outcome.",
+        "It is secretly either 0 or 1, and we simply have not looked yet.",
+        "It rapidly flickers between 0 and 1 many times per second."
+      ],
+      "answer": 1,
+      "why": "A spinning coin is not heads-and-tails at once, and it is not secretly already heads either — its face is <i>not yet a fact</i>. What is real and definite before measurement is the amplitudes, which fix the probabilities exactly. 'Both at once' is the most common description in popular writing and the one this course spends six basecamps replacing."
+    },
+    {
+      "id": "born",
+      "concept": "The Born rule",
+      "basecamp": "01",
+      "q": "A qubit's amplitude on |1⟩ is 0.6. What is the probability of measuring 1?",
+      "options": ["0.6", "0.36", "0.775", "0.3"],
+      "answer": 1,
+      "why": "Probability is the amplitude <i>squared</i>: 0.6² = 0.36. Amplitudes are not probabilities — that squaring step is what makes interference possible, because amplitudes can be negative and probabilities cannot."
+    },
+    {
+      "id": "shots",
+      "concept": "Shot noise",
+      "basecamp": "01",
+      "q": "You measure a perfectly fair qubit 100 times. How many 0s should you expect?",
+      "options": [
+        "Exactly 50 — the probability is exactly 0.5.",
+        "Around 50, differing by a handful each time you rerun it.",
+        "Any number at all — quantum outcomes are unpredictable.",
+        "Exactly 50 on a real device, but not on a simulator."
+      ],
+      "answer": 1,
+      "why": "The probability is exactly 0.5; the <i>tally</i> is a sample of it and scatters around 50 (typically ±10). That scatter is shot noise, not a bug and not error — which is why this course's checkers judge distributions statistically instead of demanding an exact match."
+    },
+    {
+      "id": "phase",
+      "concept": "Phase and interference",
+      "basecamp": "02",
+      "q": "You apply a Z gate to a qubit sitting in an equal superposition. What happens to the measurement probabilities?",
+      "options": [
+        "P(1) rises to 100%.",
+        "Nothing changes — both stay at 50%.",
+        "They swap over.",
+        "They become undefined until you measure."
+      ],
+      "answer": 1,
+      "why": "Z flips the sign of the |1⟩ amplitude. Squaring removes the sign, so no probability moves — yet the change is completely real, and a later Hadamard converts it into a probability difference. That is what interference is, and it is why H·Z·H behaves as a NOT gate."
+    },
+    {
+      "id": "endian",
+      "concept": "Qiskit endianness",
+      "basecamp": "02",
+      "q": "In a 2-qubit Qiskit circuit you apply X to qubit 1 only. What bitstring do you measure?",
+      "options": ["01", "10", "11", "Either 01 or 10, at random"],
+      "answer": 1,
+      "why": "Qiskit prints the highest-numbered qubit on the left, so the string reads q1q0 — flipping qubit 1 gives <code>10</code>. This is the single most common beginner bug in real Qiskit code, which is why this course walks you into it deliberately rather than warning you about it in a footnote."
+    },
+    {
+      "id": "nosignal",
+      "concept": "Entanglement and no-signalling",
+      "basecamp": "03",
+      "q": "Alice and Bob each hold one qubit of a Bell pair and travel light-years apart. Alice measures hers. Looking only at his own results, can Bob tell that she did?",
+      "options": [
+        "Yes — his qubit instantly takes the matching value, so he sees the change.",
+        "Yes, but only if they agreed on a measurement basis beforehand.",
+        "No — his own outcomes stay 50/50 whatever Alice does.",
+        "Yes, and this is how quantum communication achieves faster-than-light signalling."
+      ],
+      "answer": 2,
+      "why": "Bob's own histogram is 50/50 before Alice measures and 50/50 after. The correlation only becomes visible when the two lists of results are brought together and compared — over an ordinary, slower-than-light channel. Entanglement creates correlation, never communication."
+    },
+    {
+      "id": "expectation",
+      "concept": "Expectation values",
+      "basecamp": "04",
+      "q": "A qubit has P(0) = 0.75. What is ⟨Z⟩?",
+      "options": ["0.75", "+0.5", "−0.5", "0.25"],
+      "answer": 1,
+      "why": "Z returns +1 for outcome 0 and −1 for outcome 1, so ⟨Z⟩ = P(0) − P(1) = 0.75 − 0.25 = +0.5. Note that no single shot ever returns 0.5 — the average lands somewhere no individual measurement can."
+    },
+    {
+      "id": "variational",
+      "concept": "The variational principle",
+      "basecamp": "05",
+      "q": "Your ansatz reaches an energy of −1.05, and the true ground-state energy is −1.118. What would a better ansatz achieve?",
+      "options": [
+        "It could go below −1.118 if it had enough parameters.",
+        "It could get closer to −1.118, but never below it.",
+        "It would reach exactly −1.118 in every case.",
+        "Nothing — −1.05 is the best any circuit can do."
+      ],
+      "answer": 1,
+      "why": "The variational theorem: ⟨ψ|H|ψ⟩ ≥ E₀ for <i>every</i> state ψ. The ground energy is a hard floor set by the Hamiltonian itself, not by your circuit. A better ansatz gets you nearer the floor; nothing takes you through it. That one-way guarantee is what makes VQE trustworthy — you always know which direction is better."
+    },
+    {
+      "id": "frustration",
+      "concept": "Graph frustration",
+      "basecamp": "06",
+      "q": "Three towns are connected in a triangle. You split them into two groups. What is the largest number of roads you can cut?",
+      "options": ["3 — all of them", "2", "1", "It depends on the algorithm you use"],
+      "answer": 1,
+      "why": "Two groups and three mutually connected towns means two towns always end up together, and the road between <i>those</i> two can never be cut. The maximum is 2. This is a property of the problem, not a failure of any algorithm — and it is why an approximation ratio below 1 is not automatically bad news."
+    },
+    {
+      "id": "parallelism",
+      "concept": "What quantum speedup is not",
+      "basecamp": "06",
+      "q": "How does a quantum algorithm like QAOA get an advantage?",
+      "options": [
+        "It tries every possible answer at once and reads off the best one.",
+        "It arranges amplitudes so that wrong answers cancel and good ones reinforce, then samples.",
+        "It runs the same classical search, only on much faster hardware.",
+        "It uses a parallel universe for each candidate answer."
+      ],
+      "answer": 1,
+      "why": "A circuit can hold amplitude on all 2ⁿ outcomes, but you only ever get <i>one</i> bitstring out per run. The whole craft is interference: shaping the amplitudes so that good answers are the likely ones to come out. 'Tries all answers at once' would imply reading them all out, which measurement never lets you do."
+    }
+  ]
+}

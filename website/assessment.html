@@ -3,15 +3,47 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Summit Assessment — Quantum Ascent</title>
-<meta name="description" content="Evaluate your understanding before and after climbing the Quantum Ascent route to track your knowledge growth.">
+<title>Concept Diagnostic — Quantum Ascent</title>
+<meta name="description" content="Take the same ten-question concept diagnostic before and after the Quantum Ascent route, and measure exactly how much you learned.">
 <link rel="stylesheet" href="assets/css/site.css">
+<style>
+  .qcard { border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--panel);
+           padding: 16px 18px; margin: 16px 0; }
+  .qcard .qhead { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; margin-bottom: 10px; }
+  .qnum { font-family: var(--font-code); font-size: 12px; color: var(--muted);
+          border: 1px solid var(--line); border-radius: 20px; padding: 2px 10px; white-space: nowrap; }
+  .qtext { font-weight: 600; font-size: 16px; }
+  .opt { display: block; width: 100%; text-align: left; background: var(--panel); color: var(--text);
+         border: 1.5px solid var(--line); border-radius: 8px; padding: 10px 13px;
+         margin: 0 0 7px; font-size: 15px; font-weight: 500; font-family: var(--font-body); cursor: pointer; }
+  .opt:hover:not(:disabled) { border-color: var(--accent); filter: none; }
+  .opt[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-bg); font-weight: 600; }
+  .opt.right { border-color: var(--accent); background: var(--accent-bg); }
+  .opt.wrong { border-color: var(--danger); background: var(--danger-bg); }
+  .opt:disabled { cursor: default; }
+  .why { margin-top: 8px; font-size: 14.5px; padding: 10px 13px; border-radius: 8px;
+         background: var(--bg2); border-left: 4px solid var(--muted); }
+  .scoreline { display: flex; gap: 18px; flex-wrap: wrap; align-items: baseline; margin: 6px 0 14px; }
+  .bignum { font-family: var(--font-heading); font-size: 44px; line-height: 1; }
+  .delta-up { color: var(--accent-strong); }
+  .modecard { border: 1px solid var(--line); border-radius: var(--radius-md);
+              background: var(--panel); padding: 18px 20px; margin: 14px 0; }
+  .modecard.primary { border-color: var(--accent); background: var(--accent-bg); }
+  table.breakdown { border-collapse: collapse; width: 100%; font-size: 14.5px; margin-top: 10px; }
+  table.breakdown th, table.breakdown td { border: 1px solid var(--line); padding: 7px 10px; text-align: left; }
+  table.breakdown th { background: var(--bg2); font-weight: 600; }
+  .tick { color: var(--accent-strong); font-weight: 700; }
+  .cross { color: var(--danger); font-weight: 700; }
+  .progressbar { height: 8px; background: var(--bg2); border: 1px solid var(--line);
+                 border-radius: 6px; overflow: hidden; margin: 10px 0 4px; }
+  .progressbar > div { height: 100%; background: var(--accent); width: 0%; transition: width .25s; }
+  code { font-family: var(--font-code); font-size: .92em; background: var(--bg2);
+         border: 1px solid var(--line); border-radius: 4px; padding: 1px 5px; }
+</style>
 </head>
 <body>
 
-<!-- Nav dismiss overlay: tap outside the menu to close it -->
 <a href="#" class="nav-dismiss" aria-hidden="true" tabindex="-1"></a>
-
 <nav id="nav">
   <a href="index.html" class="nav-name"><img src="assets/logo.svg" alt="" width="24" height="24"> Quantum <span>Ascent</span></a>
   <a href="#nav-menu" class="nav-burger" id="nav-burger" aria-label="Toggle menu">
@@ -21,32 +53,331 @@
     <a href="ascent.html">The Ascent</a>
     <a href="widgets.html">Widget Gallery</a>
     <a href="analogy-studio.html">Analogy Studio</a>
+    <a href="assessment.html" class="active">Diagnostic</a>
     <span id="xp-pill">⚡ 0 XP · 0/6</span>
   </div>
 </nav>
 
-<div class="container">
-  <h1>📊 Summit Assessment</h1>
-  <div class="learning-list" style="margin: 20px 0 32px;">
-    <div class="learning-item">
-      <span class="marker-green">✓</span>
-      <span><b>Track Growth:</b> Take a 10-question assessment before Basecamp 1, and re-evaluate after the Summit to measure how far you've climbed.</span>
-    </div>
-    <div class="learning-item">
-      <span class="marker-green">✓</span>
-      <span><b>100% Privacy:</b> Your scores are stored entirely on your local device — export them anytime, with zero uploads to remote servers.</span>
-    </div>
-  </div>
-  <div class="panel" style="border-color:var(--accent);max-width:640px">
-    🏔️ All six basecamps are live — climb from <a href="module.html?id=01">Basecamp 1</a>
-    (The Qubit) to the <a href="module.html?id=06">Summit</a> (QAOA for Max-Cut). Every
-    basecamp's widget, notebook, and quiz already track your progress and XP; a cumulative
-    end-of-route assessment is on the way.
-  </div>
-</div>
+<div class="container" id="content"><p class="muted">Loading the diagnostic…</p></div>
 
-<footer>Built for the WISER Education Challenge 2026</footer>
+<footer>Built for the WISER Education Challenge 2026 · <a href="ascent.html">Back to the Ascent</a></footer>
+
 <script src="assets/js/progress.js"></script>
+<script src="assets/js/ledger.js"></script>
+<script src="assets/js/confetti.js"></script>
+<script src="assets/js/glossary.js"></script>
+<script>
+"use strict";
+/* The concept diagnostic — the course's evidence, not its assessment.
+   ==================================================================
+
+   The same ten questions, taken once BEFORE Basecamp 1 and again AFTER the
+   Summit. The difference between those two scores is the only honest claim
+   this project can make about whether it teaches anything: everything else is
+   design intent.
+
+   Deliberate choices:
+
+   - The PRE-TEST SHOWS NO ANSWERS. If it did, it would be a lesson, and the
+     post-test would measure the pre-test rather than the course. Explanations
+     appear on the post-test, where they are a reward and no longer contaminate
+     the measurement.
+   - SEVERAL DISTRACTORS ARE THE POPULAR MYTH, phrased the way it is usually
+     phrased ("0 and 1 at the same time", "tries all answers at once"). We want
+     to know whether the course dislodges those specific beliefs, so we have to
+     offer them attractively.
+   - Everything is stored in localStorage. No account, no upload. An educator
+     collects results by asking learners to click Export — see
+     docs/educator_guide.md.
+   - The post-test is paired with the Prediction Ledger's calibration report,
+     because "what you know" and "how well you can judge what you know" are
+     different and both worth seeing.
+*/
+
+const KEY = "q2q_assessment_v1";
+const load = () => { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } };
+const save = d => localStorage.setItem(KEY, JSON.stringify(d));
+
+(async () => {
+  const bank = await (await fetch("assets/data/assessment.json")).json();
+  const el = document.getElementById("content");
+  const store = load();
+  const params = new URLSearchParams(location.search);
+  const summitDone = !!(Progress.get().modules["06"] || {}).completed;
+
+  render();
+
+  function render() {
+    const s = load();
+    const forced = params.get("take");           // "pre" | "post", for retakes
+    if (forced === "pre" || forced === "post") return runTest(forced);
+    if (!s.pre) return landing("pre");
+    if (!s.post) return landing("post");
+    return results();
+  }
+
+  /* ---------------------------------------------------------- landing */
+  function landing(mode) {
+    const s = load();
+    const done = Object.values(Progress.get().modules).filter(m => m.completed).length;
+    el.innerHTML = `
+      <h1>📊 Concept Diagnostic</h1>
+      <p class="muted">Ten questions · about 8 minutes · nothing leaves your browser</p>
+      <p style="font-size:16px;max-width:70ch">${bank.note}</p>
+
+      ${mode === "pre" ? `
+        <div class="modecard primary">
+          <h3 style="font-size:18px;margin-bottom:6px">Start here — the before picture</h3>
+          <p style="margin:0 0 10px;font-size:15px">Take this <b>before</b> Basecamp 1, while you
+          still know nothing. That is the whole point: a low score now is not a bad result, it is
+          the baseline that lets you prove how far you climbed.</p>
+          <p style="margin:0 0 12px;font-size:15px"><b>Guess freely, and do not look anything up.</b>
+          We show you no answers afterwards — if we did, this would become a lesson, and the
+          after-test would be measuring the before-test instead of the course.</p>
+          <button class="btn" id="go">Take the before-test →</button>
+        </div>
+        ${done ? `<p class="muted">You have already completed ${done} basecamp${done === 1 ? "" : "s"},
+          so a "before" score will read high — that is fine, just note it when you interpret the delta.</p>` : ""}
+      ` : `
+        <div class="modecard primary">
+          <h3 style="font-size:18px;margin-bottom:6px">The after picture</h3>
+          <p style="margin:0 0 8px;font-size:15px">You scored <b>${s.pre.score} / ${s.pre.total}</b>
+          on the before-test${s.pre.at ? ` (${new Date(s.pre.at).toLocaleDateString()})` : ""}.
+          Take the same ten questions again and see what changed.</p>
+          <p style="margin:0 0 12px;font-size:15px">This time you get a full explanation for every
+          question — including the ones you got right.</p>
+          <button class="btn" id="go">Take the after-test →</button>
+        </div>
+        ${summitDone ? "" : `<div class="modecard"><b>You have not finished the Summit yet.</b>
+          <span class="muted">You can absolutely take this now, but the delta means most once
+          you have climbed the whole route. <a href="ascent.html">See what's left →</a></span></div>`}
+      `}
+
+      <div class="modecard">
+        <b>What is being measured?</b>
+        <p class="muted" style="margin:6px 0 0;font-size:14.5px">One question per core idea:
+        superposition, the Born rule, shot noise, phase and interference, Qiskit's bit ordering,
+        no-signalling, expectation values, the variational bound, graph frustration, and what a
+        quantum speedup actually is. Several of the wrong answers are the popular myths, written
+        the way you have probably seen them written.</p>
+      </div>`;
+    document.getElementById("go").addEventListener("click", () => runTest(mode));
+    Glossary.enhance(el);
+  }
+
+  /* ------------------------------------------------------------- test */
+  function runTest(mode) {
+    const answers = new Array(bank.questions.length).fill(null);
+    el.innerHTML = `
+      <h1>${mode === "pre" ? "Before-test" : "After-test"}</h1>
+      <p class="muted">${mode === "pre"
+        ? "Answer from instinct. No answers will be revealed — guessing is expected and is not held against you."
+        : "Same ten questions. Full explanations at the end."}</p>
+      <div class="progressbar"><div id="pbar"></div></div>
+      <p class="muted" id="pcount" style="font-size:13.5px" role="status" aria-live="polite">0 of ${bank.questions.length} answered</p>
+      <div id="qs"></div>
+      <button class="btn" id="submit" disabled>Answer all ten to finish</button>
+      <p class="muted" style="font-size:13.5px;margin-top:10px">You can change any answer until you submit.</p>`;
+
+    const qs = document.getElementById("qs");
+    bank.questions.forEach((q, qi) => {
+      const card = document.createElement("section");
+      card.className = "qcard";
+      card.innerHTML = `
+        <div class="qhead"><span class="qnum">${qi + 1} / ${bank.questions.length}</span>
+          <span class="qtext">${q.q}</span></div>
+        <div data-opts></div>`;
+      const box = card.querySelector("[data-opts]");
+      q.options.forEach((opt, oi) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "opt";
+        b.innerHTML = opt;
+        b.setAttribute("aria-pressed", "false");
+        b.addEventListener("click", () => {
+          answers[qi] = oi;
+          box.querySelectorAll(".opt").forEach((o, k) =>
+            o.setAttribute("aria-pressed", String(k === oi)));
+          const n = answers.filter(a => a !== null).length;
+          document.getElementById("pbar").style.width = (100 * n / bank.questions.length) + "%";
+          document.getElementById("pcount").textContent = `${n} of ${bank.questions.length} answered`;
+          const sub = document.getElementById("submit");
+          sub.disabled = n < bank.questions.length;
+          /* Norman: a disabled control that says why beats an error after the fact. */
+          sub.textContent = sub.disabled
+            ? `Answer all ten to finish (${bank.questions.length - n} left)`
+            : "Submit my answers";
+        });
+        box.appendChild(b);
+      });
+      qs.appendChild(card);
+    });
+
+    document.getElementById("submit").addEventListener("click", () => {
+      const detail = bank.questions.map((q, qi) => ({
+        id: q.id, concept: q.concept, basecamp: q.basecamp,
+        chose: answers[qi], correct: answers[qi] === q.answer
+      }));
+      const score = detail.filter(d => d.correct).length;
+      const s = load();
+      s[mode] = { score: score, total: bank.questions.length, detail: detail, at: new Date().toISOString() };
+      save(s);
+      if (mode === "post" && window.confettiBurst) window.confettiBurst();
+      window.scrollTo(0, 0);
+      results();
+    });
+    window.scrollTo(0, 0);
+    Glossary.enhance(el);
+  }
+
+  /* ---------------------------------------------------------- results */
+  function results() {
+    const s = load();
+    if (!s.pre) return landing("pre");
+    if (!s.post) {
+      /* Pre-test done: acknowledge, show NOTHING, and send them climbing. */
+      el.innerHTML = `
+        <h1>Baseline recorded ✓</h1>
+        <div class="modecard primary">
+          <p style="margin:0 0 8px;font-size:16px">Your before-test is saved. We are deliberately
+          <b>not</b> showing you your score or the answers yet — knowing which ones you missed
+          would turn this into a lesson, and the after-test would then be measuring the test
+          rather than the course.</p>
+          <p style="margin:0;font-size:16px">Go climb. Come back after the Summit, take the same
+          ten questions, and you will get both scores, the delta, and a full explanation of every
+          question at once.</p>
+        </div>
+        <p style="margin-top:18px">
+          <a class="btn" href="lab.html?id=01">Start Basecamp 1 in the browser →</a>
+          <a class="btn ghost" href="ascent.html" style="margin-left:8px">See the route map</a></p>
+        <p class="muted" style="font-size:13.5px;margin-top:14px">Changed your mind and want to
+          redo the baseline? <a href="assessment.html?take=pre">Retake the before-test</a>.</p>`;
+      return;
+    }
+
+    const pre = s.pre, post = s.post;
+    const delta = post.score - pre.score;
+    const rows = bank.questions.map((q, i) => {
+      const a = pre.detail[i], b = post.detail[i];
+      return `<tr>
+        <td>${q.concept}<br><span class="muted" style="font-size:12.5px">Basecamp ${q.basecamp}</span></td>
+        <td style="text-align:center">${a.correct ? '<span class="tick">✓</span>' : '<span class="cross">✗</span>'}</td>
+        <td style="text-align:center">${b.correct ? '<span class="tick">✓</span>' : '<span class="cross">✗</span>'}</td>
+        <td>${!a.correct && b.correct ? "<b>learned</b>"
+             : a.correct && !b.correct ? "slipped"
+             : a.correct ? "already knew it" : "still to get"}</td></tr>`;
+    }).join("");
+
+    const gained = bank.questions.filter((q, i) => !pre.detail[i].correct && post.detail[i].correct);
+    const missed = bank.questions.filter((q, i) => !post.detail[i].correct);
+    const lr = Ledger.report();
+
+    el.innerHTML = `
+      <h1>📊 Your before and after</h1>
+      <div class="scoreline">
+        <div><div class="muted" style="font-size:13px">BEFORE</div>
+             <div class="bignum">${pre.score}<span class="muted" style="font-size:22px">/${pre.total}</span></div></div>
+        <div><div class="muted" style="font-size:13px">AFTER</div>
+             <div class="bignum">${post.score}<span class="muted" style="font-size:22px">/${post.total}</span></div></div>
+        <div><div class="muted" style="font-size:13px">CHANGE</div>
+             <div class="bignum ${delta > 0 ? "delta-up" : ""}">${delta > 0 ? "+" : ""}${delta}</div></div>
+      </div>
+
+      <div class="modecard primary">
+        <p style="margin:0;font-size:16px">${verdict(pre, post, delta, gained)}</p>
+      </div>
+
+      <h2 class="section">Concept by concept</h2>
+      <table class="breakdown">
+        <tr><th>Concept</th><th style="text-align:center">Before</th><th style="text-align:center">After</th><th>Verdict</th></tr>
+        ${rows}
+      </table>
+
+      ${lr.total ? `
+      <h2 class="section">Your prediction calibration</h2>
+      <div class="modecard">
+        <p style="margin:0 0 8px;font-size:15.5px">Across the route you committed to
+        <b>${lr.total}</b> prediction${lr.total === 1 ? "" : "s"} before running anything, and
+        <b>${lr.firstTry}</b> of them were right first time
+        (${Math.round(100 * lr.firstTryRate)}%).</p>
+        <p style="margin:0 0 8px;font-size:15.5px">${lr.verdict}</p>
+        ${lr.strongest.length ? `<p style="margin:0;font-size:15px"><b>Sharpest instincts:</b>
+          ${lr.strongest.join(", ")}.</p>` : ""}
+        ${lr.weakest.length ? `<p style="margin:6px 0 0;font-size:15px"><b>Worth revisiting:</b>
+          ${lr.weakest.join(", ")}.</p>` : ""}
+        <p class="muted" style="margin:10px 0 0;font-size:13.5px">This measures how well you judge
+        your own understanding, which is a different skill from understanding — and the one that
+        tells you when to slow down.</p>
+      </div>` : ""}
+
+      <h2 class="section">Every question, explained</h2>
+      <p class="muted">Including the ones you got right — the reasoning matters more than the tick.</p>
+      <div id="explain"></div>
+
+      ${missed.length ? `<div class="modecard">
+        <b>Where to go back</b>
+        <p class="muted" style="margin:6px 0 0;font-size:14.5px">You are still missing
+        ${missed.length} concept${missed.length === 1 ? "" : "s"}:
+        ${missed.map(q => `<a href="module.html?id=${q.basecamp}">${q.concept}</a>`).join(", ")}.</p>
+      </div>` : `<div class="modecard primary"><b>Ten out of ten.</b>
+        <span class="muted">Including every myth question. That is the whole route, understood.</span></div>`}
+
+      <p style="margin-top:20px">
+        <a class="btn ghost" href="#" id="export">⬇ Export my results (JSON)</a>
+        <a class="btn ghost" href="assessment.html?take=post" style="margin-left:8px">Retake the after-test</a>
+      </p>
+      <p class="muted" style="font-size:13.5px">Teaching with this? The export is how you collect
+      class-level results without any server — see the
+      <a href="https://github.com/sahgyan9/quantum-ascent/blob/main/docs/educator_guide.md">educator guide</a>.</p>`;
+
+    const ex = document.getElementById("explain");
+    bank.questions.forEach((q, i) => {
+      const b = post.detail[i];
+      const card = document.createElement("section");
+      card.className = "qcard";
+      card.innerHTML = `
+        <div class="qhead"><span class="qnum">${i + 1}</span><span class="qtext">${q.q}</span></div>
+        ${q.options.map((o, oi) => `<div class="opt ${oi === q.answer ? "right" : (oi === b.chose ? "wrong" : "")}"
+            style="cursor:default">${oi === q.answer ? "✓ " : (oi === b.chose ? "✗ " : "")}${o}</div>`).join("")}
+        <div class="why"><b>Why:</b> ${q.why}</div>`;
+      ex.appendChild(card);
+    });
+
+    document.getElementById("export").addEventListener("click", e => {
+      e.preventDefault();
+      const payload = { assessment: load(), ledger: Ledger.entries(), progress: Progress.get() };
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "quantum-ascent-results.json";
+      a.click();
+    });
+    Glossary.enhance(el);
+  }
+
+  /* An honest verdict. No praise inflation: a flat delta is reported as a flat
+     delta, because a diagnostic that always says "well done" measures nothing. */
+  function verdict(pre, post, delta, gained) {
+    if (delta >= 4) return `You went from <b>${pre.score}</b> to <b>${post.score}</b> out of ${post.total}.
+      That is a large, real shift — and it is a shift on the specific ideas that beginners usually
+      get wrong, not on vocabulary. ${gained.length ? `You newly hold: ${gained.map(q => q.concept).join(", ")}.` : ""}`;
+    if (delta > 0) return `You gained <b>${delta}</b> mark${delta === 1 ? "" : "s"}, moving from
+      ${pre.score} to ${post.score} out of ${post.total}.
+      ${gained.length ? `Newly yours: ${gained.map(q => q.concept).join(", ")}.` : ""}
+      Worth checking which questions are still open below — the route is short enough to revisit.`;
+    if (delta === 0 && post.score === post.total) return `You scored full marks both times.
+      You arrived already knowing this material — the honest read is that this course did not have
+      much to teach you, which is useful information about the course, not about you.`;
+    if (delta === 0) return `Your score did not move (${pre.score} → ${post.score}).
+      That is worth taking seriously rather than shrugging off: look at the concept table below,
+      find which ideas are still red, and go back to those specific basecamps.`;
+    return `Your score went <b>down</b> (${pre.score} → ${post.score}). That usually means one of two
+      things: you guessed luckily the first time, or a genuine confusion got introduced along the
+      way. The table below will tell you which — and if it is the second, that is a bug in our
+      teaching, not in you.`;
+  }
+})();
+</script>
 <script src="assets/js/nav.js"></script>
 </body>
 </html>
