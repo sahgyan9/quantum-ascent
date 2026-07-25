@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Basecamp 0 · Kit Check — Quantum Ascent</title>
+<meta name="description" content="A ten-minute kit check before you climb: the five bits of maths and Python this course actually leans on, each with a 90-second refresher if you need it.">
+<link rel="stylesheet" href="assets/css/site.css">
+<style>
+  .item { border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--panel);
+          padding: 18px 20px; margin: 18px 0; }
+  .item.ok { border-color: var(--accent); background: var(--accent-bg); }
+  .item.open { border-color: var(--amber); }
+  .item-head { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; margin-bottom: 4px; }
+  .kit-num { font-family: var(--font-code); font-size: 12px; color: var(--muted);
+             border: 1px solid var(--line); border-radius: 20px; padding: 2px 10px; white-space: nowrap; }
+  .item h3 { font-size: 19px; }
+  .item .prompt { font-size: 16px; margin: 10px 0; }
+  .opt { display: block; width: 100%; text-align: left; background: var(--panel); color: var(--text);
+         border: 1.5px solid var(--line); border-radius: 8px; padding: 10px 13px; margin: 0 0 7px;
+         font-size: 15px; font-weight: 500; font-family: var(--font-body); cursor: pointer; }
+  .opt:hover:not(:disabled) { border-color: var(--accent); filter: none; }
+  .opt.right { border-color: var(--accent); background: var(--accent-bg); }
+  .opt.wrong { border-color: var(--danger); background: var(--danger-bg); }
+  .opt:disabled { cursor: default; opacity: .85; }
+  .refresher { margin-top: 12px; padding: 14px 16px; border-radius: 8px; background: var(--bg2);
+               border-left: 4px solid var(--amber); font-size: 15px; }
+  .refresher h4 { font-family: var(--font-body); font-size: 14px; text-transform: uppercase;
+                  letter-spacing: .06em; color: var(--amber); font-weight: 700; margin-bottom: 8px; }
+  .refresher p { margin-bottom: 9px; }
+  .refresher table { border-collapse: collapse; margin: 8px 0; font-family: var(--font-code); font-size: 13.5px; }
+  .refresher td, .refresher th { border: 1px solid var(--line); padding: 4px 10px; text-align: left; }
+  pre.code { background: #1a1a18; color: #f1eee6; border-radius: 8px; padding: 11px 13px;
+             font-family: var(--font-code); font-size: 13px; line-height: 1.55; overflow-x: auto;
+             margin: 8px 0; white-space: pre; }
+  .tally { position: sticky; top: 90px; z-index: 5; background: var(--panel);
+           border: 1px solid var(--line); border-radius: var(--radius-md);
+           padding: 12px 16px; margin: 18px 0 6px; display: flex; gap: 14px;
+           align-items: center; flex-wrap: wrap; }
+  .dots { display: flex; gap: 6px; }
+  .dot { width: 13px; height: 13px; border-radius: 50%; border: 1.5px solid var(--line); background: var(--bg2); }
+  .dot.ok { background: var(--accent); border-color: var(--accent); }
+  .dot.miss { background: var(--amber); border-color: var(--amber); }
+  code { font-family: var(--font-code); font-size: .92em; background: var(--bg2);
+         border: 1px solid var(--line); border-radius: 4px; padding: 1px 5px; }
+  .reassure { border-left: 4px solid var(--accent); background: var(--accent-bg);
+              padding: 14px 17px; border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 15.5px; }
+</style>
+</head>
+<body>
+
+<a href="#" class="nav-dismiss" aria-hidden="true" tabindex="-1"></a>
+<nav id="nav">
+  <a href="index.html" class="nav-name"><img src="assets/logo.svg" alt="" width="24" height="24"> Quantum <span>Ascent</span></a>
+  <a href="#nav-menu" class="nav-burger" id="nav-burger" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </a>
+  <div class="nav-links" id="nav-menu">
+    <a href="kit-check.html" class="active">Kit Check</a>
+    <a href="ascent.html">The Ascent</a>
+    <a href="widgets.html">Widget Gallery</a>
+    <a href="analogy-studio.html">Analogy Studio</a>
+    <a href="myths.html">Myth Autopsy</a>
+    <a href="assessment.html">Diagnostic</a>
+    <span id="xp-pill">⚡ 0 XP · 0/6</span>
+  </div>
+</nav>
+
+<div class="container">
+  <h1>🎒 Basecamp 0 · Kit Check</h1>
+  <p class="muted">About 10 minutes · five questions · nothing is recorded against you</p>
+
+  <div class="reassure">
+    <b>Read this before you start, because it changes what these questions mean.</b><br>
+    This is <b>not</b> a test, and it is <b>not</b> a gate. Nothing here can stop you climbing.<br><br>
+    It exists because the thing that actually derails beginners in this course is never quantum
+    physics — it is a <i>radian</i>, or a Python <i>dictionary</i>, arriving without warning in
+    the middle of a sentence about qubits. Then you get stuck, and it feels like you failed at
+    quantum mechanics when really you tripped over a unit.<br><br>
+    So: five questions. Get one wrong and a <b>90-second refresher</b> opens right there. That is
+    the entire mechanism. Wrong answers are the point — they are how the refreshers find you.
+  </div>
+
+  <div class="reassure" style="border-left-color:var(--amber);background:var(--amber-bg)">
+    <b>One thing you do <i>not</i> need: complex numbers.</b> Some quantum courses demand them on
+    page one. This one deliberately keeps every amplitude real and non-negative, so the Born rule
+    stays plain squaring and you will never meet an <i>i</i>. If that was the thing putting you
+    off, you are clear.
+  </div>
+
+  <div class="tally" id="tally" role="status" aria-live="polite">
+    <span class="dots" id="dots"></span>
+    <span id="tally-text" style="font-size:14.5px">Not started — five to go.</span>
+  </div>
+
+  <div id="items"></div>
+
+  <div class="panel" id="finish" style="display:none;border-color:var(--accent);background:var(--accent-bg);margin-top:24px">
+    <h3 style="font-size:19px;margin-bottom:8px" id="finish-head"></h3>
+    <div id="finish-body" style="font-size:15.5px"></div>
+    <p style="margin:14px 0 0">
+      <a class="btn" href="lab.html?id=01">Start Basecamp 1 in your browser →</a>
+      <a class="btn ghost" href="assessment.html" style="margin-left:8px">Take the before-test first</a>
+    </p>
+  </div>
+</div>
+
+<footer>Built for the WISER Education Challenge 2026 · <a href="ascent.html">Back to the Ascent</a></footer>
+
+<script src="assets/js/progress.js"></script>
+<script src="assets/js/glossary.js"></script>
+<script>
+"use strict";
+/* Basecamp 0 — Kit Check.
+   ======================
+
+   The course's difficulty problem was never the quantum mechanics. Reading it
+   as a beginner, the places you actually stall are:
+
+     - the Bloch widget's slider is in DEGREES and Qiskit's RY is in RADIANS,
+       and the notebook mentions this once, in a code comment;
+     - sin^2(theta/2) arrives with no warning that theta/2 is the half-angle,
+       and the classic slip is solving for the half and stopping;
+     - `counts` shows up as a Python dict with no example of reading one;
+     - Basecamp 5 assumes `def ... return` cold;
+     - and the stated prerequisites asked for COMPLEX NUMBERS, which this
+       course deliberately never uses — scaring off exactly the people it was
+       built for.
+
+   Every one of those is a five-minute fix that was instead costing learners a
+   basecamp. This page repairs them before they bite, and it is careful to be a
+   packing list rather than an exam: nothing is recorded, nothing is gated, and
+   a wrong answer is framed as the mechanism (it opens the refresher), not as a
+   failure. */
+
+const ITEMS = [
+  {
+    id: "radians",
+    title: "Angles in radians",
+    prompt: "A right angle is 90°. What is that in radians?",
+    options: ["π/2", "π/4", "90π", "π"],
+    answer: 0,
+    right: "Exactly. Half of π is a right angle, because π radians is a half turn (180°).",
+    refresher: `
+      <h4>90-second refresher · radians</h4>
+      <p>A radian is just a different unit for an angle, the way a kilometre is a different unit
+      for a distance. The whole conversion is one fact:</p>
+      <p style="text-align:center;font-size:19px"><b>180° = π radians</b></p>
+      <p>Everything else follows by halving or scaling:</p>
+      <table>
+        <tr><th>Degrees</th><td>0°</td><td>30°</td><td>45°</td><td>60°</td><td>90°</td><td>180°</td><td>360°</td></tr>
+        <tr><th>Radians</th><td>0</td><td>π/6</td><td>π/4</td><td>π/3</td><td>π/2</td><td>π</td><td>2π</td></tr>
+      </table>
+      <p><b>Why you care:</b> Qiskit's rotation gates take radians, always. Our widgets show you
+      both units side by side for exactly this reason — you will never have to convert in your
+      head. In Python, <code>np.pi/2</code> is how you write a right angle.</p>
+      <pre class="code">import numpy as np
+np.pi / 2        # 1.5707...  a right angle
+np.degrees(np.pi / 2)   # 90.0   convert back if you want to check</pre>`
+  },
+  {
+    id: "halfangle",
+    title: "The half-angle",
+    prompt: "If sin²(θ/2) = 0.25, what is θ?",
+    options: ["30°", "60°", "120°", "15°"],
+    answer: 1,
+    right: "Right — and you did not stop at the half-angle, which is the single most common slip in Basecamp 1.",
+    refresher: `
+      <h4>90-second refresher · unwinding sin²(θ/2)</h4>
+      <p>This expression runs the whole of Basecamp 1, so it is worth taking slowly. Work
+      <b>outwards</b>, undoing one operation at a time:</p>
+      <p><b>1.</b> You have <b>sin²(θ/2) = 0.25</b>. Undo the square — take the square root:<br>
+         <b>sin(θ/2) = 0.5</b></p>
+      <p><b>2.</b> Undo the sine. Which angle has a sine of 0.5? That is <b>30°</b>:<br>
+         <b>θ/2 = 30°</b></p>
+      <p><b>3.</b> Undo the halving — and <i>this is the step everybody forgets</i>:<br>
+         <b>θ = 60°</b></p>
+      <p><b>The trap:</b> stopping at step 2 and answering 30°. The thing inside the sine is
+      <i>half</i> of what you were asked for, so the last thing you do is double it.</p>
+      <p>Grab a pen and write those three lines out yourself once. It genuinely sticks better
+      than reading them.</p>`
+  },
+  {
+    id: "dict",
+    title: "Reading a Python dictionary",
+    prompt: 'Given <code>counts = {"0": 480, "1": 520}</code>, what does <code>counts["1"]</code> give you?',
+    options: ["520", "1", '"1"', "1000"],
+    answer: 0,
+    right: "Yes — you look something up by its key and get its value back.",
+    refresher: `
+      <h4>90-second refresher · dictionaries</h4>
+      <p>A dictionary stores <b>key → value</b> pairs. You look things up by name rather than by
+      position. Quantum measurement results arrive in exactly this shape: the key is the outcome
+      you measured, the value is how many times you got it.</p>
+      <pre class="code">counts = {"0": 480, "1": 520}
+
+counts["1"]          # 520      how many times we measured 1
+counts["0"]          # 480
+sum(counts.values()) # 1000     total shots
+
+for outcome, n in counts.items():
+    print(outcome, "happened", n, "times")</pre>
+      <p><b>Watch the quote marks.</b> The keys here are the <i>strings</i> <code>"0"</code> and
+      <code>"1"</code>, not the numbers 0 and 1 — because a real result looks like
+      <code>"0110"</code>. Asking for <code>counts[1]</code> without quotes is an error.</p>`
+  },
+  {
+    id: "function",
+    title: "Functions that return a value",
+    prompt: "What does this print?<pre class='code'>def energy(theta):\n    return 2 * theta + 1\n\nprint(energy(3))</pre>",
+    options: ["7", "3", "2 * theta + 1", "Nothing — it only defines a function"],
+    answer: 0,
+    right: "Correct: 2 × 3 + 1 = 7. The function hands a value back, and print shows it.",
+    refresher: `
+      <h4>90-second refresher · def … return</h4>
+      <p>A function is a reusable recipe. <code>def</code> writes the recipe down; calling it
+      actually cooks; <code>return</code> is what gets handed back.</p>
+      <pre class="code">def energy(theta):      # 'theta' is the input, named for use inside
+    return 2 * theta + 1  # hand this value back to whoever called
+
+energy(3)     # 7   -- the call produces a value
+energy(0)     # 1   -- same recipe, different input
+x = energy(3) # store the returned value in x</pre>
+      <p><b>Why you care:</b> Basecamp 5 asks you to write a function that takes an angle and
+      returns an energy, and then hands that function to an optimizer. The optimizer calls your
+      recipe hundreds of times with different angles — which only works because the function
+      <i>returns</i> its answer rather than printing it.</p>
+      <p><b>The classic slip:</b> writing <code>print(...)</code> where <code>return</code> was
+      needed. Printing shows a number to you; returning gives it to the program. The optimizer
+      cannot read your screen.</p>`
+  },
+  {
+    id: "squaring",
+    title: "Squaring, and why probabilities behave",
+    prompt: "An amplitude is −0.6. Squaring it gives the probability. What is it?",
+    options: ["0.36", "−0.36", "−0.6", "0.6"],
+    answer: 0,
+    right: "Exactly — and notice the minus sign vanished. That is not a detail; it is the reason interference works.",
+    refresher: `
+      <h4>90-second refresher · squaring a negative</h4>
+      <p>A negative times a negative is positive, so <b>(−0.6)² = 0.36</b>. The minus sign
+      disappears.</p>
+      <p><b>Why this matters more than it looks.</b> Amplitudes are allowed to be negative.
+      Probabilities are not — a −36% chance is meaningless. Squaring is what bridges the two, and
+      it throws the sign away.</p>
+      <p>So two states can have amplitudes <b>+0.6</b> and <b>−0.6</b>, be genuinely
+      <i>different</i> states, and yet give <i>identical</i> measurement statistics. The
+      difference is invisible right now — and a later gate can turn it into a visible one. That
+      is <b>interference</b>, and it is where every quantum advantage comes from.</p>
+      <p>Hold on to this: <b>the sign is real physics that measurement alone cannot see.</b></p>`
+  }
+];
+
+const state = ITEMS.map(() => null);   // null | "ok" | "miss"
+
+const itemsEl = document.getElementById("items");
+ITEMS.forEach((it, i) => {
+  const sec = document.createElement("section");
+  sec.className = "item";
+  sec.id = "kit-" + it.id;
+  sec.innerHTML = `
+    <div class="item-head"><span class="kit-num">${i + 1} of ${ITEMS.length}</span>
+      <h3>${it.title}</h3></div>
+    <div class="prompt">${it.prompt}</div>
+    <div data-opts></div>
+    <div data-fb></div>`;
+  const box = sec.querySelector("[data-opts]");
+  it.options.forEach((opt, oi) => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "opt";
+    b.innerHTML = opt;
+    b.addEventListener("click", () => pick(i, oi, sec));
+    box.appendChild(b);
+  });
+  itemsEl.appendChild(sec);
+});
+
+function pick(i, oi, sec) {
+  const it = ITEMS[i];
+  const right = oi === it.answer;
+  sec.querySelectorAll(".opt").forEach((b, k) => {
+    b.disabled = true;
+    if (k === it.answer) b.classList.add("right");
+    else if (k === oi) b.classList.add("wrong");
+  });
+  /* A wrong answer opens the refresher. A right one offers it anyway, folded
+     away — some people want to check their reasoning even when they were
+     right, and hiding it from them would be strange. */
+  sec.querySelector("[data-fb]").innerHTML = right
+    ? `<p style="margin-top:10px;font-size:15px"><b style="color:var(--accent-strong)">✓ ${it.right}</b></p>
+       <details style="margin-top:8px"><summary style="cursor:pointer;color:var(--muted);font-size:14px">
+       Show the refresher anyway</summary><div class="refresher">${it.refresher}</div></details>`
+    : `<p style="margin-top:10px;font-size:15px"><b style="color:var(--amber)">Not quite — and this
+       is exactly what the Kit Check is for.</b> Ninety seconds here saves you an hour later:</p>
+       <div class="refresher">${it.refresher}</div>`;
+  sec.classList.add(right ? "ok" : "open");
+  state[i] = right ? "ok" : "miss";
+  renderTally();
+}
+
+function renderTally() {
+  const dots = document.getElementById("dots");
+  dots.replaceChildren();
+  state.forEach(s => {
+    const d = document.createElement("span");
+    d.className = "dot" + (s === "ok" ? " ok" : s === "miss" ? " miss" : "");
+    dots.appendChild(d);
+  });
+  const done = state.filter(s => s !== null).length;
+  const miss = state.filter(s => s === "miss").length;
+  const t = document.getElementById("tally-text");
+  if (!done) { t.textContent = "Not started — five to go."; return; }
+  t.textContent = done < ITEMS.length
+    ? `${done} of ${ITEMS.length} answered` + (miss ? ` · ${miss} refresher${miss === 1 ? "" : "s"} opened` : "")
+    : `All ${ITEMS.length} answered · ${miss} refresher${miss === 1 ? "" : "s"} opened`;
+  if (done === ITEMS.length) finish(miss);
+}
+
+function finish(miss) {
+  const box = document.getElementById("finish");
+  box.style.display = "block";
+  const head = document.getElementById("finish-head");
+  const body = document.getElementById("finish-body");
+  if (miss === 0) {
+    head.textContent = "🎒 Kit complete — nothing to repair";
+    body.innerHTML = `<p>All five, first time. Every tool this course leans on is already in your
+      hands, so nothing in Basecamp 1 is going to ambush you with a unit or a data structure.</p>
+      <p style="margin-top:8px">Go and meet a qubit.</p>`;
+  } else if (miss <= 2) {
+    head.textContent = "🎒 Kit checked — " + miss + " thing" + (miss === 1 ? "" : "s") + " topped up";
+    body.innerHTML = `<p>This is the most common result, and it is a <i>good</i> one: you found
+      ${miss === 1 ? "the gap" : "the gaps"} in ten minutes instead of hitting
+      ${miss === 1 ? "it" : "them"} halfway through Basecamp 4, at which point it would have felt
+      like quantum mechanics was too hard.</p>
+      <p style="margin-top:8px">The refreshers stay on this page. Bookmark it and come back the
+      moment something looks unfamiliar.</p>`;
+  } else {
+    head.textContent = "🎒 Kit checked — and this page just did its whole job";
+    body.innerHTML = `<p>You opened ${miss} refreshers, and that is genuinely the best possible
+      outcome here. Those ${miss} things were going to trip you somewhere in the next six
+      basecamps, silently, and you would have blamed the physics.</p>
+      <p style="margin-top:8px"><b>You are not behind.</b> None of this is quantum mechanics —
+      it is notation and Python, and you just spent ten minutes on it instead of an hour of being
+      stuck. Bookmark this page and come back whenever something looks unfamiliar.</p>
+      <p style="margin-top:8px">Take it slowly, keep a pen next to you, and start with Basecamp 1.</p>`;
+  }
+}
+
+renderTally();
+Glossary.enhance(document.querySelector(".container"));
+</script>
+<script src="assets/js/nav.js"></script>
+</body>
+</html>

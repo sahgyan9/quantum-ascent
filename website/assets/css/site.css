@@ -41,6 +41,10 @@
 html {
   scroll-behavior: smooth;
   font-size: 16px;
+  /* A page must never scroll sideways. `clip` rather than `hidden` so we do
+     not turn <html> into a scroll container (which would break the sticky
+     nav and the Kit Check tally). */
+  overflow-x: clip;
 }
 
 body {
@@ -475,7 +479,7 @@ h2.section::after {
   top: calc(100% + 8px);
   z-index: 70;
   width: max-content;
-  max-width: 280px;
+  max-width: min(280px, calc(100vw - 28px));
   background: var(--panel);
   color: var(--text);
   border: 1px solid var(--accent);
@@ -497,7 +501,7 @@ h2.section::after {
   visibility: visible;
   transform: translateY(0);
 }
-@media (max-width: 520px) { .gtip { max-width: 220px; } }
+@media (max-width: 520px) { .gtip { max-width: min(220px, calc(100vw - 28px)); } }
 
 /* XP pill reads as an interactive control, not just a number */
 #xp-pill:hover { color: var(--text); }

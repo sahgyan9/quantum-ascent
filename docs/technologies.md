@@ -40,6 +40,26 @@ This is what makes "it works on my machine" a guarantee rather than a hope.
   two can never drift apart. LaTeX macros are expanded at build time and tests assert none
   ship unexpanded.
 
+## The browser track's engine
+
+- **`qsim.js`** — a dense **statevector simulator written in plain JavaScript**, no
+  dependencies and no build step. It is what lets a learner finish any basecamp without
+  installing Python.
+
+  We did not choose this over Qiskit; Qiskit simply cannot run in a browser (its core has
+  been compiled Rust since 1.0, and Aer is C++). For the ≤ 5 qubits this course uses, a
+  dense statevector is at most 32 complex amplitudes, so exact simulation is a few dozen
+  lines — and *exact* is meant literally. `tests/test_qsim.py` runs `qsim.js` under Node
+  against Qiskit + Aer over 21 circuits and asserts agreement to **1e-12** on
+  probabilities, Pauli expectation values and bitstring ordering.
+
+  The endianness tests matter most: Basecamp 2 teaches Qiskit's little-endian bitstring
+  order *deliberately, as a trap*, and a browser track using the opposite convention
+  would teach that trap backwards. So the two tracks are pinned to agree, and a drift
+  fails the build rather than confusing a learner.
+
+- **Node.js** — test-time only, never shipped. It is how pytest drives the JavaScript.
+
 ## Website (the course platform)
 
 - **Vanilla HTML / CSS / JavaScript** — no framework, no bundler, no `node_modules`. The
@@ -58,10 +78,20 @@ This is what makes "it works on my machine" a guarantee rather than a hope.
 
 ## Testing & reproducibility
 
-- **pytest** — the whole project is built test-first (see `CLAUDE.md`'s stability-first
-  rule). The suite runs checker unit tests, executes every solutions notebook top-to-bottom,
-  smoke-tests every widget, and verifies the Python↔JavaScript completion-code parity.
+- **pytest** — the whole project is built test-first (stability-first rule: tests, then
+  fixes, then features). **302 checks**, covering:
+  - every solutions notebook executed top-to-bottom;
+  - the browser simulator against Qiskit + Aer, 21 circuits, 1e-12;
+  - all twelve browser-track tasks proved solvable, plus the *specific wrong answers* the
+    copy promises to diagnose, plus the numbers quoted inside the hints;
+  - every numerical claim the capstone makes in prose, recomputed;
+  - the myth scanner in both directions — it must catch myths and must **not** fire on
+    correct physics;
+  - the Python↔JavaScript completion-code parity;
+  - site integrity: no dead links, no orphan pages, no stub language, complete navigation;
+  - an accessibility floor: every widget must expose an `aria-live` text mirror.
 - Run `pytest` from the repo root to reproduce the entire verification pass in one command.
+  (Node.js is needed for the JavaScript-side tests; they skip cleanly without it.)
 
 ## What we deliberately did **not** use
 

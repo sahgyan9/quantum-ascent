@@ -90,3 +90,24 @@
 }
 .cb-obj-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
 .cb-obj-value { font-family: var(--font-code); font-size: 15px; font-weight: 700; color: var(--accent-strong); }
+
+/* Phone layout. Flex and grid children default to min-width:auto, which means
+   a wide child (the gate grid, a long ket string) sets a floor the column
+   cannot shrink below — so the whole page slides sideways. Pin them to zero
+   and let the genuinely wide things scroll inside their own box instead. */
+.cb-root, .cb-root .cols, .cb-root .col-left, .cb-root .col-right { min-width: 0; max-width: 100%; }
+.cb-root .panel { min-width: 0; overflow-wrap: anywhere; }
+.cb-root .bars { min-width: 0; }
+.cb-root .bars .lab-k, .cb-root .bars .num { overflow-wrap: anywhere; }
+.cb-root pre.code { max-width: 100%; }
+@media (max-width: 560px) {
+  .cb-root .bars { grid-template-columns: auto 1fr 52px; }
+  /* Bigger, not smaller, on a phone: a gate slot is the primary control of
+     this whole course, and a 30px target is below every published guideline
+     for a finger. The board scrolls sideways inside its own box if the
+     circuit outgrows the screen. */
+  .cb-root .cell { width: 48px; height: 48px; }
+  .cb-root .cell button.slot { inset: 2px 2px; }
+  .cb-root .gate { inset: 2px 2px; }
+  .cb-root .gbtn { min-height: 44px; min-width: 44px; }
+}
