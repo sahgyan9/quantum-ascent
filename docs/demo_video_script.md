@@ -4,8 +4,10 @@
 The point is not to read it verbatim — it's to hit every beat that scores with the judges
 without rambling or running long.
 
-- **Target length:** ~8 minutes (brief allows 5–10; 8 leaves room for the summit payoff while
-  respecting the judge's time). If you must trim, cut Beat 2 or the LLM paste in Beat 5 first.
+- **Target length:** ~8 minutes 20 (brief allows 5–10; this leaves room for the summit payoff
+  while respecting the judge's time). If you run long, trim in this order: Beat 2 (the map is
+  eye candy), then Beat 6 down to the no-signalling demo alone, then the Colab flip in Beat 4.
+  **Do not cut Beats 4, 5 or 7** — those carry the strongest scoring material.
 - **Format:** screen recording + your voice (a small webcam corner is optional but warms it
   up). 1080p, record the browser at a comfortable zoom so text is legible.
 - **Golden rule:** *show, don't tell.* Every claim should happen on screen while you say it.
@@ -59,127 +61,175 @@ you climb — self-paced, all saved right in your browser, no account needed."*
 
 ---
 
-## Beat 3 — Inside a basecamp: PLAY (1:45–3:00) 🎯 *Educational impact, Technical accuracy*
+## Beat 3 — Kit Check: remove the real barrier (1:45–2:20) 🎯 *Educational impact, Engagement*
 
-🎬 Open **Basecamp 2 (Gates & Circuits)**. Land on the **Gate Playground** widget. Tap **H** —
-show the arrow snap to the equator, 50/50. Tap **H** again — back to a definite 0. Then tap
-**Z** and narrate that the *probabilities don't move but the hidden phase does*.
+🎬 Open **Kit Check** (`kit-check.html`). Answer the radians question **wrong on purpose** —
+let the 90-second refresher slide open on camera.
 
-🎙️ *"Every basecamp starts with a widget you poke before you read any math. Here's the Gate
-Playground. Tap Hadamard — the qubit goes to a fair 50/50 spin. Tap it again — it snaps right
-back, because H is its own undo. Now watch Z: the colours don't change at all — the odds are
-identical — but the hidden phase flips. That invisible phase is the seed of interference, and
-the widget's plain-language explanation updates to say exactly what I'm seeing on screen."*
+🎙️ *"Before any physics, ten minutes of Basecamp Zero. Because here's what we learned reading
+our own course as a beginner: nobody quits over quantum mechanics. They quit over a radian, or
+a Python dictionary, arriving with no warning in the middle of a sentence about qubits — and
+then they blame themselves. So we check the five things this course actually leans on, and a
+wrong answer opens a refresher right there. Watch — I'll get one wrong. No score, no gate, and
+notice the wording: wrong answers aren't failure here, they're the mechanism. And one more
+thing — we removed complex numbers from our own prerequisites, because this course deliberately
+never uses them. We were scaring off exactly the people we built it for."*
 
-> This is your strongest 90 seconds: it's the moat (visual probability + myth-free framing)
-> *and* it's technically precise. Slow down here.
-
----
-
-## Beat 4 — Inside a basecamp: CODE + the proof of correctness (3:00–4:45) 🎯 *Technical accuracy, Implementation quality*
-
-🎬 Click **Open in Colab** on the same basecamp. Scroll the notebook: show a **gap-fill task**
-(`# YOUR CODE HERE`). Fill it in, run it, show the **checker's green pass**. Then deliberately
-run a *wrong* answer once and show the checker's **specific, coaching feedback** (not just
-"wrong"). Mention shot-noise tolerance.
-
-🎙️ *"Reading isn't doing, so the notebooks make you write the quantum code — we give the
-scaffolding, you fill the gap. When you run it, an instant checker responds. And it's honest:
-it uses a statistical test, so a correct answer never fails just because quantum sampling
-fluttered a little. If you're wrong, it tells you *why*, in plain language — like a patient
-tutor, not a red X."*
-
-🎬 Scroll to the end, run the final cell — the **completion code** appears
-(`QA-02-8754-50BF`). Copy it, go **back to the website's "Log your climb" box**, paste it, hit
-enter — **confetti, XP, basecamp lights up on the map.**
-
-🎙️ *"Finish the tasks and the notebook mints a completion code. Paste it back on the website
-and the basecamp lights up — XP banked, badge earned. The browser and the notebook are two
-worlds, and this code is the handshake between them — verified offline, with no server and no
-account, by re-computing the exact same hash in JavaScript that Python produced."*
-
-> This round-trip is memorable and unique — make sure it lands on camera. It hits *technical
-> accuracy* (real checkers) and *implementation quality* (the cross-world handshake) at once.
+> Pure *educational impact*, and the kind of empathy judges rarely see. It also plants the
+> honesty theme that carries the rest of the video.
 
 ---
 
-## Beat 5 — Make it personal: Analogy Studio (4:45–5:30) 🎯 *Creativity, Educational impact*
+## Beat 4 — Play, then do it — with nothing installed (2:20–4:00) 🎯 *Creativity, Implementation quality, Adoption*
 
-🎬 Open the **Analogy Studio**. Type a hobby (e.g. *cricket* or *baking*). Show the generated,
-guard-railed prompt. (Optionally paste into an LLM in another tab and show the result — but
-keep it quick.)
+🎬 Open **Basecamp 3** and land on the widget — poke it briefly. Then click
+**Open the Browser Lab**.
 
-🎙️ *"The third step is personalization. Tell the Analogy Studio what you love — cricket,
-music, cooking — and it engineers a prompt for whatever AI you already use. Crucially, it bakes
-in physical ground rules, so the AI explains the concept through your world *without* drifting
-into the usual pop-science myths. Notice the course itself never calls an AI — it hands you the
-prompt. It costs nothing to run and works offline."*
+🎙️ *"Every basecamp starts with something you poke before you read any maths."*
 
-> The "no AI at runtime" line pre-empts a judge's reliability/cost worry and shows
-> intentional design.
+🎬 In the Lab: answer the **prediction question** first, then build the Bell pair by clicking
+**H**, then **CNOT**. Point at the exact-state bars and the **Qiskit code appearing on the
+right** as you click.
 
----
+🎙️ *"Now the part I'm proudest of. This is the whole basecamp, running in the browser — no
+install, no Google account, no ninety-second wait. And it's not a cartoon: that's an exact
+statevector simulator, and our test suite checks it against real Qiskit to twelve decimal
+places. Qiskit can't run in a browser — its core has been compiled Rust since version one — so
+we wrote the physics ourselves rather than water it down.*
 
-## Beat 6 — The Summit: solve a real problem with QAOA (5:30–6:45) 🎯 *Educational impact, Technical accuracy, Creativity*
+*Two details worth catching. First: it made me commit to a prediction before it would let me
+build anything. Second — look at the right-hand panel — as I click, it's writing the real
+Qiskit code. So a learner on a Chromebook is picking up the industry SDK's syntax for free."*
 
-🎬 Open **Basecamp 6 (Summit)**. Land on the **Max-Cut Painter** widget — click a couple of
-nodes so edges light up, then hit **"Show QAOA's answer"** to snap to the checkerboard, all 4
-edges cut. Then cut to the **Colab notebook** for BC6 and run the final QAOA cells: the
-optimizer's energy dropping, then the sampled result printing **"approximation ratio 1.00."**
+🎬 Click **Check my answer** → green pass. Then break it — remove a gate, or build Ψ⁺ instead
+of Φ⁺ — and show the checker naming the **specific** mistake.
 
-🎙️ *"This is what the whole climb is for. Max-Cut: split a graph to cut the most edges — an
-NP-hard problem. First you feel it — click nodes into two teams and watch the cuts. Then, in
-the notebook, we encode that exact problem as an energy — reusing the cost Hamiltonian from
-Basecamp 4 — and build the QAOA algorithm ourselves, layer by layer. A classical optimizer
-tunes the angles, we measure, and the circuit hands back the best cut: approximation ratio one
-point zero. Every idea from the ascent — superposition, gates, entanglement, energy, the
-variational loop — meets here, in one algorithm the learner assembled by hand."*
+🎙️ *"The checker judges the physics, never the gate list, so any circuit producing the right
+state passes. And when you're wrong it diagnoses what you actually did — here, that I built
+the pair that always agrees when I was asked for the one that always disagrees. Get stuck and
+you get a ladder: a nudge, then a strategy, then almost-the-answer. Never just 'go look at the
+solution.'"*
 
-> This is the payoff beat: it proves the course *builds to something real* and that the
-> earlier basecamps were load-bearing, not decorative. Let the "approximation ratio 1.00" land.
+🎬 Flip to the same basecamp's **Colab notebook** in another tab, briefly.
 
----
+🎙️ *"And if you want the real thing — same tasks, real Qiskit, one click. Both tracks mint the
+identical completion code. Neither is the lesser version."*
 
-## Beat 7 — Under the hood: correctness & reproducibility (6:45–7:35) 🎯 *Documentation, Technical accuracy, Scalability*
-
-🎬 Switch to the repo / terminal. Run **`pytest`** live and let it finish — show the green
-**"88 passed."** Flash the `docs/` folder and `tools/` briefly.
-
-🎙️ *"Everything you just saw is backed by a test suite. One command runs it: it executes every
-solution notebook end to end — including that full QAOA pipeline — smoke-tests every widget,
-and even checks that the Python and JavaScript versions of that completion code agree.
-Eighty-eight tests, all green. We build tests first, then features — so an educator can clone
-this repo, run one install, and trust that every notebook works."*
-
-> Running the suite live is worth more than any slide claiming "well-tested." This is your
-> reproducibility and adoption proof.
+> Your strongest 100 seconds: creativity, adoption and implementation quality at once. Slow
+> down, and make sure the Qiskit code mirror is legible at 1080p.
 
 ---
 
-## Beat 8 — Close: reach, AI disclosure, sign-off (7:35–8:15) 🎯 *Scalability, AI attribution*
+## Beat 5 — The Summit, honestly (4:00–5:30) 🎯 *Technical accuracy, Educational impact*
 
-🎬 Back to the Ascent map with **all six basecamps lit**. Optionally the `docs/ai_use.md` on screen.
+🎬 Open **Basecamp 6**. Show the 4-ring QAOA result — approximation ratio 1.0. Then scroll to
+**section 7**.
 
-🎙️ *"All six basecamps are live — a complete ascent from a single qubit to a working quantum
-optimizer, and the authoring pipeline behind them makes new content a matter of writing, not
-re-engineering. We built this with the Claude Code assistant and documented exactly how in our
-AI-use disclosure — but every piece of physics is human-verified and pinned by those tests.
-That's Quantum Ascent: play it, code it, make it yours — hard ideas made clear, and proven
-correct. Thanks for climbing with us."*
+🎙️ *"At the summit you build QAOA and solve Max-Cut end to end — cost layer, mixer, classical
+optimizer — and you score a perfect approximation ratio. And then we tell you why that number
+is misleading."*
 
-> End on the one-message. Don't trail off — a crisp sign-off reads as confidence.
+🎬 Run the **triangle** brute-force cell: 3 edges, best cut 2.
+
+🎙️ *"A four-node ring is bipartite. It's the one graph where this algorithm cannot fail — so
+stopping there would teach you something false. Here's a triangle instead. Three roads, and
+the best possible split cuts two. Not because the algorithm is weak: because two of three
+mutually connected towns must end up together. That's the problem being frustrated, not the
+solver failing — and telling those two apart is the actual job."*
+
+🎬 Run the **5-cycle** cell: p=1 ratio ≈ 0.94, p=2 ratio ≈ 1.00.
+
+🎙️ *"Then a five-cycle, where the shortfall really is the algorithm's. Depth one tops out
+around ratio 0.94; a second layer closes it. And we say the thing that usually gets left out —
+more depth means more gates, and on real hardware more gates mean more noise. Nobody has
+demonstrated quantum advantage on this problem. I'd rather a learner leave knowing that than
+leave impressed."*
+
+> This is the beat that separates you from every submission that stops at the easy graph. If a
+> judge knows QAOA, this is where they sit up.
+
+---
+
+## Beat 6 — The Myth Autopsy: try to break physics (5:30–6:40) 🎯 *Creativity, Technical accuracy*
+
+🎬 Open **Myth Autopsy** (`myths.html`), scroll to **myth 2**. Change Alice's basis, click
+**Alice measures 500 times**, and point at **Bob's histogram refusing to move**.
+
+🎙️ *"Our stated advantage is that we don't teach myths — so we turned that into a page people
+can share. Six famous claims, each dissected with a simulation you run yourself, on the same
+engine as the Lab.*
+
+*This one's my favourite. You're holding both halves of an entangled pair, and your job is to
+break physics: send Bob a message faster than light. Change Alice's basis. Measure five
+hundred times. Bob's histogram sits at fifty-fifty, every single time. But look at the third
+line of the readout — in the Z basis they agree one hundred percent. The correlation is
+completely real, and Bob still can't see it on his own. You just tried to send a message,
+failed, and you'll remember exactly why."*
+
+🎬 Scroll to a **"Say this instead"** strip.
+
+🎙️ *"And every myth ends with a replacement sentence — true, and short enough to actually use.
+Correcting someone without giving them better words just leaves them repeating the myth with a
+caveat attached."*
+
+---
+
+## Beat 7 — Proof it works, and proof it's right (6:40–7:45) 🎯 *Educational impact, Documentation, Implementation quality*
+
+🎬 Open the **Diagnostic** (`assessment.html`) on a completed before/after: the two scores, the
+delta, the concept table, and the **calibration report**.
+
+🎙️ *"Design intent isn't evidence, so here's the evidence. The same ten questions before
+Basecamp 1 and again after the Summit. The before-test deliberately shows you nothing — no
+score, no answers — because if it revealed them, the after-test would be measuring the test
+instead of the course.*
+
+*Several of the wrong options are the popular myths, phrased the way you've actually read them,
+so we can tell whether we dislodged those specific beliefs.*
+
+*And this piece I haven't seen anywhere else in quantum education. Every task made you predict
+before you ran anything, and we recorded those — so you also get a calibration report. Not
+just what you learned, but how well you judge your own understanding. That's a measurable
+learning outcome, which is exactly what the brief asks for."*
+
+🎬 Cut to a terminal. Run `pytest`. Let the count land on screen.
+
+🎙️ *"Underneath all of it, three hundred and forty-six tests. They execute every notebook end
+to end, check the browser simulator against Qiskit, prove all twelve tasks are solvable — and
+this one matters most — they recompute every number our prose claims, including the exact
+angles our hints tell you to type. A hint that doesn't work is worse than no hint, because the
+learner follows it, fails anyway, and blames themselves."*
+
+---
+
+## Beat 8 — Close: adopt it, fork it, AI disclosure (7:45–8:20) 🎯 *Scalability, Adoption, AI attribution*
+
+🎬 Show `docs/educator_guide.md` briefly, then the home page footer.
+
+🎙️ *"For educators: every widget is one self-contained file you can drop into Canvas with an
+iframe, the whole site runs offline from a folder, and the content is CC-BY — fork it,
+translate it, teach it. Fifteen minutes to first class.*
+
+*AI assistance was used in development and it's documented in full — but no model runs anywhere
+in the shipped course, and every physics claim is pinned by a test you can re-run with one
+command.*
+
+*That's Quantum Ascent: play first, predict, build it for real in your browser — and be told
+the truth, including where the algorithm falls short. Thanks for watching."*
 
 ---
 
 ## Pre-record checklist
 
 - [ ] Site is live and hard-refreshed (Ctrl+Shift+R); CDN not stale.
-- [ ] Colab notebook opens and runs (test the round-trip once *before* recording).
+- [ ] Colab notebook opens and runs in an INCOGNITO window (proves the public bootstrap works).
+- [ ] Browser Lab completed once for Basecamp 3 and 6 so the flow is muscle memory.
+- [ ] Diagnostic has a real before/after in localStorage, and the Ledger has entries, so Beat 7 has something to show.
 - [ ] Have the completion code path rehearsed so the confetti moment is clean.
 - [ ] `pytest` runs green in the terminal you'll show.
 - [ ] Browser zoom up so text is readable at 1080p; close noisy tabs/notifications.
 - [ ] Mic check — quiet room, no clipping.
-- [ ] Keep a stopwatch; if a beat runs long, cut Beat 2 or the LLM paste in Beat 5 first.
+- [ ] Keep a stopwatch; if a beat runs long, cut Beat 2, then trim Beat 6 to the no-signalling demo only.
 
 ## Tips
 
