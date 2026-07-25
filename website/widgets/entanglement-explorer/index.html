@@ -102,6 +102,9 @@ then hit <b>Measure ×100</b>. ① Try <b>Independent</b> — all four pairs sho
   </div>
 </div>
 
+<!-- Screen-reader mirror of the widget state (see widget.css .sr-only). -->
+<div class="sr-only" id="a11y" role="status" aria-live="polite"></div>
+
 <script>
 "use strict";
 const $ = id => document.getElementById(id);
@@ -189,7 +192,25 @@ function render() {
   } else {
     $("insight").innerHTML = "Only <b>01</b> and <b>10</b> appear, so the coins <b>disagree 100%</b> of the time — entangled to always mismatch. Still a single shared state.";
   }
+  describeA11y();
 }
+/* aria-live mirror: the four bars and the match rate carry the whole lesson. */
+function describeA11y() {
+  var parts = [];
+  for (var i = 0; i < OUTS.length; i++) {
+    var o = OUTS[i];
+    parts.push(o + ": " + counts[o] + " (" + (nTot ? Math.round(100 * counts[o] / nTot) : 0) + " percent)");
+  }
+  var NAMES = { ind: "two independent coins", phi: "the Bell pair Phi-plus (always agree)",
+                psi: "the Bell pair Psi-plus (always disagree)" };
+  $("a11y").textContent =
+    "Link mode: " + (NAMES[link] || link) + ", state " + LINKS[link].state + ". " +
+    (nTot ? nTot + " pairs measured. " + parts.join(", ") +
+            ". Coins agreed " + Math.round(100 * nMatch / nTot) + " percent of the time. "
+          : "No pairs measured yet. ") +
+    ($("insight").textContent || "");
+}
+
 
 function reset(keepLink) {
   counts = { "00": 0, "01": 0, "10": 0, "11": 0 };

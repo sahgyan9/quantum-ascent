@@ -1,0 +1,29 @@
+<meta charset="utf-8">
+<title>Circuit Lab — Quantum Ascent</title>
+<link rel="stylesheet" href="../_base/widget.css">
+<link rel="stylesheet" href="../../assets/css/circuit-builder.css">
+<style>
+  .lab { max-width: 940px; }
+</style>
+
+<div class="lab">
+  <div class="hint-bar" id="hint">💡 <b>Try this:</b> click <b>H</b> in the palette, then click
+  the <b>q0</b> wire to place it. Watch the state split into an exact 50/50 — then press
+  <b>Measure ×100</b> and see the tally chase those two numbers. Everything you build is also
+  written out as <b>real Qiskit code</b> on the right, so you are learning the syntax for free.
+  Nothing to install, nothing to sign into: this is the whole course's engine, in your browser.</div>
+
+  <div id="builder"></div>
+</div>
+
+<script src="../../assets/js/qsim.js"></script>
+<script src="../../assets/js/circuit-builder.js"></script>
+<script>
+"use strict";
+/* Free-play surface. The graded browser track (lab.html) mounts this exact
+   component with a locked palette and a checker attached, so what a learner
+   plays with here and what they are assessed on are the same tool. */
+window.Lab = CircuitBuilder.mount(document.getElementById("builder"), {
+  n: 2, minN: 1, maxN: 5
+});
+</script>

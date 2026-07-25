@@ -69,6 +69,9 @@
   </div>
 </div>
 
+<!-- Screen-reader mirror of the widget state (see widget.css .sr-only). -->
+<div class="sr-only" id="a11y" role="status" aria-live="polite"></div>
+
 <script>
 "use strict";
 const $ = id => document.getElementById(id);
@@ -195,7 +198,19 @@ function render() {
   // Feedback for EVERY gate (Norman): name the gate AND describe the result the
   // student is looking at right now, so the words and the screen always agree.
   $("insight").innerHTML = insightFor(circuit[circuit.length - 1], p0);
+  describeA11y();
 }
+/* aria-live mirror of the Bloch canvas and the probability bars. */
+function describeA11y() {
+  var st = normGlobal(stateOf(circuit));
+  var p0 = prob(st[0]), p1 = prob(st[1]);
+  $("a11y").textContent =
+    "Circuit: " + (circuit.length ? circuit.join(", then ") : "empty, qubit at |0>") + ". " +
+    "P(0) = " + Math.round(100 * p0) + " percent, P(1) = " + Math.round(100 * p1) + " percent. " +
+    "Amplitudes " + fmtC(st[0]) + " and " + fmtC(st[1]) + ". " +
+    ($("insight").textContent || "");
+}
+
 
 function add(g) {
   circuit.push(g);

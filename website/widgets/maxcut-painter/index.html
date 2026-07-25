@@ -72,6 +72,9 @@ and amber groups. An edge lights up green when its two ends land in <b>different
   </div>
 </div>
 
+<!-- Screen-reader mirror of the widget state (see widget.css .sr-only). -->
+<div class="sr-only" id="a11y" role="status" aria-live="polite"></div>
+
 <script>
 "use strict";
 const $ = id => document.getElementById(id);
@@ -107,7 +110,19 @@ function render() {
     $("insight").innerHTML = "You're cutting <b>" + cut + "</b> of " + MAXCUT +
       ". Look for a node with an <i>uncut</i> edge and try flipping its group — can you reach a full checkerboard?";
   }
+  describeA11y();
 }
+/* aria-live mirror: the graph is drawn, so the assignment and the cut count
+   must also be spoken. */
+function describeA11y() {
+  var cut = 0, names = [];
+  for (var e = 0; e < EDGES.length; e++) if (group[EDGES[e][0]] !== group[EDGES[e][1]]) cut++;
+  for (var i = 0; i < group.length; i++) names.push("node " + i + " in group " + (group[i] ? "B" : "A"));
+  $("a11y").textContent =
+    names.join(", ") + ". Cutting " + cut + " of " + MAXCUT + " possible edges. " +
+    ($("insight").textContent || "");
+}
+
 
 function toggle(i) { group[i] ^= 1; render(); }
 

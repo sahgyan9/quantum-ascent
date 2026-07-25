@@ -108,6 +108,9 @@ Set the qubit with the slider, <b>predict</b> where the ⟨Z⟩ goal mark sits, 
   </div>
 </div>
 
+<!-- Screen-reader mirror of the widget state (see widget.css .sr-only). -->
+<div class="sr-only" id="a11y" role="status" aria-live="polite"></div>
+
 <script>
 "use strict";
 const $ = id => document.getElementById(id);
@@ -172,7 +175,20 @@ function render() {
           "</b> — a weighted average of +1 and −1.";
   }
   $("insight").innerHTML = msg;
+  describeA11y();
 }
+/* aria-live mirror of the needle, the goal marker and the shot tally. */
+function describeA11y() {
+  var nTot = n0 + n1;
+  $("a11y").textContent =
+    "State: P(0) = " + Math.round(p0 * 100) + " percent, P(1) = " + Math.round((1 - p0) * 100) + " percent. " +
+    "Target expectation value <Z> = " + fmt(goalOf()) + ". " +
+    (nTot ? nTot + " shots measured: " + n0 + " gave +1 and " + n1 + " gave -1, " +
+            "so the running average is " + fmt(sum / nTot) + ". "
+          : "No shots measured yet. ") +
+    ($("insight").textContent || "");
+}
+
 
 function resetCounts() { n0 = 0; n1 = 0; sum = 0; render(); }
 

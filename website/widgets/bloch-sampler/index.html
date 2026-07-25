@@ -55,6 +55,9 @@ and watch the statistics build toward your prediction.</div>
   </div>
 </div>
 
+<!-- Screen-reader mirror of the widget state (see widget.css .sr-only). -->
+<div class="sr-only" id="a11y" role="status" aria-live="polite"></div>
+
 <script>
 "use strict";
 const $ = id => document.getElementById(id);
@@ -143,7 +146,23 @@ function render() {
   $("h0bar").style.width = (shots ? 100 * state.c0 / shots : 0) + "%";
   $("h1bar").style.width = (shots ? 100 * state.c1 / shots : 0) + "%";
   draw();
+  describeA11y();
 }
+/* aria-live mirror: the Bloch sphere is a canvas and the bars are colour, so
+   the angle (in BOTH units — the degrees/radians gap is where beginners get
+   lost), the exact probabilities and the running tally must all be readable
+   as text. */
+function describeA11y() {
+  var pr = probs(), shots = state.c0 + state.c1;
+  var radv = (state.theta * Math.PI / 180).toFixed(3);
+  document.getElementById("a11y").textContent =
+    "Theta = " + state.theta + " degrees, which is " + radv + " radians. " +
+    "P(0) = " + (100 * pr[0]).toFixed(1) + " percent, P(1) = " + (100 * pr[1]).toFixed(1) + " percent. " +
+    "Expectation <Z> = " + (pr[0] - pr[1]).toFixed(2) + ". " +
+    (shots ? "Measured " + shots + " shots: " + state.c0 + " zeros, " + state.c1 + " ones."
+           : "No shots taken yet.");
+}
+
 
 function measure(n) {
   const [p0] = probs();

@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Browser Lab — Quantum Ascent</title>
+<meta name="description" content="Complete every Quantum Ascent basecamp in your browser — real quantum simulation, graded tasks, no installation and no account.">
+<link rel="stylesheet" href="assets/css/site.css">
+<link rel="stylesheet" href="assets/css/circuit-builder.css">
+<style>
+  .task { border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--panel);
+          padding: 18px 20px; margin: 22px 0; }
+  .task.done { border-color: var(--accent); background: var(--accent-bg); }
+  .task-head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+  .task-num { font-family: var(--font-code); font-size: 12px; color: var(--muted);
+              border: 1px solid var(--line); border-radius: 20px; padding: 2px 10px; }
+  .task h3 { font-size: 20px; }
+  .brief { margin: 12px 0 4px; font-size: 15px; }
+  .predict { border-left: 4px solid var(--amber); background: var(--amber-bg);
+             border-radius: 0 8px 8px 0; padding: 12px 14px; margin: 16px 0; }
+  .predict .q { font-weight: 600; margin-bottom: 10px; }
+  .predict button { display: block; width: 100%; text-align: left; background: var(--panel);
+                    color: var(--text); border: 1.5px solid var(--line); border-radius: 8px;
+                    padding: 9px 12px; margin: 0 0 6px; font-weight: 500; font-size: 14.5px; }
+  .predict button:hover:not(:disabled) { border-color: var(--amber); filter: none; }
+  .predict button.picked-right { border-color: var(--accent); background: var(--accent-bg); }
+  .predict button.picked-wrong { border-color: var(--danger); background: var(--danger-bg); }
+  .predict button:disabled { cursor: default; opacity: .78; }
+  .pfeedback { margin-top: 8px; font-size: 14px; }
+  .locked { opacity: .45; pointer-events: none; filter: grayscale(.6); }
+  .checkbar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top: 14px; }
+  .verdict { margin-top: 10px; font-size: 14.5px; padding: 10px 13px; border-radius: 8px; }
+  .verdict.ok { background: var(--accent-bg); border-left: 4px solid var(--accent); }
+  .verdict.no { background: var(--danger-bg); border-left: 4px solid var(--danger); }
+  .hint { margin-top: 8px; font-size: 14px; padding: 10px 13px; border-radius: 8px;
+          background: var(--bg2); border-left: 4px solid var(--muted); }
+  .hint b.rung { color: var(--text); }
+  .numeric-in { font-family: var(--font-code); font-size: 16px; padding: 9px 12px;
+                border: 1px solid var(--line); border-radius: 8px; width: 160px; background: var(--panel); color: var(--text); }
+  .sliders { display: grid; gap: 10px; margin: 14px 0; }
+  .sliderrow { display: grid; grid-template-columns: 110px 1fr 92px; gap: 10px; align-items: center; }
+  .sliderrow label { margin: 0; color: var(--text); font-weight: 600; }
+  .track-note { font-size: 13.5px; }
+  .trackswitch { display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
+                 border: 1px solid var(--line); border-radius: var(--radius-md);
+                 background: var(--panel); padding: 12px 16px; margin-bottom: 8px; }
+  .cb-root .cols { margin-top: 6px; }
+  #done-panel { display: none; }
+  #done-panel.show { display: block; }
+  code { font-family: var(--font-code); font-size: .92em; background: var(--bg2);
+         border: 1px solid var(--line); border-radius: 4px; padding: 1px 5px; }
+</style>
+</head>
+<body>
+
+<a href="#" class="nav-dismiss" aria-hidden="true" tabindex="-1"></a>
+<nav id="nav">
+  <a href="index.html" class="nav-name"><img src="assets/logo.svg" alt="" width="24" height="24"> Quantum <span>Ascent</span></a>
+  <a href="#nav-menu" class="nav-burger" id="nav-burger" aria-label="Toggle menu"><span></span><span></span><span></span></a>
+  <div class="nav-links" id="nav-menu">
+    <a href="ascent.html">The Ascent</a>
+    <a href="widgets.html">Widget Gallery</a>
+    <a href="analogy-studio.html">Analogy Studio</a>
+    <span id="xp-pill">⚡ 0 XP · 0/6</span>
+  </div>
+</nav>
+
+<div class="container" id="content"><p class="muted">Loading the lab…</p></div>
+
+<footer>
+  Built for the WISER Education Challenge 2026 · <a href="ascent.html">Back to the Ascent</a>
+</footer>
+
+<script src="assets/js/qsim.js"></script>
+<script src="assets/js/circuit-builder.js"></script>
+<script src="assets/js/labtasks.js"></script>
+<script src="assets/js/ledger.js"></script>
+<script src="assets/js/progress.js"></script>
+<script src="assets/js/confetti.js"></script>
+<script src="assets/js/glossary.js"></script>
+<script>
+"use strict";
+/* The browser track.
+   =================
+   Everything a basecamp asks of a learner, done in the browser against a real
+   (Qiskit-verified) simulator: no Python, no Colab, no account, no network
+   after first load.
+
+   The pedagogy is deliberately sequenced, per docs/pedagogical_style_guide.md:
+
+     1. PREDICT FIRST — the prediction question is answered before the builder
+        unlocks. Not a gimmick: committing to an answer is what makes the
+        result informative rather than merely observed. The answer goes into
+        the Prediction Ledger, so at the Summit the learner gets a calibration
+        report instead of a vague memory of having guessed.
+     2. BUILD — a constrained palette, so the space of things to try is small
+        enough to explore rather than paralysing (Norman: constraints prevent
+        errors better than error messages fix them).
+     3. CHECK — the checker judges the PHYSICS, never the gate list, so any
+        circuit producing the right state passes.
+     4. RECOVER — three rungs of hint unlock one at a time on failure, so
+        "I'm stuck" leads somewhere other than the answer key.
+
+   Finishing both tasks mints the same completion code the notebook prints. */
+
+(async () => {
+  const id = new URLSearchParams(location.search).get("id") || "01";
+  const data = await (await fetch("assets/data/modules.json")).json();
+  const m = data.modules.find(x => x.id === id);
+  const el = document.getElementById("content");
+  if (!m) { el.innerHTML = "<p>Unknown basecamp.</p>"; return; }
+
+  const tasks = LabTasks.forModule(id);
+  const prev = data.modules[data.modules.indexOf(m) - 1];
+  const next = data.modules[data.modules.indexOf(m) + 1];
+  const colab = `https://colab.research.google.com/github/${data.github}/blob/main/${m.notebook}`;
+  document.title = `Browser Lab — Basecamp ${m.id}: ${m.title}`;
+
+  const passed = new Array(tasks.length).fill(false);
+
+  el.innerHTML = `
+    <h1>Browser Lab · Basecamp ${m.id}</h1>
+    <p class="muted">${m.title} — ${m.subtitle}</p>
+
+    <div class="trackswitch">
+      <span class="track-note"><b>You are on the browser track.</b> Everything here runs on a
+      real statevector simulator inside this page — nothing to install, no account, and it keeps
+      working with the network unplugged.</span>
+      <a class="btn ghost" href="${colab}" target="_blank" rel="noopener">Prefer real Qiskit? Open the notebook ↗</a>
+    </div>
+    <p class="muted" style="font-size:13.5px">
+      Both tracks set the same tasks and mint the same completion code. The notebook uses the
+      industry SDK; this page uses a JavaScript engine that is checked against Qiskit to twelve
+      decimal places by our test suite. Neither is the lesser version.
+    </p>
+
+    <div id="tasks"></div>
+
+    <div class="panel" id="done-panel" style="border-color:var(--accent);background:var(--accent-bg)">
+      <h3 style="font-size:18px;margin-bottom:6px">🚩 Basecamp ${m.id} cleared</h3>
+      <p style="margin:0 0 10px;font-size:14.5px">Both tasks verified. Here is your completion code —
+      it is already logged on your <a href="ascent.html">Ascent map</a>, and it is the same code
+      the notebook would have printed.</p>
+      <p style="font-family:var(--font-code);font-size:20px;font-weight:700;color:var(--accent-strong)" id="code-out"></p>
+      <p style="margin:10px 0 0"><a class="btn" href="module.html?id=${m.id}#quiz">Take the quiz →</a>
+      ${next ? `<a class="btn ghost" href="lab.html?id=${next.id}" style="margin-left:8px">Next: Basecamp ${next.id} →</a>` : `<a class="btn ghost" href="assessment.html" style="margin-left:8px">Take the post-course assessment →</a>`}</p>
+    </div>
+
+    <div style="margin-top:36px;display:flex;justify-content:space-between">
+      <span>${prev ? `<a href="lab.html?id=${prev.id}">← Lab ${prev.id}</a>` : ""}</span>
+      <span><a href="module.html?id=${m.id}">Basecamp ${m.id} overview</a></span>
+      <span>${next ? `<a href="lab.html?id=${next.id}">Lab ${next.id} →</a>` : ""}</span>
+    </div>`;
+
+  const host = document.getElementById("tasks");
+  tasks.forEach((t, i) => host.appendChild(renderTask(t, i)));
+  Glossary.enhance(el);
+
+  /* ------------------------------------------------------------------ */
+  function renderTask(t, i) {
+    const wrap = document.createElement("section");
+    wrap.className = "task";
+    wrap.id = "task-" + t.id;
+    const kind = t.kind || "circuit";
+
+    wrap.innerHTML = `
+      <div class="task-head">
+        <span class="task-num">Task ${i + 1} of ${tasks.length}</span>
+        <h3>${t.title}</h3>
+      </div>
+      <div class="brief">${t.brief}</div>
+      <div class="predict" data-el="predict">
+        <div class="q">🔮 Predict first — ${t.predict.q}</div>
+        <div data-el="opts"></div>
+        <div class="pfeedback" data-el="pfb"></div>
+      </div>
+      <div data-el="work" class="locked">
+        ${kind === "numeric"
+          ? `<label for="num-${t.id}">Your answer</label>
+             <input class="numeric-in" id="num-${t.id}" type="text" inputmode="decimal"
+                    placeholder="${t.placeholder || ""}" autocomplete="off">`
+          : kind === "params"
+            ? `<div class="sliders" data-el="sliders"></div><div data-el="builder"></div>`
+            : `<div data-el="builder"></div>`}
+        <div class="checkbar">
+          <button class="btn" data-el="check">Check my answer</button>
+          <button class="btn ghost" data-el="hint">💡 I'm stuck — give me a hint</button>
+          <span class="muted" data-el="hintcount" style="font-size:13px"></span>
+        </div>
+        <div data-el="verdict"></div>
+        <div data-el="hints"></div>
+      </div>`;
+
+    const q = n => wrap.querySelector(`[data-el="${n}"]`);
+
+    /* ---- 1. predict (gates the rest) ---- */
+    const prior = Ledger.forTask(t.id);
+    t.predict.options.forEach((opt, oi) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.innerHTML = opt;
+      b.addEventListener("click", () => choose(oi));
+      q("opts").appendChild(b);
+    });
+    if (prior && prior.chose != null) choose(prior.chose, true);
+
+    function choose(oi, replay) {
+      const right = oi === t.predict.answer;
+      const btns = q("opts").querySelectorAll("button");
+      btns.forEach((b, bi) => {
+        b.disabled = true;
+        if (bi === oi) b.classList.add(right ? "picked-right" : "picked-wrong");
+        if (bi === t.predict.answer) b.classList.add("picked-right");
+      });
+      q("pfb").innerHTML = (right ? "✅ " : "🤔 ") + t.predict.feedback[oi] +
+        (right ? "" : ` <br><span class="muted">The answer is: <b>${t.predict.options[t.predict.answer]}</b>.</span>`);
+      if (!replay) Ledger.record(t.id, { topic: t.predict.topic, correct: right, chose: oi });
+      q("work").classList.remove("locked");
+      /* A wrong prediction is not a penalty — it unlocks the same work. The
+         point was to commit to an answer, not to be right. */
+    }
+
+    /* ---- 2. work surface ---- */
+    let builder = null, params = {};
+    if (kind === "circuit") {
+      const opts = Object.assign({ onChange: () => clearVerdict() }, t.builder);
+      if (t.objective) opts.objective = t.objective;
+      builder = CircuitBuilder.mount(q("builder"), opts);
+    } else if (kind === "params") {
+      const rows = [];
+      t.params.forEach(p => {
+        params[p.name] = p.value;
+        const row = document.createElement("div");
+        row.className = "sliderrow";
+        row.innerHTML =
+          `<label for="p-${t.id}-${p.name}">${p.label}</label>
+           <input type="range" id="p-${t.id}-${p.name}" min="${p.min}" max="${p.max}"
+                  step="${p.step}" value="${p.value}">
+           <span class="chip" data-v="${p.name}"></span>`;
+        const range = row.querySelector("input");
+        const chip = row.querySelector("[data-v]");
+        const show = () => {
+          chip.textContent = params[p.name] + (p.unit || "");
+          if (p.unit === "°") chip.title = CircuitBuilder.radLabel(params[p.name]) + " rad";
+        };
+        range.addEventListener("input", e => {
+          params[p.name] = +e.target.value; show(); syncParams(); syncVisible(); clearVerdict();
+        });
+        show();
+        rows.push({ spec: p, row: row });
+        q("sliders").appendChild(row);
+      });
+      /* Controls that do not apply yet are hidden rather than disabled: at p=1
+         a second layer's angles are not "unavailable", they do not exist. */
+      var syncVisible = () => rows.forEach(r => {
+        r.row.hidden = !!(r.spec.showIf && !r.spec.showIf(params));
+      });
+      syncVisible();
+      const c0 = t.circuit(params);
+      builder = CircuitBuilder.mount(q("builder"), {
+        n: c0.n, ops: c0.ops, lockQubits: true, allowed: [], showCode: true,
+        showObs: false, objective: t.objective
+      });
+      /* The circuit is generated from the sliders, so the palette is empty on
+         purpose: here the learner is the OPTIMIZER, not the circuit author. */
+      q("builder").querySelectorAll('[data-act="undo"], [data-act="reset"]')
+        .forEach(b => b.remove());
+    }
+    function syncParams() {
+      const c = t.circuit(params);
+      builder.setCircuit(c.n, c.ops);
+    }
+
+    /* ---- 3. check ---- */
+    function clearVerdict() { q("verdict").innerHTML = ""; }
+
+    q("check").addEventListener("click", () => {
+      let res;
+      if (kind === "numeric") {
+        const raw = wrap.querySelector("#num-" + t.id).value.trim().replace(",", ".");
+        const v = Number(raw);
+        if (raw === "" || !isFinite(v)) {
+          res = { ok: false, msg: "Type a number first — decimals are fine, and a minus sign matters here." };
+        } else if (Math.abs(v - t.answer) <= t.tol) {
+          res = { ok: true, msg: `${v} is right. That is −√1.25, the ground-state energy of H = Z + 0.5X.` };
+        } else if (Math.abs(Math.abs(v) - Math.abs(t.answer)) <= t.tol) {
+          res = { ok: false, msg: "Right magnitude, wrong sign. The ground state is the <i>lowest</i> energy, so it is negative." };
+        } else if (Math.abs(v - (-1.5)) < 0.01) {
+          res = { ok: false, msg: "−1.5 is 1 + 0.5, which would need Z and X to be minimal at the same time. They are incompatible observables, so you take the vector length instead: −√(1² + 0.5²)." };
+        } else {
+          res = { ok: false, msg: "Not quite. Compute −√(1² + 0.5²) and give it to three decimals." };
+        }
+      } else {
+        const c = builder.getCircuit();
+        res = t.check(c, builder.getState());
+      }
+      q("verdict").className = "";
+      q("verdict").innerHTML = `<div class="verdict ${res.ok ? "ok" : "no"}">${res.ok ? "✅ " : "❌ "}${res.msg}</div>`;
+      if (res.ok && !passed[i]) {
+        passed[i] = true;
+        wrap.classList.add("done");
+        maybeFinish();
+      }
+    });
+
+    /* ---- 4. the hint ladder ---- */
+    let rung = 0;
+    const RUNG_NAME = ["Nudge", "Strategy", "Almost the answer"];
+    q("hintcount").textContent = `3 hints available`;
+    q("hint").addEventListener("click", () => {
+      if (rung >= t.hints.length) { q("hint").disabled = true; return; }
+      const d = document.createElement("div");
+      d.className = "hint";
+      d.innerHTML = `<b class="rung">${RUNG_NAME[rung]} (${rung + 1}/3):</b> ${t.hints[rung]}`;
+      q("hints").appendChild(d);
+      rung++;
+      q("hintcount").textContent = rung >= t.hints.length
+        ? "That was the last hint — the rest is yours."
+        : `${t.hints.length - rung} hint${t.hints.length - rung === 1 ? "" : "s"} left`;
+      if (rung >= t.hints.length) q("hint").disabled = true;
+    });
+
+    return wrap;
+  }
+
+  function maybeFinish() {
+    if (!passed.every(Boolean)) return;
+    const p = Progress.redeemCode(codeFor(id));
+    document.getElementById("code-out").textContent = codeFor(id);
+    const panel = document.getElementById("done-panel");
+    panel.classList.add("show");
+    if (p.ok && !p.already && window.confettiBurst) window.confettiBurst();
+    panel.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+})();
+</script>
+<script src="assets/js/nav.js"></script>
+</body>
+</html>

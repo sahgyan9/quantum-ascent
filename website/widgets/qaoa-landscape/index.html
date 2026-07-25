@@ -91,6 +91,9 @@ the lowest point is, then hit <b>Let the optimizer descend</b> — a classical o
   </div>
 </div>
 
+<!-- Screen-reader mirror of the widget state (see widget.css .sr-only). -->
+<div class="sr-only" id="a11y" role="status" aria-live="polite"></div>
+
 <script>
 "use strict";
 const $ = id => document.getElementById(id);
@@ -156,7 +159,21 @@ function render() {
     $("insight").innerHTML = "Energy here is " + fmt(e) + ", well above the ground energy " + fmt(GROUND) +
       ". You're up the hillside — slide downhill or let the optimizer find the valley.";
   }
+  describeA11y();
 }
+/* aria-live mirror: the landscape plot is an SVG, so the ball's position, the
+   energy and the distance to the goal have to be readable as text. */
+function describeA11y() {
+  var e = E(theta), p0 = Math.cos(theta / 2) * Math.cos(theta / 2);
+  $("a11y").textContent =
+    "Angle theta = " + Math.round(theta * 180 / Math.PI) + " degrees. " +
+    "Energy here is " + fmt(e) + ", against a ground energy of " + fmt(GROUND) +
+    " — a gap of " + (e - GROUND).toFixed(2) + ". " +
+    "Best energy found so far: " + (best === Infinity ? "none yet" : fmt(best)) +
+    " after " + steps + " optimizer steps. " +
+    "Qubit state: P(0) = " + Math.round(p0 * 100) + " percent.";
+}
+
 
 function setTheta(t, track) {
   theta = ((t % TAU) + TAU) % TAU;

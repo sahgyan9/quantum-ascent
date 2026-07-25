@@ -96,6 +96,9 @@
   </div>
 </div>
 
+<!-- Screen-reader mirror of the widget state (see widget.css .sr-only). -->
+<div class="sr-only" id="a11y" role="status" aria-live="polite"></div>
+
 <script>
 "use strict";
 const $ = id => document.getElementById(id);
@@ -109,7 +112,22 @@ function renderStats() {
   $("c1").textContent = state.c1;
   $("h0bar").style.width = (shots ? 100 * state.c0 / shots : 0) + "%";
   $("h1bar").style.width = (shots ? 100 * state.c1 / shots : 0) + "%";
+  describeA11y();
 }
+/* aria-live mirror: the coin, the tally and the prediction ticks are all
+   visual. A screen-reader learner must hear the same three numbers. */
+function describeA11y() {
+  var shots = state.c0 + state.c1;
+  var pct = Math.round(state.pHeads * 100);
+  $("a11y").textContent =
+    "Coin bias set to " + pct + " percent heads, " + (100 - pct) + " percent tails. " +
+    (state.isSpinning ? "The coin is spinning: its face is not yet determined. " : "The coin has landed. ") +
+    (shots ? "After " + shots + " slaps: " + state.c0 + " heads (" +
+       Math.round(100 * state.c0 / shots) + " percent), " + state.c1 + " tails (" +
+       Math.round(100 * state.c1 / shots) + " percent)."
+     : "No slaps recorded yet.");
+}
+
 
 function renderBias() {
   const pct = Math.round(state.pHeads * 100);

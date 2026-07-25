@@ -91,7 +91,9 @@
         </div>
         <div style="display: flex; gap: 10px; align-items: flex-start;">
           <span style="color: var(--accent); font-weight: 700; font-family: var(--font-heading); flex-shrink: 0; white-space: nowrap;">Step 2:</span>
-          <span>Open the <b>Jupyter Notebook</b> in <b>Section 2</b>. Work through it line by line to name what you just saw, and complete the code tasks yourself.</span>
+          <span>Do the tasks in <b>Section 2</b> — either right here in the <b>Browser Lab</b>
+          (nothing to install) or in the <b>Jupyter Notebook</b> with real Qiskit. Same tasks,
+          same completion code; pick whichever suits you today.</span>
         </div>
         <div style="display: flex; gap: 10px; align-items: flex-start;">
           <span style="color: var(--accent); font-weight: 700; font-family: var(--font-heading); flex-shrink: 0; white-space: nowrap;">Step 3:</span>
@@ -123,7 +125,19 @@
       <iframe src="widgets/${m.widget}/index.html" title="${m.widget} interactive widget" loading="lazy"></iframe>
     </figure>
  
-    <h2 class="section">2 · Do the physics — the interactive notebook</h2>
+    <h2 class="section">2 · Do the physics — pick your track</h2>
+
+    <div class="panel" style="border-color:var(--accent);background:var(--accent-bg);margin:16px 0 10px">
+      <h3 style="font-size:16px;margin-bottom:6px;color:var(--text);font-family:var(--font-heading)">
+        🧪 Browser Lab — recommended for your first pass</h3>
+      <p style="margin:0 0 10px;font-size:14.5px">Both of this basecamp's tasks, right here in
+      this tab. It runs a <b>real statevector simulator</b> — the same physics, checked against
+      Qiskit to twelve decimal places by our test suite — with <b>nothing to install, no Google
+      account, and no waiting</b>. Every circuit you build is also written out as genuine Qiskit
+      code beside it, so you learn the syntax while you play.</p>
+      <a class="btn" href="lab.html?id=${m.id}">🧪 Open the Browser Lab</a>
+    </div>
+
     <div class="learning-list" style="margin: 16px 0 24px;">
       <div class="learning-item">
         <span class="marker-green">✓</span>
@@ -135,9 +149,15 @@
       </div>
       <div class="learning-item">
         <span class="marker-green">✓</span>
-        <span><b>No Setup Required:</b> Open directly in Google Colab and run on free cloud servers.</span>
+        <span><b>Three-rung hints:</b> stuck? A nudge, then a strategy, then almost-the-answer — never just the solution.</span>
       </div>
     </div>
+
+    <h3 style="font-size:17px;margin:26px 0 4px;font-family:var(--font-heading)">
+      …or take the notebook track, with real Qiskit</h3>
+    <p class="muted" style="font-size:14px;margin-bottom:12px">Same tasks, run against the
+    industry SDK in Google Colab. Worth doing at least once — it is the toolchain real research
+    uses. Budget 60–90 seconds for the first install.</p>
     <div class="panel" style="border-color: var(--accent); background: var(--accent-bg); margin: 4px 0 18px;">
       <h3 style="font-size: 15px; margin-bottom: 8px; color: var(--text); font-family: var(--font-heading);">🧭 First time opening a notebook? Here's exactly what happens — no surprises:</h3>
       <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 7px; font-size: 14px;">
@@ -156,7 +176,11 @@
 
     <div class="panel" id="claim" style="border-color: var(--accent); background: var(--accent-bg); margin: 4px 0 28px;">
       <h3 style="font-size: 16px; margin-bottom: 6px; color: var(--text); font-family: var(--font-heading); display: flex; align-items: center; gap: 8px;">⛏️ Finished the notebook? Log your climb</h3>
-      <p class="muted" style="margin: 0 0 12px; font-size: 14px;">The notebook's last cell prints a personal <b>completion code</b> once your Task 1 &amp; Task 2 circuits pass. Paste it here to log the notebook on your <a href="ascent.html">Ascent map</a> and bank your climber XP. (Finishing the notebook is the one thing the quiz can't check for you — so it's the one thing you get to prove.)</p>
+      <p class="muted" style="margin: 0 0 12px; font-size: 14px;">Finish both tasks — in the
+      <a href="lab.html?id=${m.id}">Browser Lab</a> or the notebook — and you get a personal
+      <b>completion code</b>. The Lab logs it for you automatically; the notebook prints it in
+      its last cell for you to paste here. Either way it lands on your
+      <a href="ascent.html">Ascent map</a> and banks your climber XP.</p>
       <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
         <input id="claim-input" type="text" placeholder="QA-${m.id}-XXXX-XXXX" autocomplete="off" spellcheck="false" aria-label="Notebook completion code"
           style="flex: 1; min-width: 200px; font-family: var(--font-code); font-size: 15px; letter-spacing: 0.5px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); color: var(--text); text-transform: uppercase;">

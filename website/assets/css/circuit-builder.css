@@ -1,0 +1,92 @@
+/* Quantum Ascent — Circuit Builder component styles.
+   Shared by widgets/circuit-lab (the free-play widget) and lab.html (the
+   graded browser track), so the two can never drift apart visually. */
+.lab { max-width: 940px; }
+  .cols { display: flex; gap: 12px; align-items: flex-start; }
+  .col-left { flex: 1.15; min-width: 0; }
+  .col-right { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+
+  /* ---- gate palette: buttons must LOOK like the thing they place ---- */
+  .palette { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 4px; }
+  .gbtn {
+    font-family: var(--font-body); font-weight: 700; font-size: 13px;
+    min-width: 38px; padding: 7px 9px; margin: 0;
+    background: var(--panel); color: var(--text);
+    border: 1.5px solid var(--line); border-radius: 7px; cursor: pointer;
+  }
+  .gbtn:hover { border-color: var(--accent); filter: none; }
+  .gbtn[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .gbtn.two { border-style: dashed; }
+  .palette-group { display: flex; gap: 5px; align-items: center; }
+  .palette-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+
+  /* ---- circuit grid ---- */
+  .cb-board { background: var(--panel); border: 1px solid var(--line); border-radius: 10px;
+           padding: 10px 8px; overflow-x: auto; }
+  table.grid { border-collapse: collapse; }
+  table.grid td { padding: 0; }
+  .qlabel { font-family: var(--font-code); font-size: 12px; color: var(--muted);
+            padding-right: 8px !important; white-space: nowrap; text-align: right; }
+  .cell { position: relative; width: 46px; height: 44px; }
+  .cell .wire { position: absolute; left: 0; right: 0; top: 50%; height: 2px;
+                background: var(--line); transform: translateY(-1px); }
+  .cell button.slot {
+    position: absolute; inset: 4px 5px; margin: 0; padding: 0;
+    background: transparent; border: 1.5px dashed transparent; border-radius: 6px;
+    cursor: pointer; color: transparent; font-size: 11px;
+  }
+  .cell button.slot:hover { border-color: var(--accent); background: rgba(31,122,77,.07); color: var(--accent); filter: none; }
+  .gate {
+    position: absolute; inset: 4px 5px; display: flex; align-items: center; justify-content: center;
+    background: var(--accent); color: #fff; border-radius: 6px;
+    font-weight: 700; font-size: 12.5px; font-family: var(--font-body);
+    cursor: pointer; border: 1.5px solid var(--accent-strong);
+  }
+  .gate.rot { background: var(--amber); border-color: var(--amber-strong); font-size: 11px; }
+  .gate.sel { outline: 3px solid var(--text); outline-offset: 1px; }
+  .ctrl-dot { position: absolute; left: 50%; top: 50%; width: 13px; height: 13px;
+              margin: -6.5px 0 0 -6.5px; border-radius: 50%; background: var(--text); }
+  .vlink { position: absolute; left: 50%; width: 2px; margin-left: -1px; background: var(--text); }
+  .targ { position: absolute; left: 50%; top: 50%; width: 22px; height: 22px; margin: -11px 0 0 -11px;
+          border: 2px solid var(--text); border-radius: 50%; }
+  .targ::before, .targ::after { content: ""; position: absolute; background: var(--text); }
+  .targ::before { left: 50%; top: 2px; bottom: 2px; width: 2px; margin-left: -1px; }
+  .targ::after { top: 50%; left: 2px; right: 2px; height: 2px; margin-top: -1px; }
+
+  /* ---- readouts ---- */
+  .bars { display: grid; grid-template-columns: auto 1fr 58px; gap: 4px 7px; align-items: center; }
+  .bars .lab-k { font-family: var(--font-code); font-size: 12px; white-space: nowrap; }
+  .track { height: 15px; background: var(--bg2); border: 1px solid var(--line); border-radius: 7px; overflow: hidden; }
+  .fill { height: 100%; width: 0%; transition: width .18s; }
+  .fill.p { background: var(--accent); }
+  .fill.s { background: var(--amber); }
+  .num { font-variant-numeric: tabular-nums; font-size: 12px; text-align: right; }
+
+  pre.code { background: #1a1a18; color: #f1eee6; border-radius: 8px; padding: 10px 12px;
+             font-family: var(--font-code); font-size: 12px; line-height: 1.5;
+             overflow-x: auto; white-space: pre; margin: 0; }
+  .tabs { display: flex; gap: 4px; margin-bottom: 6px; }
+  .tabs button { background: transparent; color: var(--muted); border: 1px solid var(--line);
+                 border-radius: 6px 6px 0 0; font-size: 12px; padding: 5px 10px; margin: 0; }
+  .tabs button[aria-selected="true"] { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .angle-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+  .angle-row input[type=range] { flex: 1; min-width: 130px; }
+  .chip { font-family: var(--font-code); font-size: 12px; background: var(--bg2);
+          border: 1px solid var(--line); border-radius: 5px; padding: 2px 6px; }
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+             overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+  .cb-status { min-height: 20px; font-size: 13px; font-weight: 600; color: var(--accent-strong); }
+  table.mirror { border-collapse: collapse; font-size: 12px; width: 100%; }
+  table.mirror th, table.mirror td { border: 1px solid var(--line); padding: 3px 6px; text-align: left; }
+  @media (max-width: 700px) { .cols { flex-direction: column; } }
+
+/* The graded track shows a live objective (energy, cut value) under the state,
+   because "tune this until the number moves" only teaches if the number is
+   always visible while you tune. */
+.cb-objective {
+  display: flex; justify-content: space-between; align-items: baseline; gap: 10px;
+  margin-top: 10px; padding: 8px 10px;
+  background: var(--accent-bg); border: 1px solid #cfe6d8; border-radius: 8px;
+}
+.cb-obj-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+.cb-obj-value { font-family: var(--font-code); font-size: 15px; font-weight: 700; color: var(--accent-strong); }
