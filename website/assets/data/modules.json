@@ -29,7 +29,7 @@
       "id": "03",
       "title": "Entanglement",
       "subtitle": "Bell states and correlations beyond classical",
-      "concepts": ["tensor products", "Bell states", "correlations", "CHSH intuition"],
+      "concepts": ["tensor products", "Bell states", "correlations", "why entanglement can't signal"],
       "minutes": 55,
       "notebook": "notebooks/03_entanglement_and_multiqubit.ipynb",
       "widget": "entanglement-explorer",

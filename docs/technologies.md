@@ -13,7 +13,11 @@ build step, no paid services. That constraint drove every choice below.
 |---|---|---|
 | [Qiskit](https://www.ibm.com/quantum/qiskit) | `2.3.1` | Primary circuit SDK — the industry-standard teaching stack, and the one learners meet again in real research. |
 | [Qiskit Aer](https://github.com/Qiskit/qiskit-aer) | `0.17.2` | Local high-performance simulator. Every notebook runs on a laptop; no quantum hardware or cloud queue required. |
-| [PennyLane](https://pennylane.ai) | `0.45.0` | Used from Basecamp 5 onward for the variational / gradient-based material, where its autodiff model is the clearest teaching vehicle. |
+
+**One SDK, on purpose.** We considered teaching PennyLane alongside Qiskit for the
+variational material in Basecamps 5–6 and decided against it. A beginner who is still
+building their first mental model of a circuit does not benefit from two APIs for the same
+idea — they benefit from one API they can predict. Qiskit alone carries the whole course.
 
 **Versions are pinned exactly.** The Colab bootstrap cell installs these same pins, so
 the code a student runs in the browser is byte-for-byte the code our test suite executes.

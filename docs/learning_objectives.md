@@ -29,10 +29,14 @@ By the end of the **Quantum Ascent** course, climbers will transition from theor
 * **Cognitive Goals:**
   * Construct multi-qubit state vectors using Kronecker/tensor products.
   * Explain the concept of quantum entanglement and define the four Bell states.
-  * Contrast quantum non-locality with classical correlation using the CHSH inequality.
+  * Distinguish *correlation* from *communication*: show that a Bell pair's outcomes are
+    perfectly correlated while each qubit's own marginal stays 50/50 — so entanglement
+    carries no signal (the no-signalling argument, done by hand).
 * **Skill Outcomes:**
-  * Program circuits that entangle two qubits (CNOT + H gates) and check their density matrices.
-  * Play the interactive CHSH Game widget to verify non-local advantages.
+  * Program circuits that entangle two qubits (H + CNOT) and read the resulting
+    four-amplitude state vector.
+  * Use the Entanglement Explorer widget to measure one half of a Bell pair repeatedly and
+    watch the partner's outcome become determined — without either marginal ever budging.
 
 ---
 
@@ -50,10 +54,12 @@ By the end of the **Quantum Ascent** course, climbers will transition from theor
 ### Basecamp 5: The Variational Principle
 * **Cognitive Goals:**
   * Explain the Variational Quantum Eigensolver (VQE) algorithm's core theorem: the expectation value of any ansatz state is bounded below by the ground-state energy.
-  * Analyze optimization energy landscapes and identify local minima and flat gradients (barren plateaus).
+  * Read a one-parameter energy landscape: locate the minimum, and explain why a flat region
+    of the curve makes an optimizer's job harder.
 * **Skill Outcomes:**
   * Implement parameterized quantum circuits (ansatz) that dynamically alter their states based on numerical angle parameters.
-  * Wire expectation estimators to classical optimization loops (COBYLA/SPSA) to find ground states.
+  * Wire an expectation-value estimator to a classical optimizer (SciPy's COBYLA) and watch it
+    descend to the ground-state energy.
 
 ---
 

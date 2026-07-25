@@ -33,7 +33,7 @@ jobs:
       - name: Install LATEST (unpinned) quantum SDKs
         run: |
           pip install -r requirements.txt
-          pip install --upgrade qiskit qiskit-aer pennylane
+          pip install --upgrade qiskit qiskit-aer
       - name: Run tests against latest SDKs
         run: pytest -v
 

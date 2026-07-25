@@ -22,7 +22,9 @@ QAOA Max-Cut capstone).
   widgets (Bloch Sampler, Gate Playground, …) were drafted with AI assistance and then
   reviewed, tested, and refined by hand through live use.
 - **Notebook authoring** — AI helped scaffold the solution notebooks and the narrative
-  copy, following a human-authored pedagogical style guide (see `CLAUDE.md`).
+  copy, following a human-authored pedagogical style guide
+  (see [`pedagogical_style_guide.md`](pedagogical_style_guide.md) — the rules were written
+  first, by hand, and the AI was held to them).
 - **Test infrastructure** — the checkers, the notebook-execution harness, the widget smoke
   tests, and the Python↔JavaScript completion-code parity test were built with AI assistance,
   test-first (the project follows a stability-first rule: tests before features).
@@ -51,7 +53,7 @@ is a stack of independent checks:
    JavaScript) and a test asserts the two agree — a technique we use precisely *because*
    independent re-derivation catches mistakes a single author (human or AI) would miss.
 3. **Human verification against standard references.** The physics is checked against
-   established sources (Nielsen & Chuang; Qiskit and PennyLane documentation) — e.g. the
+   established sources (Nielsen & Chuang; the Qiskit documentation) — e.g. the
    Born rule $P=|\text{amplitude}|^2$, $H\cdot Z\cdot H = X$, Qiskit's little-endian bit
    ordering, and the QAOA Max-Cut ground energy are all independently confirmed and pinned by
    tests (the capstone's answer is cross-checked against a brute-force maximum cut).

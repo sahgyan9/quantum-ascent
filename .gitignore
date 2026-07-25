@@ -17,3 +17,6 @@ node_modules/
 # local-only
 .claude/
 Brainstormed_Idea.md
+
+# local-only: internal self-evaluation, not for the submission repo
+docs/EVALUATION_REPORT.md

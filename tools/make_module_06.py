@@ -335,8 +335,8 @@ cells.append(basecamp_footer(
     ),
     quiz_url="https://quantum-ascent-77617.web.app/module.html?id=06#quiz",
     next_label=("You've topped out the main ascent! Revisit any basecamp to "
-                "deepen it, try a bigger graph in the QAOA code, or explore the "
-                "PennyLane appendix for a different view from the top"),
+                "deepen it, try a bigger or messier graph in the QAOA code, or "
+                "take the post-course assessment to measure how far you climbed"),
     solutions_relpath="solutions/06_qaoa_maxcut_capstone_solutions.ipynb",
 ))
 
