@@ -32,6 +32,7 @@
     <a href="ascent.html">The Ascent</a>
     <a href="widgets.html">Widget Gallery</a>
     <a href="analogy-studio.html" class="active">Analogy Studio</a>
+    <a href="myths.html">Myth Autopsy</a>
     <a href="assessment.html">Diagnostic</a>
     <span id="xp-pill">⚡ 0 XP · 0/6</span>
   </div>
@@ -86,6 +87,30 @@
       </div>
     </div>
   </div>
+
+  <!-- ============================================ the other half of the loop -->
+  <h2 class="section" id="audit">🕵️ Audit the answer</h2>
+  <p style="font-size:16px;max-width:72ch">Here is the part almost nobody does. You engineered the
+  prompt — but you never checked what came back. An AI that agreed to your ground rules can still
+  quietly break them, and the errors it makes are <i>exactly</i> the myths this course exists to
+  remove.</p>
+  <p style="font-size:16px;max-width:72ch">Paste the AI's reply below. We will flag the phrases
+  that are red flags, and then hand the real judgement to you — because auditing a confident
+  machine is a skill worth more than any single quantum concept.</p>
+
+  <div class="panel" style="margin-top:14px">
+    <label for="ai-answer"><b>Paste the AI's answer</b></label>
+    <textarea id="ai-answer" rows="9" placeholder="Paste the whole reply here…"
+      style="width:100%;font-family:var(--font-body);font-size:14.5px;padding:11px 13px;
+             border:1px solid var(--line);border-radius:8px;background:var(--panel);
+             color:var(--text);line-height:1.6;resize:vertical"></textarea>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
+      <button class="btn" id="audit-run">Scan for red flags</button>
+      <button class="btn ghost" id="audit-clear">Clear</button>
+    </div>
+    <div id="audit-out" style="margin-top:14px" role="status" aria-live="polite"></div>
+    <div id="audit-checklist" style="margin-top:14px"></div>
+  </div>
 </div>
 
 <footer>Built for the WISER Education Challenge 2026 · Definitions reviewed against
@@ -134,6 +159,111 @@ document.getElementById("copy").addEventListener("click", async () => {
   await navigator.clipboard.writeText(document.getElementById("prompt-out").textContent);
   document.getElementById("copied").textContent = "✓ copied";
   setTimeout(() => { document.getElementById("copied").textContent = ""; }, 2000);
+});
+
+/* ---------------------------------------------------------------- the audit
+   Closing the loop. Until now the Studio engineered a prompt and never saw the
+   response — which left the one real hole in the course's myth-avoidance
+   claim: we controlled the question, not the answer.
+
+   Two deliberate limits on what this does:
+
+   1. It is a REGEX SCAN, not a judge. It catches stock myth phrasings and
+      nothing else — an answer can be wrong in ways no pattern will find. We
+      say so on screen rather than letting a green tick imply "verified".
+   2. The actual grading is handed to the LEARNER, as a checklist against the
+      same ground rules the prompt demanded. Making the student the auditor of
+      a confident machine is the transferable skill here; the scanner is just
+      what gets them started. */
+
+const RED_FLAGS = [
+  { re: /\b(0 and 1|zero and one)\b[^.]{0,30}\b(at the same time|simultaneously|both at once)\b/i,
+    label: "“0 and 1 at the same time”",
+    fix: "A superposition has no definite value yet — but definite amplitudes, which fix the odds exactly. Being undetermined is not the same as being both." },
+  { re: /\b(both|all)\s+(states|values|answers)\s+(at once|simultaneously|at the same time)\b/i,
+    label: "“holds all values at once”",
+    fix: "It holds amplitude on many outcomes, and returns exactly one when measured. The distinction is the whole subject." },
+  { re: /\b(tries|checks|tests|computes|evaluates|explores)\s+(all|every)\b[^.]{0,40}\b(at once|simultaneously|in parallel|at the same time)\b/i,
+    label: "“tries every answer at once”",
+    fix: "Measurement returns one bitstring per run. The advantage comes from interference making the good answer likely — not from reading them all." },
+  { re: /\bparallel universe|multiverse|many[- ]worlds\b/i,
+    label: "parallel universes",
+    fix: "One interpretation among several, and never needed to explain how the algorithm works. If the analogy leans on it, it is doing metaphysics rather than physics." },
+  /* No trailing \b after the verb stems: "communicat" is followed by "ion", so
+     a word boundary there never matches and the flag silently never fired. */
+  { re: /\b(faster than light|ftl|superluminal|instantaneous(ly)?\s+(communicat|transmit|send|signal))/i,
+    label: "faster-than-light signalling",
+    fix: "Entanglement correlates outcomes but cannot carry a message — each side's own results are unchanged. See the Myth Autopsy, where you can try to break this and fail." },
+  /* "exponentially faster" is TRUE when scoped to particular problems, so this
+     one carries an `unless`: a qualifier anywhere in the text clears it. A
+     false positive here would teach a learner to distrust a correct sentence,
+     which is worse than missing a myth. */
+  { re: /\bexponentially fast(er)?\b/i,
+    unless: /\b(for certain|for some|for specific|for particular|certain (structured |specific )?problems|some problems|specific problems|particular problems|problems (with|that have)|such as factoring)\b/i,
+    label: "“exponentially faster” without qualification",
+    fix: "True only for particular problems with particular structure, such as factoring. Stated flatly it implies a general speedup over all classical computing, which does not exist." },
+  { re: /\bconscious(ness)?\b[^.]{0,40}\b(collapse|observ|measur)/i,
+    label: "consciousness causing collapse",
+    fix: "“Observation” means any interaction that records information — a detector, a stray photon, a warm wall. No mind required." },
+  { re: /\bqubits?\b[^.]{0,25}\b(spin(s|ning)? (very )?fast|vibrat)/i,
+    label: "qubits “spinning fast”",
+    fix: "The spinning-coin analogy is about being undetermined, not about literal speed. Nothing is physically flickering between values." },
+];
+
+const CHECKLIST = [
+  "Does the analogy respect <b>every</b> ground rule the prompt listed — or did it quietly drop the awkward one?",
+  "Does it keep <b>undetermined</b> distinct from <b>unknown</b>? (A spinning coin vs. a coin under a cup.)",
+  "When it mentions measurement, does it say you get <b>one definite outcome</b>?",
+  "Did it actually finish with an honest <b>“where this breaks down”</b> — or a token sentence that concedes nothing?",
+  "Is anything in it flatly contradicted by something you saw a widget do?",
+];
+
+document.getElementById("audit-run").addEventListener("click", () => {
+  const text = document.getElementById("ai-answer").value.trim();
+  const out = document.getElementById("audit-out");
+  const list = document.getElementById("audit-checklist");
+  if (!text) {
+    out.innerHTML = `<div class="panel" style="border-color:var(--amber);background:var(--amber-bg)">
+      Paste the AI's reply above first, then scan it.</div>`;
+    list.innerHTML = "";
+    return;
+  }
+  /* `unless` lets a pattern stand down when the text already qualifies itself
+     — see the "exponentially faster" entry. */
+  const hits = RED_FLAGS.filter(f => f.re.test(text) && !(f.unless && f.unless.test(text)));
+  out.innerHTML = hits.length
+    ? `<div class="panel" style="border-color:var(--danger);background:var(--danger-bg)">
+         <b>${hits.length} red flag${hits.length === 1 ? "" : "s"} found.</b>
+         <span class="muted">Your prompt asked it not to do this. It did it anyway — which is
+         precisely why you check.</span>
+       </div>` +
+      hits.map(h => `<div class="panel" style="margin-top:10px;border-left:4px solid var(--danger)">
+         <b>⚑ ${h.label}</b><p style="margin:6px 0 0;font-size:14.5px">${h.fix}</p></div>`).join("")
+    : `<div class="panel" style="border-color:var(--accent);background:var(--accent-bg)">
+         <b>No stock myth phrasings found.</b>
+         <span class="muted">That is genuinely good — but it only means the answer avoided the
+         <i>known wordings</i>. A scanner cannot tell you whether the physics is right. That part
+         is yours, below.</span></div>`;
+
+  list.innerHTML = `<h3 style="font-size:17px;margin-bottom:8px">Now you grade it</h3>
+    <p class="muted" style="font-size:14.5px;margin-bottom:10px">Five questions no regex can
+    answer. Go through the AI's reply and decide honestly — this is the part that actually
+    builds judgement.</p>
+    <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:9px">
+      ${CHECKLIST.map((c, i) => `<li style="display:flex;gap:10px;align-items:flex-start;
+        border:1px solid var(--line);border-radius:8px;padding:10px 12px;background:var(--panel)">
+        <input type="checkbox" id="chk${i}" style="margin-top:4px;accent-color:var(--accent);width:17px;height:17px">
+        <label for="chk${i}" style="margin:0;color:var(--text);font-weight:400;font-size:14.5px">${c}</label></li>`).join("")}
+    </ul>
+    <p class="muted" style="font-size:14px;margin-top:12px">Anything you could not tick is worth
+    asking the AI about directly — or checking against the
+    <a href="myths.html">Myth Autopsy</a>, where you can run the physics yourself.</p>`;
+});
+
+document.getElementById("audit-clear").addEventListener("click", () => {
+  document.getElementById("ai-answer").value = "";
+  document.getElementById("audit-out").innerHTML = "";
+  document.getElementById("audit-checklist").innerHTML = "";
 });
 </script>
 <script src="assets/js/nav.js"></script>

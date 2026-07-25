@@ -1,0 +1,573 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Myth Autopsy — Quantum Ascent</title>
+<meta name="description" content="Six famous claims about quantum computing, each one dissected with a live simulation you can run yourself. Try to break physics. Watch it not break.">
+<link rel="stylesheet" href="assets/css/site.css">
+<style>
+  .myth { border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--panel);
+          margin: 30px 0; overflow: hidden; }
+  .myth-claim { background: var(--danger-bg); border-bottom: 1px solid var(--line);
+                padding: 18px 22px; }
+  .myth-claim .tag { display: inline-block; font-size: 11.5px; letter-spacing: .08em;
+                     text-transform: uppercase; color: var(--danger); font-weight: 700; margin-bottom: 6px; }
+  .myth-claim q { font-family: var(--font-heading); font-size: 23px; font-style: italic;
+                  display: block; line-height: 1.3; }
+  .myth-claim .heard { font-size: 13px; color: var(--muted); margin-top: 8px; }
+  .myth-body { padding: 20px 22px; }
+  .verdict-strip { background: var(--accent-bg); border-top: 1px solid var(--line);
+                   border-left: 5px solid var(--accent); padding: 16px 22px; }
+  .verdict-strip .tag { display: inline-block; font-size: 11.5px; letter-spacing: .08em;
+                        text-transform: uppercase; color: var(--accent-strong); font-weight: 700; margin-bottom: 6px; }
+  .verdict-strip b.say { font-size: 17px; }
+  .demo { background: var(--bg2); border: 1px solid var(--line); border-radius: var(--radius-md);
+          padding: 16px 18px; margin: 14px 0; }
+  .demo h4 { font-family: var(--font-body); font-size: 13px; text-transform: uppercase;
+             letter-spacing: .06em; color: var(--muted); font-weight: 700; margin-bottom: 10px; }
+  .readout { font-family: var(--font-code); font-size: 14px; background: var(--panel);
+             border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px;
+             margin: 10px 0; min-height: 22px; white-space: pre-wrap; overflow-x: auto; }
+  .bars { display: grid; grid-template-columns: auto 1fr 64px; gap: 5px 8px; align-items: center; }
+  .bars .k { font-family: var(--font-code); font-size: 12.5px; }
+  .track { height: 15px; background: var(--bg2); border: 1px solid var(--line);
+           border-radius: 7px; overflow: hidden; }
+  .fill { height: 100%; width: 0%; transition: width .2s; background: var(--accent); }
+  .fill.amber { background: var(--amber); }
+  .num { font-family: var(--font-code); font-size: 12.5px; text-align: right; }
+  .two-pane { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .pane { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px; }
+  .pane h5 { font-family: var(--font-body); font-size: 15px; margin-bottom: 8px; }
+  .challenge { border-left: 4px solid var(--amber); background: var(--amber-bg);
+               padding: 12px 15px; border-radius: 0 8px 8px 0; margin: 12px 0; font-size: 15px; }
+  .toc { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 28px; }
+  .toc a { font-size: 13.5px; border: 1px solid var(--line); border-radius: 20px;
+           padding: 5px 13px; background: var(--panel); }
+  .toc a:hover { border-color: var(--accent); }
+  .why { font-size: 15px; }
+  .why p { margin-bottom: 10px; }
+  @media (max-width: 640px) { .two-pane { grid-template-columns: 1fr; } }
+  code { font-family: var(--font-code); font-size: .92em; background: var(--bg2);
+         border: 1px solid var(--line); border-radius: 4px; padding: 1px 5px; }
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+             overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+</style>
+</head>
+<body>
+
+<a href="#" class="nav-dismiss" aria-hidden="true" tabindex="-1"></a>
+<nav id="nav">
+  <a href="index.html" class="nav-name"><img src="assets/logo.svg" alt="" width="24" height="24"> Quantum <span>Ascent</span></a>
+  <a href="#nav-menu" class="nav-burger" id="nav-burger" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </a>
+  <div class="nav-links" id="nav-menu">
+    <a href="ascent.html">The Ascent</a>
+    <a href="widgets.html">Widget Gallery</a>
+    <a href="analogy-studio.html">Analogy Studio</a>
+    <a href="myths.html" class="active">Myth Autopsy</a>
+    <a href="assessment.html">Diagnostic</a>
+    <span id="xp-pill">⚡ 0 XP · 0/6</span>
+  </div>
+</nav>
+
+<div class="container">
+  <h1>🔬 Myth Autopsy</h1>
+  <p style="font-size:17px;max-width:72ch">Six claims you have almost certainly read about quantum
+  computing. Each one is dissected below with a <b>live simulation you can run yourself</b> — not a
+  diagram of the argument, the actual physics, computed in your browser.</p>
+  <p style="font-size:17px;max-width:72ch">We are not trying to make you feel clever for knowing
+  better. Most of these myths exist because the honest version is genuinely harder to say in one
+  sentence. So each autopsy ends with <b>a sentence you can actually use</b> — one that is both
+  true and short enough to survive a dinner party.</p>
+
+  <div class="challenge" style="max-width:72ch">
+    <b>The best one is #2.</b> You get to hold both halves of an entangled pair and
+    <i>try to send a message faster than light</i>. You will fail. Physics will not budge. That
+    failure teaches more than any paragraph could.
+  </div>
+
+  <div class="toc">
+    <a href="#m1">1 · 0 and 1 at the same time</a>
+    <a href="#m2">2 · Spooky instant messaging</a>
+    <a href="#m3">3 · Tries all answers at once</a>
+    <a href="#m4">4 · More qubits = faster</a>
+    <a href="#m5">5 · Encryption breaks tomorrow</a>
+    <a href="#m6">6 · Consciousness causes collapse</a>
+  </div>
+
+  <!-- ============================================================ MYTH 1 -->
+  <section class="myth" id="m1">
+    <div class="myth-claim">
+      <span class="tag">The claim</span>
+      <q>A qubit can be 0 and 1 at the same time.</q>
+      <div class="heard">The most repeated sentence in popular quantum computing. It is also the
+      first thing every physics student has to unlearn.</div>
+    </div>
+    <div class="myth-body">
+      <p class="why">If a qubit really were holding both values simultaneously, then measuring it
+      ought to sometimes give you <i>both</i> — or something in between. Let's check. Below is a
+      qubit in a perfectly even superposition. Measure it as many times as you like and watch the
+      list of values you have <b>ever</b> seen.</p>
+      <div class="demo">
+        <h4>Live · every outcome ever recorded</h4>
+        <button class="btn" data-act="m1-one">Measure once</button>
+        <button class="btn ghost" data-act="m1-many">Measure 500 times</button>
+        <button class="btn ghost" data-act="m1-reset">Reset</button>
+        <div class="readout" id="m1-out" role="status" aria-live="polite">No measurements yet.</div>
+        <div class="bars" id="m1-bars"></div>
+      </div>
+      <p class="why">Run it a thousand times. You will get 0s and you will get 1s, and you will
+      <b>never once</b> get "both", "0.5", or a blend. Every single measurement returns one plain,
+      definite bit.</p>
+      <p class="why">So what <i>is</i> real before you look? The <b>amplitudes</b> — and they are
+      completely definite. They fix the odds exactly. What is not yet a fact is the outcome.</p>
+      <p class="why">A spinning coin is the honest picture. Mid-spin it is not heads-and-tails at
+      once, and it is not secretly already heads. Its face is <b>not yet a fact</b> — but the way
+      it is spinning determines precisely how likely each face is.</p>
+    </div>
+    <div class="verdict-strip">
+      <span class="tag">Say this instead</span>
+      <b class="say">A qubit in superposition has no definite value yet — but it does have a
+      definite recipe of amplitudes, and that recipe fixes the odds of each outcome exactly.</b>
+    </div>
+  </section>
+
+  <!-- ============================================================ MYTH 2 -->
+  <section class="myth" id="m2">
+    <div class="myth-claim">
+      <span class="tag">The claim</span>
+      <q>Entangled particles communicate instantly across any distance.</q>
+      <div class="heard">Usually followed by "…so quantum computers could enable faster-than-light
+      communication." They cannot, and the reason is beautiful.</div>
+    </div>
+    <div class="myth-body">
+      <p class="why">Here is a real Bell pair, <b>(|00⟩ + |11⟩)/√2</b>. Alice holds the left qubit;
+      Bob holds the right one, light-years away. <b>Your job is to break physics.</b></p>
+      <p class="why">Try to send Bob a message. Measure Alice's qubit as often as you want, in
+      whichever basis you want. Then look at Bob's histogram and see whether anything you did
+      shows up in it.</p>
+
+      <div class="demo">
+        <h4>Live · try to signal</h4>
+        <div style="margin-bottom:10px">
+          <label for="m2-basis" style="display:inline;margin-right:8px">Alice measures in basis:</label>
+          <select id="m2-basis" style="padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--text)">
+            <option value="Z">Z (the standard basis)</option>
+            <option value="X">X (rotated 90°)</option>
+            <option value="Y">Y (rotated the other way)</option>
+          </select>
+        </div>
+        <button class="btn" data-act="m2-alice">Alice measures 500 times</button>
+        <button class="btn ghost" data-act="m2-nothing">Alice does nothing (500 rounds)</button>
+        <button class="btn ghost" data-act="m2-reset">Reset</button>
+
+        <div class="two-pane" style="margin-top:14px">
+          <div class="pane">
+            <h5>👩‍🔬 Alice's results</h5>
+            <div class="bars" id="m2-alice-bars"></div>
+            <p class="muted" style="font-size:12.5px;margin-top:8px" id="m2-alice-note">—</p>
+          </div>
+          <div class="pane">
+            <h5>👨‍🚀 Bob's results <span class="muted" style="font-weight:400;font-size:13px">(he measures in Z, always)</span></h5>
+            <div class="bars" id="m2-bob-bars"></div>
+            <p class="muted" style="font-size:12.5px;margin-top:8px" id="m2-bob-note">—</p>
+          </div>
+        </div>
+        <div class="readout" id="m2-out" role="status" aria-live="polite">Nothing measured yet.</div>
+      </div>
+
+      <div class="challenge">
+        <b>Did you manage it?</b> Switch Alice's basis. Measure, don't measure, alternate.
+        Bob's histogram sits at 50/50 every time, to within ordinary shot noise. There is nothing
+        you can do on Alice's side that changes <i>anything</i> Bob can observe on his.
+      </div>
+
+      <p class="why">And yet the correlation is completely real. Look at the third line in the
+      readout: when Alice measures in Z, her results and Bob's <b>match 100% of the time</b>. The
+      link is not an illusion.</p>
+      <p class="why">So where does the message go? Nowhere — because Bob cannot see the
+      correlation from his side alone. To find it, someone has to bring the two lists of results
+      together and compare them line by line. That comparison travels by email, phone, or
+      spacecraft: at or below the speed of light, like everything else.</p>
+      <p class="why"><b>Entanglement creates correlation, never communication.</b> This is called
+      the no-signalling theorem, and it is why quantum mechanics and relativity manage to coexist.</p>
+    </div>
+    <div class="verdict-strip">
+      <span class="tag">Say this instead</span>
+      <b class="say">Entangled particles give perfectly correlated results — but neither side can
+      see that correlation alone, so nothing is transmitted. You need an ordinary, slower-than-light
+      message to reveal it.</b>
+    </div>
+  </section>
+
+  <!-- ============================================================ MYTH 3 -->
+  <section class="myth" id="m3">
+    <div class="myth-claim">
+      <span class="tag">The claim</span>
+      <q>A quantum computer tries every possible answer at once, then returns the best one.</q>
+      <div class="heard">The standard explanation of quantum speedup. The first half is nearly
+      right; the second half is where it falls apart.</div>
+    </div>
+    <div class="myth-body">
+      <p class="why">It is true that a register of <i>n</i> qubits can carry amplitude on all
+      2<sup>n</sup> possibilities at once. The problem is the word <b>returns</b>.</p>
+      <p class="why">Below are 5 qubits in an equal superposition — genuinely all 32 answers,
+      simultaneously. Now measure it and see how many of those 32 you get to read.</p>
+      <div class="demo">
+        <h4>Live · 32 answers in, one answer out</h4>
+        <button class="btn" data-act="m3-one">Measure the 32-way superposition</button>
+        <button class="btn ghost" data-act="m3-search">Now aim the amplitudes at answer 21</button>
+        <button class="btn ghost" data-act="m3-reset">Reset</button>
+        <div class="readout" id="m3-out" role="status" aria-live="polite">Not run yet.</div>
+        <div class="bars" id="m3-bars"></div>
+      </div>
+      <p class="why">One bitstring. Every time. Measurement gives you exactly one answer per run,
+      and the superposition is gone the moment you look.</p>
+      <p class="why">Press the second button and watch what an actual quantum algorithm does. It
+      does not read all the answers — it spends its effort <b>rearranging the amplitudes</b> so
+      that the good answer becomes the likely one to fall out. Wrong answers are made to cancel;
+      the right one is made to reinforce. That is interference, and it is the whole craft.</p>
+      <p class="why">This is also why quantum algorithms are hard to invent. "Check everything in
+      parallel" would work for any problem. Steering interference toward the right answer has to
+      be designed problem by problem — which is why we have a handful of quantum algorithms and
+      not a general-purpose one.</p>
+    </div>
+    <div class="verdict-strip">
+      <span class="tag">Say this instead</span>
+      <b class="say">A quantum computer holds many possibilities at once but only ever hands back
+      one. The skill is arranging interference so that wrong answers cancel and the right one is
+      the one you are likely to measure.</b>
+    </div>
+  </section>
+
+  <!-- ============================================================ MYTH 4 -->
+  <section class="myth" id="m4">
+    <div class="myth-claim">
+      <span class="tag">The claim</span>
+      <q>More qubits means a faster computer.</q>
+      <div class="heard">Reinforced by every headline that reports a new chip purely by its qubit
+      count.</div>
+    </div>
+    <div class="myth-body">
+      <p class="why">Qubits without interference are not an advantage — they are a bigger haystack.
+      Watch what happens to your chance of guessing right as you add qubits to a plain
+      superposition.</p>
+      <div class="demo">
+        <h4>Live · your odds of hitting the right answer by measuring</h4>
+        <label for="m4-n">Qubits: <b id="m4-nlab">3</b></label>
+        <input type="range" id="m4-n" min="1" max="12" value="3" step="1" style="width:100%;accent-color:var(--accent)">
+        <div class="readout" id="m4-out" role="status" aria-live="polite"></div>
+      </div>
+      <p class="why">Every qubit you add <i>halves</i> your chance of measuring the answer you
+      wanted. Scale alone makes the problem worse, not better. What turns those 2<sup>n</sup>
+      possibilities into an advantage is an algorithm that concentrates amplitude — and if you do
+      not have one for your problem, the extra qubits buy you nothing.</p>
+      <p class="why">There is a second reason the headline number misleads. Real qubits are noisy,
+      and noise compounds: more qubits and deeper circuits mean more chances for the state to
+      decohere before you finish. That is why the field talks about <b>error-corrected</b> or
+      "logical" qubits, where thousands of physical qubits may be needed to make one reliable one.
+      A 1,000-qubit chip is not a 1,000-qubit computer in the sense the headline implies.</p>
+    </div>
+    <div class="verdict-strip">
+      <span class="tag">Say this instead</span>
+      <b class="say">Qubit count on its own means very little. What matters is how many stay
+      coherent long enough, how low the error rate is, and whether an algorithm exists that can
+      turn that space into interference.</b>
+    </div>
+  </section>
+
+  <!-- ============================================================ MYTH 5 -->
+  <section class="myth" id="m5">
+    <div class="myth-claim">
+      <span class="tag">The claim</span>
+      <q>Quantum computers will break all encryption — any day now.</q>
+      <div class="heard">Sometimes sold with a countdown clock. The honest version is more
+      interesting and much less dramatic.</div>
+    </div>
+    <div class="myth-body">
+      <p class="why">Three corrections, in order of how much they change the picture.</p>
+      <p class="why"><b>1. Not all encryption.</b> Shor's algorithm breaks cryptography based on
+      factoring and discrete logarithms — RSA and elliptic-curve, which is most of what secures
+      the web today. It does <i>not</i> break symmetric ciphers like AES-256, and it does not touch
+      modern hash functions. Grover's algorithm weakens symmetric keys, roughly halving their
+      effective length — which is why AES-256 is considered fine and AES-128 less so. Doubling a
+      key length is an inconvenience, not an apocalypse.</p>
+      <p class="why"><b>2. Not on this hardware.</b> Factoring a 2048-bit RSA key with Shor's
+      algorithm needs on the order of <b>millions</b> of physical qubits once error correction is
+      accounted for, running coherently for hours. Today's largest devices have hundreds to low
+      thousands of physical qubits with error rates far too high. The gap is not a rounding error;
+      it is several orders of magnitude, and closing it requires advances nobody can currently
+      schedule.</p>
+      <p class="why"><b>3. The replacement already shipped.</b> In 2024 NIST standardised
+      post-quantum algorithms designed to resist quantum attack, and browsers and messaging apps
+      have been rolling them out since. The migration is genuinely urgent — because of
+      "harvest now, decrypt later", where an adversary stores your encrypted traffic today and
+      decrypts it whenever the hardware arrives — but it is an ordinary, solvable engineering
+      migration, not a cliff edge.</p>
+    </div>
+    <div class="verdict-strip">
+      <span class="tag">Say this instead</span>
+      <b class="say">Large-scale quantum computers would break today's public-key cryptography, but
+      not symmetric encryption, and not with any hardware that exists or is scheduled. The
+      quantum-resistant replacements are already standardised and shipping.</b>
+    </div>
+  </section>
+
+  <!-- ============================================================ MYTH 6 -->
+  <section class="myth" id="m6">
+    <div class="myth-claim">
+      <span class="tag">The claim</span>
+      <q>A quantum state collapses because a conscious observer looks at it.</q>
+      <div class="heard">The word "observer" did enormous damage here. It is a technical term that
+      sounds like an everyday one.</div>
+    </div>
+    <div class="myth-body">
+      <p class="why">In physics, "observation" means <b>interaction that leaves a record</b> — a
+      photon scattering off the system, a detector firing, a stray air molecule bumping into it.
+      No mind is required, and none is involved.</p>
+      <p class="why">The evidence is blunt: quantum states decohere constantly in sealed
+      apparatus with nobody watching, which is precisely why quantum computers are kept in
+      near-vacuum at a few millikelvin. Every engineering hour spent on shielding is an hour spent
+      preventing "observation" by an entirely unconscious universe. If consciousness were the
+      trigger, that hardware would be pointless.</p>
+      <p class="why">It also runs the wrong way round historically. Decoherence theory explains the
+      appearance of collapse through ordinary interaction with the environment, and it does so
+      quantitatively — predicting <i>how fast</i> a given system loses coherence, numbers that are
+      measured and matched in the lab.</p>
+      <p class="why">There is a real open question underneath the myth — the measurement problem,
+      about what collapse fundamentally <i>is</i>, and physicists genuinely disagree. But no
+      mainstream interpretation gives consciousness a causal role.</p>
+    </div>
+    <div class="verdict-strip">
+      <span class="tag">Say this instead</span>
+      <b class="say">"Observation" means any interaction that records information about the system.
+      A detector, a stray photon, or a warm wall will do it. Consciousness has nothing to do with it.</b>
+    </div>
+  </section>
+
+  <div class="panel" style="border-color:var(--accent);background:var(--accent-bg);margin-top:34px">
+    <h3 style="font-size:19px;margin-bottom:8px">Why we built this</h3>
+    <p style="font-size:15.5px;margin-bottom:10px">Every one of these myths is <i>easier to say</i>
+    than the truth. That is why they spread — not because anyone is being dishonest, but because
+    the accurate sentence is longer and the catchy one travels.</p>
+    <p style="font-size:15.5px;margin-bottom:10px">Our whole course is built on the bet that you can
+    be completely honest and still be gentle, if you are willing to do the harder authoring work.
+    Every "say this instead" above is our attempt to prove it: accurate <i>and</i> short enough to
+    actually use.</p>
+    <p style="font-size:15.5px;margin:0">
+      <a class="btn" href="lab.html?id=01">Start Basecamp 1 →</a>
+      <a class="btn ghost" href="assessment.html" style="margin-left:8px">Test yourself first</a>
+    </p>
+  </div>
+</div>
+
+<footer>Built for the WISER Education Challenge 2026 · Every simulation on this page is real —
+run in your browser by <code>qsim.js</code>, verified against Qiskit in our test suite ·
+<a href="ascent.html">Back to the Ascent</a></footer>
+
+<script src="assets/js/qsim.js"></script>
+<script src="assets/js/progress.js"></script>
+<script src="assets/js/glossary.js"></script>
+<script>
+"use strict";
+/* Myth Autopsy — the course's stated moat, made into a page people can share.
+   ==========================================================================
+
+   Myth-avoidance was a policy in a style guide that only the authors read. Here
+   it is a product: six claims, each dissected with a REAL simulation (QSim, the
+   same engine the browser track runs on) rather than an illustration of an
+   argument.
+
+   The design bet on Myth 2 is the important one. Rather than explaining
+   no-signalling, we hand the reader both halves of a Bell pair and invite them
+   to TRY TO BREAK PHYSICS. They pick Alice's basis, they measure as much as they
+   like, and Bob's marginal refuses to move. Failing to send a message teaches
+   the theorem better than any paragraph, because the reader generated the
+   evidence themselves.
+
+   Every myth ends with "Say this instead" — a replacement sentence that is both
+   true and short enough to survive a dinner party. A correction with no usable
+   replacement just leaves people repeating the myth with a caveat. */
+
+const $ = id => document.getElementById(id);
+function bars(el, rows) {
+  el.replaceChildren();
+  rows.forEach(r => {
+    const k = document.createElement("span"); k.className = "k"; k.textContent = r.key;
+    const t = document.createElement("div"); t.className = "track";
+    const f = document.createElement("div"); f.className = "fill" + (r.amber ? " amber" : "");
+    f.style.width = (100 * r.frac) + "%"; t.appendChild(f);
+    const n = document.createElement("span"); n.className = "num"; n.textContent = r.num;
+    el.append(k, t, n);
+  });
+}
+
+/* ---------------------------------------------------------------- myth 1 */
+const M1 = { counts: {}, total: 0, seen: new Set() };
+function m1Render() {
+  const o = $("m1-out");
+  if (!M1.total) { o.textContent = "No measurements yet."; bars($("m1-bars"), []); return; }
+  o.textContent =
+    "Measurements taken: " + M1.total + "\n" +
+    "Distinct values ever observed: { " + [...M1.seen].sort().join(", ") + " }\n" +
+    "Times a value other than 0 or 1 appeared: 0";
+  bars($("m1-bars"), ["0", "1"].map((k, i) => ({
+    key: "outcome " + k, frac: (M1.counts[k] || 0) / M1.total,
+    num: (M1.counts[k] || 0) + "", amber: i === 1
+  })));
+}
+function m1Measure(n) {
+  const st = QSim.run(1, [{ g: "H", q: 0 }]);
+  const c = QSim.sample(st, n);
+  for (const k in c) { M1.counts[k] = (M1.counts[k] || 0) + c[k]; M1.seen.add(k); }
+  M1.total += n;
+  m1Render();
+}
+
+/* ---------------------------------------------------------------- myth 2 */
+/* A genuine Bell pair. Alice's "basis choice" is implemented as a real basis
+   rotation on her qubit before measurement — so this is not a mock-up of
+   no-signalling, it is no-signalling. Bob's marginal is computed from the same
+   joint distribution Alice sampled from. */
+const M2 = { a: {}, b: {}, rounds: 0, match: 0, mode: null };
+function bellOps(basis) {
+  const ops = [{ g: "H", q: 0 }, { g: "CX", q: 0, t: 1 }];
+  if (basis === "X") ops.push({ g: "H", q: 0 });
+  if (basis === "Y") { ops.push({ g: "SDG", q: 0 }); ops.push({ g: "H", q: 0 }); }
+  return ops;
+}
+function m2Run(n, aliceMeasures) {
+  const basis = $("m2-basis").value;
+  /* When Alice "does nothing", we still sample the joint state — Bob's outcome
+     is drawn from exactly the same physics either way. That is the point. */
+  const st = QSim.run(2, bellOps(aliceMeasures ? basis : "Z"));
+  const counts = QSim.sample(st, n);
+  for (const key in counts) {
+    const bBit = key[0], aBit = key[1];        // Qiskit order: q1 q0 -> Bob Alice
+    M2.b[bBit] = (M2.b[bBit] || 0) + counts[key];
+    if (aliceMeasures) {
+      M2.a[aBit] = (M2.a[aBit] || 0) + counts[key];
+      if (aBit === bBit) M2.match += counts[key];
+    }
+    M2.rounds += counts[key];
+  }
+  M2.mode = aliceMeasures ? ("Alice measured in the " + basis + " basis") : "Alice did nothing";
+  m2Render();
+}
+function m2Render() {
+  const aTot = (M2.a["0"] || 0) + (M2.a["1"] || 0);
+  const bTot = (M2.b["0"] || 0) + (M2.b["1"] || 0);
+  bars($("m2-alice-bars"), ["0", "1"].map((k, i) => ({
+    key: k, frac: aTot ? (M2.a[k] || 0) / aTot : 0, num: (M2.a[k] || 0) + "", amber: i === 1
+  })));
+  bars($("m2-bob-bars"), ["0", "1"].map((k, i) => ({
+    key: k, frac: bTot ? (M2.b[k] || 0) / bTot : 0, num: (M2.b[k] || 0) + "", amber: i === 1
+  })));
+  $("m2-alice-note").textContent = aTot
+    ? Math.round(100 * (M2.a["0"] || 0) / aTot) + "% zeros over " + aTot + " measurements"
+    : "Alice has not measured.";
+  $("m2-bob-note").textContent = bTot
+    ? Math.round(100 * (M2.b["0"] || 0) / bTot) + "% zeros over " + bTot + " rounds — stubbornly 50/50"
+    : "Bob has no results yet.";
+  if (!M2.rounds) { $("m2-out").textContent = "Nothing measured yet."; return; }
+  const bPct = bTot ? (100 * (M2.b["0"] || 0) / bTot) : 0;
+  $("m2-out").textContent =
+    "Last action:            " + M2.mode + "\n" +
+    "Bob's P(0), measured:   " + bPct.toFixed(1) + "%   (theory: 50.0% — unchanged, always)\n" +
+    (aTot ? "Alice/Bob agreement:    " + (100 * M2.match / aTot).toFixed(1) + "%" +
+      ($("m2-basis").value === "Z" ? "   ← the correlation is real, and invisible to Bob alone"
+                                   : "   (in a rotated basis the correlation looks like chance)") : "") +
+    "\nMessage transmitted:    none. Bob cannot tell what Alice did, or whether she did anything.";
+}
+
+/* ---------------------------------------------------------------- myth 3 */
+function m3Render(ops, label) {
+  const n = 5;
+  const st = QSim.run(n, ops);
+  const probs = QSim.probabilities(st);
+  const c = QSim.sample(st, 1);
+  const got = Object.keys(c)[0];
+  const top = [...probs.keys()].sort((a, b) => probs[b] - probs[a]).slice(0, 4);
+  $("m3-out").textContent =
+    label + "\n" +
+    "Amplitudes held by the register: 32\n" +
+    "Bitstrings returned by measuring: 1   ->   " + got + "  (decimal " + parseInt(got, 2) + ")\n" +
+    "Chance that was the answer you wanted (21 = 10101): " +
+      (100 * probs[21]).toFixed(1) + "%";
+  bars($("m3-bars"), top.map(i => ({
+    key: "|" + QSim.label(i, n) + "⟩", frac: probs[i],
+    num: (100 * probs[i]).toFixed(1) + "%", amber: i === 21
+  })));
+}
+/* A Grover-style amplitude concentration on |10101>: mark it with a phase, then
+   invert about the mean. Two iterations is enough to make the point visible at
+   n=5 without pretending this is a full Grover implementation. */
+function m3Grover() {
+  const n = 5, target = 21;
+  const st = QSim.run(n, [0, 1, 2, 3, 4].map(q => ({ g: "H", q: q })));
+  for (let it = 0; it < 3; it++) {
+    st.re[target] = -st.re[target]; st.im[target] = -st.im[target];   // oracle
+    let mr = 0, mi = 0;                                                // diffusion
+    for (let i = 0; i < st.re.length; i++) { mr += st.re[i]; mi += st.im[i]; }
+    mr /= st.re.length; mi /= st.im.length;
+    for (let i = 0; i < st.re.length; i++) {
+      st.re[i] = 2 * mr - st.re[i]; st.im[i] = 2 * mi - st.im[i];
+    }
+  }
+  const probs = QSim.probabilities(st);
+  const c = QSim.sample(st, 1);
+  const got = Object.keys(c)[0];
+  const top = [...probs.keys()].sort((a, b) => probs[b] - probs[a]).slice(0, 4);
+  $("m3-out").textContent =
+    "After 3 rounds of aiming the amplitudes (mark the answer, then reflect):\n" +
+    "Amplitudes held by the register: 32   (still all of them)\n" +
+    "Bitstrings returned by measuring: 1   ->   " + got + "  (decimal " + parseInt(got, 2) + ")\n" +
+    "Chance that is the answer you wanted (21 = 10101): " + (100 * probs[21]).toFixed(1) + "%\n" +
+    "Nothing was 'read in parallel'. The amplitudes were rearranged so the right\n" +
+    "answer became the likely one to fall out — and it still takes ~sqrt(32) rounds.";
+  bars($("m3-bars"), top.map(i => ({
+    key: "|" + QSim.label(i, n) + "⟩", frac: probs[i],
+    num: (100 * probs[i]).toFixed(1) + "%", amber: i === 21
+  })));
+}
+const M3_FLAT = [0, 1, 2, 3, 4].map(q => ({ g: "H", q: q }));
+
+/* ---------------------------------------------------------------- myth 4 */
+function m4Render() {
+  const n = +$("m4-n").value;
+  $("m4-nlab").textContent = n;
+  const p = 1 / Math.pow(2, n);
+  $("m4-out").textContent =
+    n + (n === 1 ? " qubit " : " qubits") + "  ->  " + Math.pow(2, n) + " possible answers\n" +
+    "Chance of measuring the one you want: " + (100 * p).toFixed(p < 0.001 ? 4 : 2) + "%\n" +
+    "Expected measurements needed before you see it: " + Math.pow(2, n) + "\n" +
+    (n >= 10 ? "\nAdding qubits alone made this WORSE, not faster."
+             : "\nDrag further right and watch your odds collapse.");
+}
+
+/* ---------------------------------------------------------------- wiring */
+document.addEventListener("click", e => {
+  const b = e.target.closest("[data-act]");
+  if (!b) return;
+  const a = b.dataset.act;
+  if (a === "m1-one") m1Measure(1);
+  else if (a === "m1-many") m1Measure(500);
+  else if (a === "m1-reset") { M1.counts = {}; M1.total = 0; M1.seen = new Set(); m1Render(); }
+  else if (a === "m2-alice") m2Run(500, true);
+  else if (a === "m2-nothing") m2Run(500, false);
+  else if (a === "m2-reset") { M2.a = {}; M2.b = {}; M2.rounds = 0; M2.match = 0; M2.mode = null; m2Render(); }
+  else if (a === "m3-one") m3Render(M3_FLAT, "A plain equal superposition of 5 qubits:");
+  else if (a === "m3-search") m3Grover();
+  else if (a === "m3-reset") { $("m3-out").textContent = "Not run yet."; bars($("m3-bars"), []); }
+});
+$("m4-n").addEventListener("input", m4Render);
+$("m2-basis").addEventListener("change", m2Render);
+
+m1Render(); m2Render(); m4Render();
+Glossary.enhance(document.querySelector(".container"));
+</script>
+<script src="assets/js/nav.js"></script>
+</body>
+</html>
