@@ -24,9 +24,15 @@ and watch the statistics build toward your prediction.</div>
 
   <div class="right">
     <div class="panel">
-      <label>θ (tilt): <span class="readout" id="thetaV">90°</span></label>
+      <!-- Degrees AND radians, always, side by side. The notebook's RY takes
+           radians while this slider is natural in degrees, and that mismatch —
+           not the physics — is where Basecamp 1 loses people. Showing both
+           removes the conversion from the learner's head entirely. -->
+      <label>θ (tilt): <span class="readout" id="thetaV">90°</span>
+             <span class="readout" id="thetaR"
+                   style="color:var(--muted);font-weight:500">= π/2 rad</span></label>
       <input type="range" id="theta" min="0" max="180" value="90" step="1"
-             aria-label="theta tilt angle">
+             aria-label="theta tilt angle, in degrees">
       <label>φ (twist — changes no probabilities; wait for Basecamp 2!):
              <span class="readout" id="phiV">0°</span></label>
       <input type="range" id="phi" min="0" max="360" value="0" step="1"
@@ -63,6 +69,15 @@ and watch the statistics build toward your prediction.</div>
 const $ = id => document.getElementById(id);
 const cv = $("sphere"), ctx = cv.getContext("2d");
 const state = { theta: 90, phi: 0, c0: 0, c1: 0, collapse: null };
+
+/* Name the π-fractions rather than printing 1.5708: "π/2" is a fact a beginner
+   can carry into the notebook, a decimal is a number they have to trust. */
+function radLabel(deg) {
+  const named = { 0: "0", 30: "π/6", 45: "π/4", 60: "π/3", 90: "π/2", 120: "2π/3",
+                  135: "3π/4", 150: "5π/6", 180: "π" };
+  if (named[deg] != null) return named[deg];
+  return (deg * Math.PI / 180).toFixed(3);
+}
 
 function probs() {
   const t = state.theta * Math.PI / 180;
@@ -131,6 +146,7 @@ function render() {
   const [p0, p1] = probs();
   const t = state.theta * Math.PI / 180;
   $("thetaV").textContent = state.theta + "°";
+  $("thetaR").textContent = "= " + radLabel(state.theta) + " rad";
   $("phiV").textContent = state.phi + "°";
   $("amp0").textContent = Math.cos(t / 2).toFixed(3);
   $("amp1").textContent = (state.phi ? "e^{i·" + state.phi + "°} " : "") + Math.sin(t / 2).toFixed(3);

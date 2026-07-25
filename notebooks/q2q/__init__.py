@@ -4,6 +4,8 @@ Learners interact with three things:
 - checkers: friendly self-check functions with pass/fail feedback and hints
 - widgets:  show_widget() embeds the course's interactive HTML widgets
 - oracles:  black-box circuits/graphs so you can *discover* the answers
+- hints:    a three-rung ladder (nudge -> strategy -> near-answer) so that
+            "I'm stuck" has an exit that is not "copy the solution"
 """
 
 from .checkers import (
@@ -16,5 +18,6 @@ from .checkers import (
     check_maxcut_solution,
 )
 from .widgets import show_widget
+from .hints import hint
 
 __version__ = "0.1.0"

@@ -46,12 +46,13 @@ def _ensure_q2q():
             "main/notebooks/q2q/")
     os.makedirs("q2q", exist_ok=True)
     for fname in ("__init__.py", "checkers.py", "widgets.py", "oracles.py",
-                  "latex_macros.py", "targets.py", "quiz.py", "progress.py"):
+                  "latex_macros.py", "targets.py", "quiz.py", "progress.py",
+                  "hints.py"):
         urllib.request.urlretrieve(base + fname, os.path.join("q2q", fname))
     sys.path.insert(0, os.path.abspath("."))
 
 _ensure_q2q()
-from q2q import checkers, quiz, targets, progress
+from q2q import checkers, quiz, targets, progress, hints
 from q2q.widgets import show_widget
 print("Setup complete — you're ready to climb. 🏔️")'''
 
@@ -135,9 +136,14 @@ def basecamp_footer(module_no, summary, quiz_url, next_label, solutions_relpath)
         f"to earn your XP and badge.\n"
         f"2. 🧗 Continue the ascent: **{next_label}**.\n\n"
         f"---\n"
-        f"*Stuck on a task? Compare with the worked solutions: "
-        f"[`{solutions_relpath}`]({solutions_relpath}). Try honestly first — "
-        f"the struggle is where the learning happens.*"
+        f"*Stuck on a task? **Ask for a hint before you reach for the answer.** Run "
+        f"`hints.hint(\"{module_no:02d}-1\")` (or `\"{module_no:02d}-2\"` for Task 2) "
+        f"in any cell: it gives you a nudge first, then a strategy, then "
+        f"almost-the-answer — one rung each time you run it. Nothing is recorded and "
+        f"nothing is penalised; asking for help is not a cost here.*\n\n"
+        f"*Still stuck after all three rungs? The worked solutions are here: "
+        f"[`{solutions_relpath}`]({solutions_relpath}). Try honestly first — the "
+        f"struggle is where the learning happens.*"
     )
 
 
