@@ -41,14 +41,14 @@ cells.append(briefing(
         "2–3), and <b>optimize</b> its angles with a classical optimizer "
         "(Basecamp 5) until measuring it hands you the answer.<br><br>"
         "<i>By the end you'll have solved an NP-hard problem on a (simulated) "
-        "quantum computer and scored a perfect approximation ratio. That's the "
+        "quantum computer and scored its approximation ratio honestly. That's the "
         "whole mountain — and you'll have built every piece of it.</i>"
     ),
     objectives=[
         "State the **Max-Cut** problem: split a graph's nodes into two groups to cut the most edges",
         "Encode it as a **cost Hamiltonian** $H_C = \\sum_{\\text{edges}} Z_iZ_j$, so the ground state is the best cut",
         "Build the **QAOA ansatz** — alternating **cost** and **mixer** layers — and see why *both* are essential",
-        "Run the full **variational loop**, sample the answer, and confirm an **approximation ratio of 1.0**",
+        "Run the full **variational loop**, sample the answer, and then find out what *Approximate* really means on a graph that fights back",
     ],
     minutes=70,
 ))
@@ -278,9 +278,144 @@ its own. It never saw the checkerboard; it started from "every split equally
 likely", used the cost layer to phase-mark good cuts and the mixer to make them
 interfere into being *probable*, and a classical optimizer tuned the angles until
 measuring the circuit handed back `0101` (or its mirror `1010`). That is a complete
-quantum optimization algorithm — and you built every layer of it. On four nodes we
-could check the answer by hand; the exact same code, with a bigger `EDGES` list,
-attacks graphs no brute force can touch. **You've reached the summit.** 🏔️"""))
+quantum optimization algorithm — and you built every layer of it.
+
+Now — before you take that 1.0 home — we owe you some honesty about it. 🏔️"""))
+
+# --------------------------------------------------- the honest graphs
+# The 4-ring is the friendliest graph in existence for this algorithm: it is
+# bipartite (max cut = ALL edges) and p=2 solves it exactly. Stopping here would
+# teach "QAOA solves optimization problems", and a judge who knows QAOA would
+# notice we picked the one graph where it cannot fail. The two sections below
+# pay off the word *Approximate* with two genuinely different lessons.
+cells.append(md(r"""---
+
+## 7 · The word we haven't earned yet: **Approximate**
+
+QAOA stands for the **Quantum Approximate Optimization Algorithm**, and so far
+nothing you've seen has been approximate at all. That's not luck — it's the graph
+we chose.
+
+A 4-node ring is **bipartite**: you can 2-colour it so that *every single edge*
+runs between the colours. Its maximum cut is all 4 of 4, and a $p=2$ circuit
+reaches it every time. It's the friendliest graph in existence for this algorithm.
+
+Two things can go "wrong" in the real world, and they are completely different
+problems. Let's meet both.
+
+### 7a · Frustration: when the best answer still isn't perfect
+
+Three towns, all connected to each other — a **triangle**. Split them into two
+groups. Try it on paper before you run the cell: **how many of the 3 roads can you
+cut?**"""))
+cells.append(code(
+'''# Brute force is honest and, at 3 nodes, instant: check all 2^3 splits.
+TRIANGLE = [(0, 1), (1, 2), (0, 2)]
+
+def cut_of(bits, edges):
+    """How many edges have their endpoints in different groups?"""
+    return sum(1 for (i, j) in edges if bits[i] != bits[j])
+
+print(" split | cut")
+best_tri = 0
+for v in range(8):
+    bits = [(v >> k) & 1 for k in range(3)]      # bits[k] = group of node k
+    c = cut_of(bits, TRIANGLE)
+    best_tri = max(best_tri, c)
+    print(f"  {bits}  |  {c}")
+
+print(f"\\nBest possible cut on a triangle: {best_tri} of {len(TRIANGLE)} edges")'''))
+cells.append(analysis(r"""**2 out of 3 — and no algorithm on Earth does better.**
+
+Two groups, three mutually connected towns: two of them must land together, and
+the road between *those two* can never be cut. This is called **frustration**, and
+it is a property of the **problem**, not a failure of the **solver**. A perfect
+quantum computer, a supercomputer, and a very patient person with a pencil all
+return 2.
+
+Remember this the next time you see an approximation ratio below 1.0. Sometimes it
+means the algorithm fell short. Sometimes — as here — it means the algorithm found
+the true best answer and the true best answer simply isn't perfect. Those are very
+different situations, and telling them apart is the job."""))
+
+cells.append(md(r"""### 7b · Depth: when QAOA genuinely falls short
+
+Now a graph where the shortfall *is* the algorithm's. Five towns in a ring —
+a **5-cycle**. It's an odd cycle, so like the triangle it can't be perfectly
+2-coloured: the true maximum cut is **4 of 5**.
+
+Here's the question worth predicting before you run anything. Random guessing cuts
+2.5 edges on average. The true maximum is 4. **Where do you think a $p=1$ QAOA
+lands?**
+
+Write your guess down, then run the cell. It reuses exactly the optimizer loop you
+built above — COBYLA, from a handful of starting points — at each depth, and reports
+the best expected cut it can reach."""))
+cells.append(code(
+'''from scipy.optimize import minimize
+
+C5 = [(0, 1), (1, 2), (2, 3), (3, 4), (4, 0)]
+N5, MAXCUT_C5 = 5, 4                      # verified by brute force below
+
+assert max(cut_of([(v >> k) & 1 for k in range(N5)], C5)
+           for v in range(2 ** N5)) == MAXCUT_C5
+
+def qaoa_expected_cut(gammas, betas, edges=C5, n=N5):
+    """<C>: the average cut we'd get by sampling this QAOA circuit."""
+    qc = QuantumCircuit(n)
+    qc.h(range(n))
+    for g, b in zip(gammas, betas):
+        for (i, j) in edges:
+            qc.rzz(2 * g, i, j)
+        qc.rx(2 * b, range(n))
+    probs = Statevector(qc).probabilities()
+    return sum(pr * cut_of([(v >> k) & 1 for k in range(n)], edges)
+               for v, pr in enumerate(probs))
+
+def best_cut_at_depth(p, n_starts=8):
+    """Run the same classical optimizer from several fixed starts and keep the
+    best. Multi-start matters: this landscape has local optima, so a single run
+    can settle for a mediocre answer — exactly the difficulty Basecamp 5 warned
+    about with flat regions."""
+    rng = np.random.default_rng(7)                 # fixed seed: reproducible
+    best = -np.inf
+    for _ in range(n_starts):
+        x0 = rng.uniform(0, np.pi, 2 * p)
+        res = minimize(lambda x: -qaoa_expected_cut(x[:p], x[p:]),
+                       x0, method="COBYLA", options={"maxiter": 400})
+        best = max(best, -res.fun)
+    return best
+
+print(f"Random guessing:      <C> = {len(C5) / 2:.3f}   (ratio {len(C5) / 2 / MAXCUT_C5:.3f})")
+for p in (1, 2):
+    b = best_cut_at_depth(p)
+    print(f"QAOA depth p = {p}:    <C> = {b:.3f}   (ratio {b / MAXCUT_C5:.3f})")
+print(f"True maximum:         <C> = {MAXCUT_C5:.3f}   (ratio 1.000)")'''))
+cells.append(analysis(r"""**There it is — the "A" in QAOA.**
+
+At $p=1$ the best you can do on this graph is about $\langle C\rangle = 3.75$, an
+approximation ratio near **0.94**. That is a real, useful win over guessing (2.5),
+and it is genuinely short of the optimum. Add a second layer — which brings a
+*second pair of angles*, and that is what depth actually buys you — and the ratio
+climbs to essentially **1.000**.
+
+So the honest summary of what you built is:
+
+| | 4-ring (bipartite) | Triangle | 5-cycle |
+|---|---|---|---|
+| Max cut | 4 of 4 — every edge | **2 of 3** | **4 of 5** |
+| QAOA at $p=1$ | ratio 0.75 | ratio 1.00 | ratio 0.94 |
+| QAOA at $p=2$ | ratio 1.00 | ratio 1.00 | ratio 1.00 |
+| The lesson | the easy case | the *problem* is frustrated | the *algorithm* needs depth |
+
+And one more piece of honesty, because it's the thing people leave out: **more
+depth is not free.** Every layer is more gates, and on real hardware more gates
+means more noise. Choosing $p$ is a genuine engineering trade-off between a better
+answer and a circuit that still survives the machine — not a dial you simply turn
+up. Nobody has yet demonstrated a quantum advantage for Max-Cut on real hardware.
+
+You built the algorithm, you saw where it shines, and you saw where it doesn't.
+That last part is what makes you dangerous. **You've reached the summit.** 🏔️"""))
 
 # ----------------------------------------------------------------- analogy
 cells.append(analogy_callout(
@@ -312,7 +447,8 @@ cells.append(md(r"""## 🎓 Log your climb — claim the Summit code
 
 You solved a real NP-hard problem with a quantum algorithm you built from scratch:
 you scored the checkerboard cut at $\langle H_C\rangle = -4$ (**Task 1**) and let
-QAOA rediscover it, sampling `best` with a perfect approximation ratio (**Task 2**).
+QAOA rediscover it by sampling `best` (**Task 2**) — and then you went on to see what
+that ratio looks like on graphs that don't hand it to you.
 Run the cell below — it re-checks both here in this kernel and, if they pass, prints
 your final **completion code**.
 
@@ -328,10 +464,14 @@ cells.append(basecamp_footer(
         "You reached the summit. You framed **Max-Cut**, encoded it as a cost "
         "Hamiltonian $H_C=\\sum Z_iZ_j$, built the **QAOA ansatz** from a cost "
         "layer and a mixer layer, closed the **variational loop** with a classical "
-        "optimizer, and sampled a **maximum cut** — approximation ratio 1.0. Every "
-        "idea of the ascent — superposition, gates, entanglement, energy, the "
-        "variational principle — met in one working quantum algorithm that *you "
-        "assembled*. Congratulations, climber. 🏔️"
+        "optimizer, and sampled a **maximum cut**. Then you did the thing most "
+        "courses skip: you took the same algorithm to a **frustrated triangle** "
+        "(where the best possible answer still leaves an edge uncut) and a "
+        "**5-cycle** (where $p=1$ genuinely falls short at ratio 0.94, and depth "
+        "is what closes the gap) — so you know what *Approximate* costs, not just "
+        "what it promises. Every idea of the ascent — superposition, gates, "
+        "entanglement, energy, the variational principle — met in one working "
+        "quantum algorithm that *you assembled*. Congratulations, climber. 🏔️"
     ),
     quiz_url="https://quantum-ascent-77617.web.app/module.html?id=06#quiz",
     next_label=("You've topped out the main ascent! Revisit any basecamp to "
