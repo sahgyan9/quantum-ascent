@@ -65,6 +65,7 @@
 <footer>Built for the WISER Education Challenge 2026 · <a href="ascent.html">Back to the Ascent</a></footer>
 
 <script src="assets/js/progress.js"></script>
+<script src="assets/js/firebase.js"></script>
 <script src="assets/js/ledger.js"></script>
 <script src="assets/js/confetti.js"></script>
 <script src="assets/js/glossary.js"></script>
@@ -88,9 +89,10 @@
      phrased ("0 and 1 at the same time", "tries all answers at once"). We want
      to know whether the course dislodges those specific beliefs, so we have to
      offer them attractively.
-   - Everything is stored in localStorage. No account, no upload. An educator
-     collects results by asking learners to click Export — see
-     docs/educator_guide.md.
+   - Everything is stored in localStorage; no account is required. If the
+     learner has opted into Google sign-in, it is also mirrored to their own
+     Firestore document. An educator collects results by asking learners to
+     click Export — see docs/educator_guide.md.
    - The post-test is paired with the Prediction Ledger's calibration report,
      because "what you know" and "how well you can judge what you know" are
      different and both worth seeing.
@@ -124,7 +126,7 @@ const save = d => localStorage.setItem(KEY, JSON.stringify(d));
     const done = Object.values(Progress.get().modules).filter(m => m.completed).length;
     el.innerHTML = `
       <h1>📊 Concept Diagnostic</h1>
-      <p class="muted">Ten questions · about 8 minutes · nothing leaves your browser</p>
+      <p class="muted">Ten questions · about 8 minutes · stored in your browser</p>
       <p style="font-size:16px;max-width:70ch">${bank.note}</p>
 
       ${mode === "pre" ? `

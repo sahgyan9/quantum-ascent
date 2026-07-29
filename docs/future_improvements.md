@@ -20,7 +20,13 @@ honest about the line between "built" and "planned."
 
 ## 2. LMS Integration & Automated Grading
 * **LTI (Learning Tools Interoperability) Compliance:** Implement LTI standards to allow the platform to plug directly into Canvas, Blackboard, or Google Classroom. Today the course embeds as an `<iframe>` and exports progress as JSON (see `docs/educator_guide.md`) — enough to *use* in a class, not enough to sync a gradebook.
-* **Instructor Gradebook Sync:** Replace the browser-based `localStorage` progress tracking with a lightweight backend database (e.g. Firebase Firestore). This is a deliberate trade we made *against* for the submission: no backend means no accounts, no privacy surface, and a resource that still works in ten years.
+* **Instructor Gradebook Sync:** *Half shipped.* Learners can now opt into Google sign-in, which
+  mirrors their progress, prediction ledger and assessment scores to Firestore so a cleared cache
+  or a new laptop no longer loses a climb. What does **not** exist is the instructor half: there
+  is no roster, no class view, and no grade passback. Building that means deciding who is allowed
+  to read a learner's record, which is a policy question before it is a technical one — so it is
+  deliberately still open. Note the design constraint we kept: sign-in is a *mirror*, never the
+  source of truth, so the course still works fully signed out and offline.
 * **Autograding Pipelines:** Set up GitHub Actions or a basic backend sandbox runner to automatically run the notebook tests and grade submissions when students upload their notebook `.ipynb` files.
 
 ## 3. Adaptive Pedagogical Scaffolding

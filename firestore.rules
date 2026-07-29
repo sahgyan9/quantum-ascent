@@ -1,0 +1,46 @@
+rules_version = '2';
+
+/* Quantum Ascent — Firestore security rules.
+   =========================================
+
+   The threat model here is small but real: this is an education site with no
+   payments and no sensitive content, but a learner's progress, prediction
+   history and assessment scores are still *theirs*, and a classmate must not
+   be able to read them.
+
+   The whole policy is one sentence: a signed-in user may read and write
+   exactly one document — their own. There is no path that lets any client
+   list users, read another user's document, or write to one.
+
+   Note what is NOT here: no public read, not even for aggregate stats. If we
+   ever want class-level analytics, it has to go through an admin-side export,
+   not through opening these rules.
+*/
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /users/{uid} {
+      // Read/update only your own document.
+      allow read: if request.auth != null && request.auth.uid == uid;
+
+      // Writes must be your own document AND must look like our payload.
+      // Capping the size stops a signed-in user turning our free-tier project
+      // into their personal file host.
+      allow write: if request.auth != null
+                   && request.auth.uid == uid
+                   && request.resource.data.keys().hasOnly(
+                        ['progress', 'ledger', 'assessment', 'profile', 'updatedAt', 'schema'])
+                   && request.resource.size() < 100000;
+
+      // No subcollections are used; deny them explicitly rather than by omission.
+      match /{document=**} {
+        allow read, write: if false;
+      }
+    }
+
+    // Everything else is closed. New collections must opt in deliberately.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

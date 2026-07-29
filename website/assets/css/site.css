@@ -169,7 +169,13 @@ body { padding-top: 84px; }
   display: flex;
   align-items: center;
   gap: 6px;
+  /* The nav is a fixed-height pill, and adding the sign-in button squeezed
+     this one until "100 XP · 1/6" wrapped onto three lines and burst out of
+     it. Both chips must refuse to shrink and refuse to wrap. */
+  white-space: nowrap;
+  flex: none;
 }
+.nav-links > .gsi-btn { flex: none; white-space: nowrap; }
 
 /* ── Hamburger button (hidden on desktop) ── */
 .nav-burger {

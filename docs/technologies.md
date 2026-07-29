@@ -75,6 +75,13 @@ This is what makes "it works on my machine" a guarantee rather than a hope.
   identically in Python (`q2q/progress.py`) and JavaScript (`progress.js`) and cross-checked
   by a test, lets a finished notebook mint a code the website verifies **offline** — no
   server, no accounts.
+- **Firebase Auth + Firestore — optional, and genuinely optional.** A learner may sign in
+  with Google to back up their climb across devices. This is a *progressive enhancement*:
+  `localStorage` stays the source of truth, the cloud is only ever a mirror, and every page
+  works identically signed out, offline, or with the Firebase CDN blocked. Security is a
+  single rule — a signed-in user can read and write exactly one document, their own
+  (`firestore.rules`). The web API key in `assets/js/firebase.js` is public by design; it
+  identifies the project and authorises nothing.
 
 ## Testing & reproducibility
 
@@ -95,7 +102,7 @@ This is what makes "it works on my machine" a guarantee rather than a hope.
 
 ## What we deliberately did **not** use
 
-No React/Vue/Svelte, no bundler, no database, no backend, no analytics, no paid APIs, no
+No React/Vue/Svelte, no bundler, no analytics, no paid APIs, no
 LLM at runtime. Every one of those would add a dependency, a failure mode, or a barrier to
 reproduction. The Analogy Studio generates a *prompt* for the learner to paste into whatever
 LLM they already use — the course itself never calls a model, so it costs nothing to run and

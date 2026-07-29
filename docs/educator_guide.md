@@ -1,7 +1,7 @@
 # Educator Guide — adopting Quantum Ascent
 
-**Time to first class: about 15 minutes.** Nothing to install, no accounts to create, no server
-to run, no data leaving your students' browsers.
+**Time to first class: about 15 minutes.** Nothing to install, no accounts required, no server
+to run, and no student data leaves the browser unless a student chooses to sign in.
 
 This guide is deliberately short and deliberately honest about what the platform does *not* do
 (see [What this is not](#what-this-is-not)).
@@ -19,6 +19,11 @@ https://quantum-ascent-77617.web.app
 That's it. The site works on a phone, a Chromebook, or a locked-down lab machine. Progress, XP
 and badges live in each learner's own browser (`localStorage`) — there is no sign-up, so there
 is no roster to manage and no personal data to protect.
+
+Learners *may* optionally sign in with Google to back up their climb across devices. If they
+do, their progress, prediction ledger, assessment scores, name and email are stored in this
+course's Firebase project, readable only by them. Nobody has to: the entire course works
+signed out.
 
 ## 2. Choosing a track
 
@@ -90,7 +95,7 @@ proof of identity — treat it as a completion checkbox, not an exam.
 
 **Progress export.** Any learner can click *Export progress* in the site footer to download a
 small JSON file with their XP, badges, quiz scores and assessment deltas. Collecting those
-files is the low-tech gradebook: no backend, no privacy exposure, and it works offline.
+files is the low-tech gradebook: it needs no backend of yours, and it works offline.
 
 ```jsonc
 // quantum-ascent-progress.json — what a student hands in
@@ -135,8 +140,10 @@ to show students what those claims cost.
 
 Said plainly so you can plan around it:
 
-- **No LTI, no gradebook sync.** Progress is per-browser. Clearing site data loses it. The
-  JSON export in §5 is the workaround, and it is a real workaround, not a polished one.
+- **No LTI.** There is no Canvas/Blackboard grade passback. Optional Google sign-in backs a
+  learner's progress up to Firestore so it survives a cleared cache or a new device, but there
+  is still no instructor-facing gradebook view — collect the JSON export in §5, or ask signed-in
+  learners for their completion codes.
 - **No identity.** Completion codes prove a task passed, not *who* passed it. Do not use them
   as summative assessment for credit.
 - **English only** at present.
