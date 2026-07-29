@@ -23,14 +23,24 @@ service cloud.firestore {
       // Read/update only your own document.
       allow read: if request.auth != null && request.auth.uid == uid;
 
-      // Writes must be your own document AND must look like our payload.
-      // Capping the size stops a signed-in user turning our free-tier project
-      // into their personal file host.
-      allow write: if request.auth != null
+      // Creates and updates must be your own document AND must look like our
+      // payload. Capping the size stops a signed-in user turning our free-tier
+      // project into their personal file host.
+      allow create, update: if request.auth != null
                    && request.auth.uid == uid
                    && request.resource.data.keys().hasOnly(
                         ['progress', 'ledger', 'assessment', 'profile', 'updatedAt', 'schema'])
                    && request.resource.size() < 100000;
+
+      // Delete is listed SEPARATELY and deliberately.
+      //
+      // Writing `allow write` for all three verbs looks tidier and is wrong:
+      // on a delete there is no incoming document, so `request.resource` is
+      // null and the key-allowlist check above evaluates false. The effect is
+      // that a learner can create their record but can never remove it, which
+      // is both a bad look and the wrong default for personal data. Anyone
+      // who signs in must be able to take their data back out again.
+      allow delete: if request.auth != null && request.auth.uid == uid;
 
       // No subcollections are used; deny them explicitly rather than by omission.
       match /{document=**} {

@@ -171,7 +171,10 @@
       return;
     }
     if (!confirmSignIn()) return;
-    state.signIn();
+    /* ?authmode=redirect forces the redirect path — used for testing, and a
+       usable escape hatch for anyone whose browser eats the popup silently. */
+    var force = new URLSearchParams(location.search).get("authmode") === "redirect";
+    state.signIn(force);
   }
 
   /* ---------------------------------------------------------- the sync */
@@ -191,15 +194,37 @@
       state.auth = auth;
       state.db = db;
 
-      state.signIn = function () {
+      /* A returning redirect lands here on page load. Must run before anything
+         else touches auth state, or the sign-in silently evaporates. */
+      authMod.getRedirectResult(auth).catch(function (e) {
+        if (e && e.code !== "auth/no-auth-event")
+          toast("Sign-in did not complete: " + e.message, true);
+      });
+
+      /* Popup first (it keeps the learner's place on the page), redirect as the
+         fallback. The fallback is not an edge case: mobile browsers and
+         hardened desktop settings block popups routinely, and without this a
+         whole class of learners simply cannot sign in — with no useful error,
+         because a blocked popup looks like nothing happening. */
+      function redirectSignIn(auth, provider) {
+        toast("Taking you to Google to sign in…");
+        return authMod.signInWithRedirect(auth, provider);
+      }
+
+      state.signIn = function (forceRedirect) {
         state.busy = true; paint();
         var provider = new authMod.GoogleAuthProvider();
+        if (forceRedirect) return redirectSignIn(auth, provider);
         authMod.signInWithPopup(auth, provider).catch(function (e) {
+          var code = e && e.code;
+          if (code === "auth/popup-closed-by-user" || code === "auth/cancelled-popup-request") {
+            state.busy = false; paint(); return;                     // they chose to; say nothing
+          }
+          if (code === "auth/popup-blocked" || code === "auth/operation-not-supported-in-this-environment") {
+            return redirectSignIn(auth, provider);                   // recover, don't scold
+          }
           state.busy = false; paint();
-          if (e && e.code === "auth/popup-closed-by-user") return;   // silent: they chose to
-          if (e && e.code === "auth/popup-blocked") {
-            toast("Your browser blocked the sign-in popup — allow popups for this site and try again.", true);
-          } else if (e && e.code === "auth/unauthorized-domain") {
+          if (code === "auth/unauthorized-domain") {
             toast("This domain is not authorised for sign-in yet.", true);
           } else {
             toast("Sign-in failed: " + ((e && e.message) || "unknown error"), true);
