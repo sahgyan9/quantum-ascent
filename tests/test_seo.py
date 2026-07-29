@@ -22,7 +22,15 @@ import pytest
 
 REPO = Path(__file__).resolve().parent.parent
 WEB = REPO / "website"
-PAGES = sorted(WEB.glob("*.html"))
+# Google Search Console drops a verification token at the site root. It is a
+# plain-text file that happens to end in .html and it must be served EXACTLY as
+# Google generated it — adding a <title> or a nav to it breaks verification. It
+# is a token, not a page, so it is excluded from every page-level check.
+def _is_content_page(p):
+    return not p.name.startswith("google")
+
+
+PAGES = sorted(p for p in WEB.glob("*.html") if _is_content_page(p))
 SITE = "https://quantum-ascent-77617.web.app"
 
 # Query-string pages: one static file serving many logical URLs.

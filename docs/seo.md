@@ -31,9 +31,21 @@ not a meta-tag problem. No amount of on-page work fixes it.
 - **Long-tail wins.** Descriptive queries where a small, genuinely good page can beat a big
   vague one.
 
-### Queries actually worth targeting
+### Primary target: "quantum ascent wiser"
 
-These are what the titles and descriptions are written for:
+This is the one to win, and it is winnable. It is specific, essentially
+uncontested, and it is what someone looking for *this* project actually types —
+a judge, a WISER participant, or anyone who heard the name in that context.
+
+Both terms now appear where they count: the home page `<title>`, the meta
+description, a hero kicker above the headline (not just the footer, where WISER
+used to sit alone), the `WebSite` `alternateName` list, and the `Course`
+schema's `keywords` and `isPartOf`. That combination is what teaches Google that
+this Quantum Ascent is the WISER one.
+
+### Secondary queries worth targeting
+
+These are what the other titles and descriptions are written for:
 
 - interactive quantum computing course · learn quantum computing by doing
 - quantum computing myths · "qubit 0 and 1 at the same time" wrong
@@ -95,11 +107,14 @@ head script that rewrites `canonical` and `og:url` from the current `?id=` befor
 
 1. Go to [search.google.com/search-console](https://search.google.com/search-console) and add a
    **URL prefix** property for `https://quantum-ascent-77617.web.app/`.
-2. Verify. The easiest route for Firebase Hosting is the **HTML file** method: download the
-   `google*.html` file Google gives you, drop it in `website/`, and run
-   `firebase deploy --only hosting`. (The HTML-tag method also works — but do not paste the tag
-   into a page by hand, because `tools/build_seo.py` will overwrite the managed block. Add it to
-   the generator instead.)
+2. Verify. **Done** — `website/google207de3fb46e51bdf.html` is deployed and live.
+
+   The file must sit in `website/` (the Firebase Hosting root), not the repo root, or it is
+   never served. It must also be returned **byte-for-byte as Google generated it**, so it is
+   excluded from every page-level test: adding a `<title>` or the shared nav to it would break
+   verification. If you ever re-verify with the HTML-*tag* method instead, add the tag to
+   `tools/build_seo.py` rather than pasting it into a page — the generator overwrites the
+   managed block.
 3. Submit the sitemap: **Sitemaps → `sitemap.xml`**.
 4. Use **URL Inspection → Request indexing** on `/` and `/myths.html` to prime the crawl.
 5. Check **Rich results** after a few days to confirm the Course and FAQ markup validated.

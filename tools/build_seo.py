@@ -49,10 +49,14 @@ MODULE_IDS = [f"{i:02d}" for i in range(1, 7)]
 # title: <= 65 chars, brand included, most distinctive words first.
 # desc:  70-165 chars, written to be *read* in a result, not stuffed.
 PAGES = {
+    # "quantum ascent wiser" is the primary target: specific, low-competition,
+    # and what someone looking for *this* project actually types. Both terms
+    # therefore appear in the title, the description, the hero kicker and the
+    # schema — not just in the footer, where WISER used to live alone.
     "index.html": dict(
-        title="Quantum Ascent — Learn Quantum Computing by Climbing",
-        desc=("A free, interactive quantum computing course. Build real circuits in your "
-              "browser — no install, no account — from your first qubit to QAOA."),
+        title="Quantum Ascent — Learn Quantum Computing | WISER Challenge",
+        desc=("A free, interactive quantum computing course built for the WISER Education "
+              "Challenge 2026. Build real circuits in your browser — no install, no account."),
         priority="1.0", changefreq="weekly", crumb=None,
     ),
     "ascent.html": dict(
@@ -132,7 +136,13 @@ def website_ld():
         "@context": "https://schema.org",
         "@type": "WebSite",
         "name": "Quantum Ascent",
-        "alternateName": "Quantum Ascent — quantum computing course",
+        # Alternate names are how a search engine learns which "Quantum Ascent"
+        # this is — the phrase is shared with several unrelated businesses.
+        "alternateName": [
+            "Quantum Ascent — quantum computing course",
+            "Quantum Ascent WISER",
+            "Quantum Ascent WISER Education Challenge",
+        ],
         "url": f"{SITE}/",
         "description": PAGES["index.html"]["desc"],
         "inLanguage": "en",
@@ -155,10 +165,23 @@ def course_ld():
             "superposition, gates and circuits, entanglement, Hamiltonians and energy, the "
             "variational principle, and a QAOA Max-Cut capstone. Every basecamp can be "
             "completed entirely in the browser against an exact statevector simulator, or in "
-            "Jupyter/Colab with real Qiskit."),
+            "Jupyter/Colab with real Qiskit. Built for the WISER Education Challenge 2026."),
         "url": f"{SITE}/",
         "inLanguage": "en",
         "isAccessibleForFree": True,
+        "keywords": (
+            "quantum computing course, WISER Education Challenge, quantum computing for "
+            "beginners, interactive quantum computing, qubit simulator, Qiskit tutorial, "
+            "QAOA, Max-Cut, superposition, entanglement"),
+        "about": [
+            {"@type": "Thing", "name": "Quantum computing"},
+            {"@type": "Thing", "name": "Quantum algorithms"},
+        ],
+        "isPartOf": {
+            "@type": "CreativeWork",
+            "name": "WISER Education Challenge 2026",
+            "url": "https://www.thewiser.org/summer-program-2026/wisereducationchallenge",
+        },
         "teaches": [
             "Qubits and superposition", "The Born rule", "Quantum gates and circuits",
             "Entanglement and no-signalling", "Hamiltonians and expectation values",
