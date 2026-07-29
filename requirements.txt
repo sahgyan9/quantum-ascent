@@ -13,3 +13,4 @@ numpy
 scipy
 matplotlib
 pylatexenc   # required by Qiskit's matplotlib circuit drawer
+Pillow       # generates the social-share card and favicons (tools/make_brand_assets.py)

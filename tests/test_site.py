@@ -42,7 +42,14 @@ def test_internal_links_resolve(page):
         target = unquote(u.path)
         if not target:
             continue
-        dest = (page.parent / target).resolve()
+        # A leading "/" is root-absolute, not page-relative. The favicon and
+        # touch-icon links use that form deliberately: they must resolve
+        # identically from /index.html and from /module.html?id=03, and the
+        # site is always served at the domain root.
+        if target.startswith("/"):
+            dest = (WEB / target.lstrip("/")).resolve()
+        else:
+            dest = (page.parent / target).resolve()
         if not dest.exists():
             missing.append(raw)
     assert not missing, f"{page.name} links to missing files: {missing}"

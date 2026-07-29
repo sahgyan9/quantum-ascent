@@ -1,0 +1,10 @@
+# Quantum Ascent — https://github.com/sahgyan9/quantum-ascent
+# Everything here is free educational content; crawl all of it.
+
+User-agent: *
+Allow: /
+
+# Query-string variants of the two templated pages are real, distinct lessons
+# and are listed explicitly in the sitemap. Nothing is disallowed.
+
+Sitemap: https://quantum-ascent-77617.web.app/sitemap.xml

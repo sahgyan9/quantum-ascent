@@ -9,6 +9,24 @@
       {
         "source": "**/*.@(js|css|json)",
         "headers": [{ "key": "Cache-Control", "value": "max-age=3600" }]
+      },
+      {
+        "comment": "Crawl files must be re-read promptly; an hour-stale sitemap delays every new page.",
+        "source": "/@(robots.txt|sitemap.xml)",
+        "headers": [{ "key": "Cache-Control", "value": "public, max-age=600" }]
+      },
+      {
+        "comment": "The share card is content-stable and fetched by every social scraper.",
+        "source": "**/*.@(png|ico|svg|jpg|webp)",
+        "headers": [{ "key": "Cache-Control", "value": "public, max-age=86400" }]
+      },
+      {
+        "comment": "Baseline security headers. Deliberately NO X-Frame-Options: being embeddable in Canvas, Moodle and slide decks is a documented feature of this site (docs/educator_guide.md), so framing must stay open. There is nothing to clickjack - no accounts act on a user's behalf, and progress is per-browser.",
+        "source": "**",
+        "headers": [
+          { "key": "X-Content-Type-Options", "value": "nosniff" },
+          { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+        ]
       }
     ]
   }

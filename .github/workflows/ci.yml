@@ -18,7 +18,9 @@ jobs:
           cache: pip
       - name: Install pinned dependencies
         run: pip install -r requirements.txt
-      - name: Run test suite (checkers, notebook execution, widget smoke)
+      - name: Verify generated SEO tags are in sync with tools/build_seo.py
+        run: python tools/build_seo.py --check
+      - name: Run test suite (checkers, notebook execution, widget smoke, SEO)
         run: pytest -v
 
   latest-sdk-canary:
