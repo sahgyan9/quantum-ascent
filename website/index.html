@@ -162,7 +162,7 @@
     <div class="hero-visual">
       <div class="hero-visual-card coin-card">
         <div class="coin-caption" id="coin-caption">A qubit is like a <b>spinning coin</b> — undetermined until you look.</div>
-        <canvas id="hero-coin" width="300" height="300" role="img"
+        <canvas id="hero-coin" width="300" height="260" role="img"
                 aria-label="A spinning quantum coin you can measure"></canvas>
         <div class="coin-live" id="coin-live" aria-live="polite">…spinning — undetermined…</div>
         <button class="btn" id="slap-btn">👋 Slap it! <span style="opacity:.85;font-weight:500">— measure</span></button>
@@ -318,7 +318,11 @@
   const cv = document.getElementById("hero-coin");
   if (!cv) return;
   const ctx = cv.getContext("2d");
-  const C = 150, R = 88;
+  /* The coin used to be R=88 inside a 300×300 canvas, which left 62px of dead
+     air above and below it and made the hero card read as mostly empty. It is
+     now sized to its box: a taller coin in a shorter canvas. CY leaves a
+     little more room above than below, for the floating "?". */
+  const W = 300, H = 260, CX = 150, CY = 136, R = 100;
   const HEADS = { fill: "#22d3ee", edge: "#0e7490", ink: "#052b36", name: "Heads", digit: "0" };
   const TAILS = { fill: "#8b5cf6", edge: "#5b21b6", ink: "#f3edff", name: "Tails", digit: "1" };
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -357,7 +361,10 @@
     S.mode = "done"; S.a = S.to;
     const f = S.outcome === 0 ? HEADS : TAILS;
     btn.disabled = false; btn.innerHTML = "🌀 Spin again";
-    live.innerHTML = `<b style="color:${f.fill}">${f.name}! (${f.digit})</b>`;
+    /* f.edge, not f.fill: the fill is a light cyan chosen to look good as a
+       coin face, and as text on white paper it is barely legible. The edge
+       colour is the same hue, dark enough to read. */
+    live.innerHTML = `<b style="color:${f.edge}">${f.name}! (${f.digit})</b>`;
     live.classList.remove("pop"); void live.offsetWidth; live.classList.add("pop");
     tally.innerHTML = `Heads&nbsp;(0): <b>${S.counts[0]}</b> &nbsp;·&nbsp; Tails&nbsp;(1): <b>${S.counts[1]}</b>`;
 
@@ -380,12 +387,12 @@
   }
 
   function draw() {
-    ctx.clearRect(0, 0, 300, 300);
+    ctx.clearRect(0, 0, W, H);
     // soft glow
-    const glow = ctx.createRadialGradient(C, C, 10, C, C, R + 40);
+    const glow = ctx.createRadialGradient(CX, CY, 10, CX, CY, R + 40);
     glow.addColorStop(0, "rgba(34,211,238,0.10)");
     glow.addColorStop(1, "rgba(11,16,32,0)");
-    ctx.fillStyle = glow; ctx.fillRect(0, 0, 300, 300);
+    ctx.fillStyle = glow; ctx.fillRect(0, 0, W, H);
 
     if (S.mode === "spin") S.a += S.speed;
     else if (S.mode === "land") {
@@ -399,28 +406,28 @@
     const face = cos >= 0 ? HEADS : TAILS;
 
     // coin body
-    const grad = ctx.createLinearGradient(C - rx, C - R, C + rx, C + R);
+    const grad = ctx.createLinearGradient(CX - rx, CY - R, CX + rx, CY + R);
     grad.addColorStop(0, face.fill);
     grad.addColorStop(1, face.edge);
     ctx.fillStyle = grad;
     ctx.strokeStyle = face.edge; ctx.lineWidth = 4;
-    ctx.beginPath(); ctx.ellipse(C, C, rx, R, 0, 0, 7); ctx.fill(); ctx.stroke();
+    ctx.beginPath(); ctx.ellipse(CX, CY, rx, R, 0, 0, 7); ctx.fill(); ctx.stroke();
 
     if (rx > 16) {
       // digit, squished with the perspective
-      ctx.save(); ctx.translate(C, C); ctx.scale(rx / R, 1);
+      ctx.save(); ctx.translate(CX, CY); ctx.scale(rx / R, 1);
       ctx.fillStyle = face.ink;
-      ctx.font = "700 92px 'Segoe UI', system-ui, sans-serif";
+      ctx.font = "700 104px 'Segoe UI', system-ui, sans-serif";
       ctx.textAlign = "center"; ctx.textBaseline = "middle";
       ctx.globalAlpha = S.mode === "spin" ? 0.55 : 1;
       ctx.fillText(face.digit, 0, 4);
       ctx.restore(); ctx.globalAlpha = 1;
     }
     if (S.mode === "spin") {   // "?" hint that it's undetermined
-      ctx.fillStyle = "rgba(230,236,255,0.22)";
-      ctx.font = "700 40px 'Segoe UI', system-ui, sans-serif";
+      ctx.fillStyle = "rgba(107,104,96,0.30)";
+      ctx.font = "700 30px 'Segoe UI', system-ui, sans-serif";
       ctx.textAlign = "center"; ctx.textBaseline = "middle";
-      ctx.fillText("?", C, C - R - 22);
+      ctx.fillText("?", CX, CY - R - 20);
     }
     requestAnimationFrame(draw);
   }

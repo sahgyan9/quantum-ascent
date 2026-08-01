@@ -413,6 +413,13 @@ body:has(#nav-menu:target) .nav-dismiss {
 }
 .coin-tally b { color: var(--text); }
 .coin-cta { min-height: 20px; }
+
+/* Both of these are empty until the first slap, and reserving their height
+   (plus two flex gaps) left ~64px of blank card foot on every first visit.
+   Collapse them until they have something to say. .coin-live keeps its
+   min-height, because its text changes on every slap and must not jolt. */
+.coin-tally:empty,
+.coin-cta:empty { display: none; }
 .coin-cta a {
   font-size: 14px;
   font-weight: 600;
