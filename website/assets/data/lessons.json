@@ -1,0 +1,446 @@
+{
+  "_comment": [
+    "Climb Notes — the browser track's narrative spine.",
+    "",
+    "The browser track used to set tasks without ever teaching the concepts they",
+    "need: the only place the Hadamard gate was explained was hint rung 2 of task",
+    "01-1, which a learner reaches only by declaring themselves stuck. That",
+    "inverts the hint ladder (recovery became first delivery) and breaks style",
+    "guide rules 6 and 7 — narrative-first, and no change of teacher between",
+    "surfaces.",
+    "",
+    "Each beat is derived from the named notebook section so the two tracks tell",
+    "the same story in the same voice. tools/build_lessons.py checks that the",
+    "derivation still holds and that no task requires a concept no preceding beat",
+    "has taught; tests/test_lessons.py fails the build if either breaks.",
+    "",
+    "Formulas are written in Unicode, not LaTeX, on purpose: lab.html loads no",
+    "CDN and promises to keep working with the network unplugged. KaTeX lives on",
+    "module.html only."
+  ],
+
+  "01": {
+    "_requires_note": "The contract style guide rule 10 makes testable: what each task assumes the learner already knows. tools/build_lessons.py fails if any of these is not in the `teaches` list of a beat rendered BEFORE that task.",
+    "requires": {
+      "01-1": ["undetermined", "born-rule", "hadamard", "shot-noise"],
+      "01-2": ["half-angle", "ry-gate", "radians"]
+    },
+    "beats": [
+      {
+        "id": "01-a",
+        "before": "01-1",
+        "heading": "First, a coin that hasn't landed",
+        "minutes": 3,
+        "source": "notebooks/01_qubits_and_superposition.ipynb §1.1",
+        "teaches": ["undetermined", "measurement", "shot-noise", "normalisation"],
+        "anchors": ["spinning", "undetermined", "add up to 1"],
+        "reassure": {
+          "position": "before",
+          "icon": "🧭",
+          "title": "New to all of this?",
+          "html": "<b>Everybody</b> finds this strange at first — that is the subject being genuinely strange, not you being slow. Every learner who has climbed this mountain started exactly where you are now. We build each idea slowly, step by step, and nothing further up assumes you got it instantly. Let's take it one step at a time."
+        },
+        "html": "<p>A classical <b>bit</b> is a light switch: <b>0</b> (off) or <b>1</b> (on). A coin lying on the table: heads or tails. There is no middle ground — and nothing to wonder about, because the answer already exists and you can go and look at it.</p><p>Now spin that coin on the table. While it is spinning, which face is it showing?</p><p>The honest answer is <b>none yet</b> — and this one distinction is what the whole course rests on. The spinning coin's face is not <i>hidden from you</i>; it is <b>not yet a fact</b>. <i>Unknown</i> means the answer exists and you lack it. <b>Undetermined</b> means there is no answer to lack. A qubit is undetermined.</p><p>This is also why you will never read <i>“a qubit is 0 and 1 at the same time”</i> on this site. A spinning coin is not showing you both faces — it is showing you neither. Slap your hand down and it commits to one. That slap is a <b>measurement</b>.</p>",
+        "math": {
+          "summary": "One rule to put in your pocket: everything adds to 1",
+          "html": "<p>For a fair coin, P(heads) = ½ and P(tails) = ½ — and ½ + ½ = <b>1</b>.</p><p>Of course it does: the coin has to land on something. Every probability list in this course, all the way to the Summit, adds to exactly 1. When one goes up, another comes down.</p><p>It is the cheapest sanity check you own. If your probabilities do not add to 1, you have made an arithmetic mistake, not a discovery.</p>"
+        },
+        "widget": {
+          "name": "coin-spinner",
+          "label": "Spinning Coin — spin it, then slap it",
+          "note": "Slap it a few times one at a time: you will not be able to call any individual result, and neither can anyone else. Then <b>predict the shape of the histogram before you press Slap ×100</b>. Single outcomes are random; the statistics are not — and that gap is the whole reason quantum computing works at all."
+        }
+      },
+
+      {
+        "id": "01-b",
+        "before": "01-1",
+        "heading": "Amplitudes, and the gate that starts the spin",
+        "minutes": 4,
+        "source": "notebooks/01_qubits_and_superposition.ipynb §1.2–§1.3",
+        "teaches": ["amplitude", "born-rule", "hadamard"],
+        "anchors": ["Born rule", "Hadamard", "equator", "pen", "catches everyone"],
+        "reassure": {
+          "position": "after",
+          "icon": "✍️",
+          "title": "Study tip",
+          "html": "If the maths ever feels intimidating, the best way to grab it is to grab a physical pen and write it down on paper as we go. Seriously — it works. Copy out |ψ⟩ = α|0⟩ + β|1⟩, put 0.707 in for both, and square them yourself.<br><br>And if you mix up amplitudes with probabilities along the way, you are in excellent company — <b>that trap catches everyone once</b>. Getting caught by it is how most people finally learn the difference."
+        },
+        "html": "<p>Every qubit is <b>born at |0⟩</b> — flat on the table, heads up, P(0) = 100%. A real quantum computer will not accept a state as input: you are handed |0⟩, and you move it with <b>gates</b>.</p><p>Underneath, a quantum state is not written as probabilities. It is written as <b>amplitudes</b> — one number per outcome:</p><p class=\"beat-eq\">|ψ⟩ = α|0⟩ + β|1⟩</p><p>and the probability of each outcome is its amplitude <b>squared</b>:</p><p class=\"beat-eq\">P(0) = α²    P(1) = β²</p><p>That squaring step is the <b>Born rule</b>, and it is the most reused idea in this course. (Amplitudes are allowed to go negative, which is what makes interference possible in Basecamp 2 — probabilities never can. This course keeps every amplitude real and non-negative, so you will never meet a complex number.)</p><p>Which brings us to the most famous gate of all: <b>H</b>, the <b>Hadamard</b>. It takes a coin lying flat and sets it spinning — |0⟩ becomes a perfectly fair 50/50. In amplitude terms it sets both α and β to 1/√2 ≈ <b>0.707</b>, and 0.707² = <b>0.5</b>. There is your fair coin, and the Born rule did the work.</p><p><b>Task 1 is exactly that</b>: one gate, from certainty to a genuine 50/50.</p>",
+        "math": {
+          "summary": "Why 1/√2, and not ½?",
+          "html": "<p>The tempting move is to write both amplitudes as ½, since you want two outcomes at 50% each. But amplitudes are not probabilities — they are the numbers you <i>square</i> to get probabilities.</p><p>If both amplitudes were ½, then P(0) = ¼ and P(1) = ¼, and your probabilities would add to ½ instead of 1. The coin would land on nothing half the time.</p><p>What has to add to 1 is the <b>squares</b>. So you need α² + β² = 1 with α = β, which gives α² = ½, so α = 1/√2 ≈ 0.707. Squaring then undoes the square root and hands you back exactly 0.5.</p>"
+        }
+      },
+
+      {
+        "id": "01-c",
+        "before": "01-2",
+        "heading": "A globe for your qubit — and the half-angle everyone trips on",
+        "minutes": 4,
+        "source": "notebooks/01_qubits_and_superposition.ipynb §1.2, §1.4",
+        "teaches": ["bloch-sphere", "theta", "half-angle", "ry-gate", "radians"],
+        "anchors": ["Bloch sphere", "cos", "sin", "radians", "deep breath"],
+        "reassure": {
+          "position": "before",
+          "icon": "📐",
+          "title": "Don't worry about the trigonometry!",
+          "html": "If the formulas just below look scary, take a deep breath. We are only describing the <b>tilt of an arrow</b> using basic angles — and every formula gets sanity-checked against something you have already watched happen with your own eyes. You are not expected to derive any of it.<br><br>And if you slip on the half-angle, know that you are in good company: forgetting to halve θ is <b>the single most common stumbling block in this basecamp</b>. It catches nearly everyone, which is exactly why we are flagging it <i>before</i> you meet it rather than after."
+        },
+        "html": "<p>H hands you one specific state: the fair coin. But the real point of a qubit is that <b>you choose the bias</b> — 75/25, 90/10, whatever you like. For that you need a dial, and to have a dial you first need a picture.</p><p>Picture a globe. The <b>north pole</b> is “definitely 0”. The <b>south pole</b> is “definitely 1”. A qubit state is an arrow from the centre out to the surface, and the tilt of that arrow is its bias. The globe is called the <b>Bloch sphere</b>, and the tilt angle has a name: <b>θ</b> (theta).</p><ul><li>Arrow straight <b>up</b> (θ = 0°) → every measurement gives 0. That is a classical bit.</li><li>Arrow on the <b>equator</b> (θ = 90°) → the fair coin. This is where H put you.</li><li>Arrow <b>tilted</b> anywhere between → any bias you want.</li></ul><p>The tilt sets the probabilities by this rule — and mind the <b>θ/2</b>, because it is the most common slip in this basecamp:</p><p class=\"beat-eq\">P(0) = cos²(θ/2)    P(1) = sin²(θ/2)</p><p>The gate that sets the tilt directly is <b>RY(θ)</b> — your bias dial. One practical note: Qiskit thinks in <b>radians</b> (180° = π) while most people think in degrees, so the lab's angle slider shows you both at once.</p>",
+        "math": {
+          "summary": "Where the θ/2 comes from — and how to run the rule backwards",
+          "html": "<p>Sanity-check the rule against the two cases you have already watched happen:</p><p><b>North pole, θ = 0°.</b> cos(0°) = 1 and sin(0°) = 0, so P(0) = 1² = 1 and P(1) = 0² = 0. Always 0. ✔</p><p><b>Equator, θ = 90°.</b> Halve it first: θ/2 = 45°. cos(45°) = sin(45°) = 1/√2 ≈ 0.707, so P(0) = P(1) = 0.707² = 0.5 — the fair coin, and the very same 0.707 you met in H. ✔</p><p>Notice the halving doing real work: at θ = 90° the answer is sin²(<b>45°</b>), not sin²(90°). Forget it and you are a factor of two out on every angle for the rest of the course.</p><p><b>Running it backwards.</b> Task 2 hands you a probability and asks for the angle, so you undo the rule one step at a time: square root, then arcsine, then double. Try the method on a case you already know — for P(1) = 0.5 you take √0.5 = 0.707, ask which angle has sine 0.707 (45°), then double it: θ = 90°. The equator, exactly as expected. The same three steps work for any target you are given.</p>"
+        },
+        "widget": {
+          "name": "bloch-sampler",
+          "label": "Bloch Sampler — tilt the arrow, then measure",
+          "note": "Set θ to 90° and measure single-shot a few times — nobody can call an individual outcome. Then measure ×100 and watch the fair coin reappear. Now hunt for the tilt where outcome 1 turns up about a <b>quarter</b> of the time. Task 2 asks you to find that same angle by arithmetic instead of by dragging."
+        }
+      },
+
+      {
+        "id": "01-d",
+        "before": "end",
+        "heading": "What you just built",
+        "minutes": 1,
+        "source": "notebooks/01_qubits_and_superposition.ipynb §1.4 wrap-up",
+        "teaches": [],
+        "anchors": [],
+        "html": "<p>You started at a definite |0⟩ and finished holding a state whose odds you designed yourself. Three ideas came out of that, and all three run all the way to the Summit:</p><ul><li><b>Amplitudes square to probabilities.</b> The Born rule is how every result in this course gets read off a state.</li><li><b>Gates move the arrow.</b> H set it spinning; RY(θ) aimed it. Every algorithm ahead is a sequence of moves like these.</li><li><b>Single shots are random; statistics are not.</b> You cannot predict one measurement. You can predict a hundred — and that is enough to compute with.</li></ul><p><b>Next:</b> Basecamp 2 puts gates under the microscope — what makes an operation legal, and Qiskit's little-endian bitstring order, the one convention that catches everybody exactly once.</p>",
+        "aside": "Want this same ground with real Qiskit — imports, circuit objects, drawing and running on a simulator? That is the notebook track. The physics is identical to twelve decimal places; what it adds is the toolchain, and it is worth doing once."
+      }
+    ]
+  },
+
+  "02": {
+    "requires": {
+      "02-1": ["gate-as-move", "bit-flip-x", "phase-flip-z", "phase", "interference"],
+      "02-2": ["endianness", "multi-qubit-register"]
+    },
+    "beats": [
+      {
+        "id": "02-a",
+        "before": "02-1",
+        "heading": "Gates are moves you can stack",
+        "minutes": 3,
+        "source": "notebooks/02_gates_and_circuits.ipynb §2.1",
+        "teaches": ["gate-as-move", "circuit", "order-matters"],
+        "anchors": ["commute", "stack"],
+        "reassure": {
+          "position": "before",
+          "icon": "🧭",
+          "title": "New symbols ahead — nothing to memorise",
+          "html": "A little notation and a matrix or two show up in this basecamp. Every one of them is just a tidy name for something you will first <i>watch happen</i> in the widget, so there is nothing to commit to memory here. If a symbol looks unfamiliar, keep going — in this course the picture always arrives before the name."
+        },
+        "html": "<p>You already met two gates in Basecamp 1 without our making a fuss about it: <b>H</b>, which set a resting coin spinning, and <b>RY(θ)</b>, the bias dial in gate form.</p><p>That is all a <b>gate</b> is — a <i>move</i> that takes the qubit's arrow from where it is to somewhere new. And like dance steps, moves <b>stack</b>: do one, then the next, then the next. A stack of gates is a <b>circuit</b>, read left to right.</p><p>One warning before you start stacking, because it is not optional: <b>order matters</b>. H then Z is a different circuit from Z then H. Gates generally do not <i>commute</i>. If that sounds fussy, it is the same fussiness as socks-then-shoes versus shoes-then-socks — same two actions, very different outcome.</p>",
+        "widget": {
+          "name": "gate-playground",
+          "label": "Gate Playground — drop gates on the wire and watch the arrow",
+          "note": "Click <b>X</b> once from |0⟩ and see where the arrow goes. Then reset, click <b>H</b>, then <b>Z</b> — and watch the P(0)/P(1) bars very closely. Something changed, but the odds did not. Hold on to that mystery; the next note explains it, and Basecamp 3 cashes it in."
+        }
+      },
+      {
+        "id": "02-b",
+        "before": "02-1",
+        "heading": "The bit-flip, the phase-flip, and the sign you cannot see",
+        "minutes": 4,
+        "source": "notebooks/02_gates_and_circuits.ipynb §2.2",
+        "teaches": ["bit-flip-x", "phase-flip-z", "phase", "interference", "unitarity"],
+        "anchors": ["bit-flip", "phase-flip", "reversible"],
+        "reassure": {
+          "position": "after",
+          "icon": "✍️",
+          "title": "Study tip",
+          "html": "Skim the matrices below rather than studying them — you will never be asked to multiply one by hand in this course. If you want them to stick, the pen trick works here too: draw the arrow at |0⟩, apply X, draw where it lands. Two sketches beat two paragraphs.<br><br>And if you cannot see in advance how three harmless-looking gates add up to a bit-flip, you are in good company — <b>most people</b> cannot, which is exactly why the notebook calls the result a surprise."
+        },
+        "html": "<p><b>The bit-flip X.</b> Clicking X swapped |0⟩ and |1⟩ — a definite 0 became a definite 1. It is the quantum version of the classical NOT gate, and on the Bloch arrow it is a half-turn that swings the north pole to the south pole.</p><p><b>The phase-flip Z.</b> This one is sneakier. Z <i>does not move the probabilities at all</i> — a fair coin stays a fair coin. What it changes is the <b>phase</b>: the sign hiding on the |1⟩ amplitude. It turns |1⟩ into −|1⟩ and leaves |0⟩ alone.</p><p>Why care about a sign you cannot see? Because amplitudes that carry opposite signs can <b>cancel</b> — and cancellation is <b>interference</b>, which is where quantum computers get their edge. A phase is invisible to a measurement <i>right now</i>; it is not invisible to what happens next.</p><p>That is exactly what <b>Task 1</b> is about. Z alone changes no odds. Wrapped in two Hadamards, it becomes something you can measure — and the gate it turns into is famous.</p><p>One more property worth naming: every quantum gate is <b>reversible</b>. Each move has an undo, so information is never destroyed — a quantum computer only ever rearranges amplitudes. H is its own undo, and so are X and Z. That reversibility is called <b>unitarity</b>.</p>",
+        "math": {
+          "summary": "The three gates as matrices — skim, don't memorise",
+          "html": "<p>Each gate is also a small 2×2 matrix acting on the amplitude pair (α, β):</p><p class=\"beat-eq\">X = [[0, 1], [1, 0]]      Z = [[1, 0], [0, −1]]      H = (1/√2)·[[1, 1], [1, −1]]</p><p>Read them as instructions rather than as algebra. <b>X</b> swaps the two amplitudes. <b>Z</b> leaves α alone and negates β — there is the invisible sign, sitting in plain view. <b>H</b> mixes the two, which is why it can turn a sign difference into a probability difference.</p><p>Reversibility is visible here too: apply any of these twice and you land back where you started.</p>"
+        }
+      },
+      {
+        "id": "02-c",
+        "before": "02-2",
+        "heading": "Two qubits, and the trap that catches everyone",
+        "minutes": 3,
+        "source": "notebooks/02_gates_and_circuits.ipynb §2.3",
+        "teaches": ["endianness", "multi-qubit-register"],
+        "anchors": ["little-endian", "right"],
+        "reassure": {
+          "position": "before",
+          "icon": "🧭",
+          "title": "You are about to get this wrong — on purpose",
+          "html": "<b>Almost everyone</b> puts the gate on the wrong wire the first time they meet Qiskit's ordering. It is the most common beginner bug in the ecosystem, and experienced people still lose an afternoon to it. That is precisely why we walk into it here, deliberately, with a two-qubit circuit you can check at a glance — rather than leaving you to meet it at midnight inside a twenty-gate program."
+        },
+        "html": "<p>Real circuits have more than one qubit, and the moment you add a second, Qiskit springs a famous surprise. We are going to walk into it deliberately, with our eyes open, because meeting it here is far cheaper than meeting it in your own code at midnight.</p><p>Make a 2-qubit circuit. The qubits are numbered <b>q0</b> and <b>q1</b>. When you measure, you get back a short string like <code>10</code> — and here is the trap:</p><p class=\"beat-eq\">Qiskit writes qubit 0 on the RIGHT.</p><p>The string is read <b>right to left</b>: the rightmost character is q0, the next one left is q1. Computer scientists call this <b>little-endian</b> — the littlest qubit sits at the right end, exactly as the ones digit sits at the right end of the number 42.</p><p>So <code>10</code> means <b>q1 = 1 and q0 = 0</b>. Read that twice before you start Task 2. Almost everyone puts the gate on the wrong wire the first time, and that is precisely the point of the exercise.</p>",
+        "math": {
+          "summary": "The habit that saves you every time",
+          "html": "<p>Two habits, and you will never lose an hour to this again.</p><p><b>1. Write the labels underneath.</b> Put the bitstring on paper and label the characters from the right: q0 under the last character, q1 under the one before it. Then read off which qubit is supposed to be 1.</p><p><b>2. When in doubt, probe it.</b> Flip one qubit you know — a single X on q1, say — and look at which character lights up. Two seconds, and it settles the convention for whatever library you are in.</p><p>This is not a quantum fact, it is a bookkeeping convention, and different tools choose differently. Knowing that it <i>is</i> a convention is most of the defence.</p>"
+        }
+      },
+      {
+        "id": "02-d",
+        "before": "end",
+        "heading": "What you just built",
+        "minutes": 1,
+        "source": "notebooks/02_gates_and_circuits.ipynb wrap-up",
+        "teaches": [],
+        "anchors": [],
+        "html": "<p>You now speak the grammar of quantum circuits:</p><ul><li><b>X flips the bit, Z flips the phase.</b> One is visible in a measurement; the other is not — yet.</li><li><b>Order matters.</b> The same gates in a different sequence make a different circuit.</li><li><b>Every gate is reversible.</b> Nothing is erased along the way.</li><li><b>H·Z·H = X.</b> An invisible phase, wrapped in two Hadamards, becomes a visible flip. That is interference doing real work, and it is the first hint of where the power comes from.</li></ul><p><b>Next:</b> Basecamp 3 links two qubits so tightly they stop being two — and cashes in that invisible phase for good.</p>"
+      }
+    ]
+  },
+
+  "03": {
+    "requires": {
+      "03-1": ["two-qubit-state", "cnot", "bell-pair", "entanglement"],
+      "03-2": ["no-signalling", "anti-correlation"]
+    },
+    "beats": [
+      {
+        "id": "03-a",
+        "before": "03-1",
+        "heading": "Two qubits: the world gets bigger",
+        "minutes": 3,
+        "source": "notebooks/03_entanglement_and_multiqubit.ipynb §3.1",
+        "teaches": ["two-qubit-state", "product-state", "exponential-growth"],
+        "anchors": ["four amplitudes", "product state"],
+        "reassure": {
+          "position": "before",
+          "icon": "🧭",
+          "title": "Don't panic about the four terms",
+          "html": "Four amplitudes are more bookkeeping than two — but <b>you will never juggle them by hand</b>. We watch them move in the Explorer first, and after that the simulator tracks them for you. The only idea you need to carry out of this section is a small one: two qubits share <i>one bigger state</i>."
+        },
+        "html": "<p>Everything so far lived on a single qubit: one arrow, two amplitudes, one probability split. Add a <b>second</b> qubit and the bookkeeping changes shape.</p><p>One qubit had two possible outcomes, 0 or 1. Two qubits have <b>four</b>: 00, 01, 10, 11. So a two-qubit state needs <b>four amplitudes</b>, one per outcome:</p><p class=\"beat-eq\">|ψ⟩ = a|00⟩ + b|01⟩ + c|10⟩ + d|11⟩</p><p>and as always the probabilities are the squares, adding to 1. That is the pattern: <b>n qubits need 2ⁿ amplitudes</b>. Ten qubits need 1024 numbers; three hundred qubits need more numbers than there are atoms in the visible universe. That explosion is the room quantum computers have to work in, and it starts right here, going from two numbers to four.</p><p>Now, most two-qubit states are boring in a specific way: they <b>factor</b>. “Qubit A is a fair coin” <i>and</i>, separately, “qubit B is a fair coin.” You can tell each qubit's story on its own and stapling them together describes the whole thing. A state like that is a <b>product state</b> — genuinely two objects that happen to sit next to each other.</p><p>Most, but not all. The interesting ones do not factor at all.</p>",
+        "widget": {
+          "name": "entanglement-explorer",
+          "label": "Entanglement Explorer — two qubits, measured together",
+          "note": "Leave the link on <b>Independent</b> and measure ×100: all four pairs turn up, each about 25% — two ordinary unconnected coins. Now switch to <b>Correlated</b> and measure again. Two bars flatten to zero, the pair agrees every single time, and yet each coin <i>alone</i> is still a fair 50/50. Sit with how odd that is before you read on."
+        }
+      },
+      {
+        "id": "03-b",
+        "before": "03-1",
+        "heading": "CNOT, and the recipe for a Bell pair",
+        "minutes": 4,
+        "source": "notebooks/03_entanglement_and_multiqubit.ipynb §3.2",
+        "teaches": ["cnot", "bell-pair", "entanglement"],
+        "anchors": ["CNOT", "control", "target"],
+        "reassure": {
+          "position": "after",
+          "icon": "✍️",
+          "title": "Study tip",
+          "html": "Open the expander above and walk the two halves through the CNOT with a pen: write |00⟩ and |10⟩ on a line, apply the rule to each, and see what comes out. Four lines of writing, and entanglement stops being a magic word and becomes a bookkeeping step you can redo yourself. <b>Most people</b> find it stops feeling mystical at exactly that moment."
+        },
+        "html": "<p>How do you actually <i>link</i> two qubits? With one new gate: the <b>CNOT</b> (controlled-NOT), written <code>cx</code> in Qiskit. It has a <b>control</b> and a <b>target</b>, and one rule:</p><p class=\"beat-eq\">If the control is |1⟩, flip the target. If it is |0⟩, do nothing.</p><p>On its own that is a conditional bit-flip — thoroughly classical. The magic appears when the control is in <b>superposition</b>: then “flip” and “don't flip” both happen, tied to the control's own coin flip, and the two qubits get braided together.</p><p>So the recipe is two gates. <b>H on q0</b> makes it a fair coin; <b>CNOT from q0 to q1</b> ties q1's value to it. What comes out is the <b>Bell state Φ⁺</b>:</p><p class=\"beat-eq\">|Φ⁺⟩ = (|00⟩ + |11⟩)/√2</p><p>Read it aloud: an equal mix of <i>both zero</i> and <i>both one</i>, and nothing else. There is no |01⟩ term and no |10⟩ term, so a mismatch is simply impossible.</p><p>Here is the part that matters. Try to split Φ⁺ into “qubit A is doing ___ <i>and</i> qubit B is doing ___”. <b>You cannot.</b> No description of A by itself, combined with any description of B by itself, ever reproduces this state. That un-splittability <i>is</i> the definition of <b>entanglement</b>: a product state is two stories; an entangled state is one story you cannot tear in half.</p>",
+        "math": {
+          "summary": "Follow the two halves through the CNOT",
+          "html": "<p>Start at |00⟩ and put H on q0. The control is now an even mix of |0⟩ and |1⟩, and the target is still |0⟩:</p><p class=\"beat-eq\">(|0⟩ + |1⟩)/√2 ⊗ |0⟩  =  (|00⟩ + |10⟩)/√2</p><p>Now apply CNOT and take the two halves separately, because the rule treats them differently:</p><p>• the <b>|00⟩</b> half has control 0 → do nothing → stays <b>|00⟩</b><br>• the <b>|10⟩</b> half has control 1 → flip the target → becomes <b>|11⟩</b></p><p class=\"beat-eq\">→  (|00⟩ + |11⟩)/√2</p><p>The “flip / don't flip” decision got tied to the control's coin flip, and that knot is the entanglement. Notice nothing exotic happened: one gate you already knew, and one conditional flip.</p>"
+        }
+      },
+      {
+        "id": "03-c",
+        "before": "03-2",
+        "heading": "The myth to bury: entanglement sends no messages",
+        "minutes": 4,
+        "source": "notebooks/03_entanglement_and_multiqubit.ipynb §3.3",
+        "teaches": ["no-signalling", "anti-correlation", "bell-states"],
+        "anchors": ["faster than light", "compared"],
+        "reassure": {
+          "position": "before",
+          "icon": "🧭",
+          "title": "If this one bends your brain, you are in extremely good company",
+          "html": "<b>Einstein</b> found this so troubling that in 1935 he co-wrote a famous paper arguing quantum mechanics had to be incomplete — and the phrase “spooky action at a distance” is his. It took physicists another thirty years to sharpen the question well enough to settle it.<br><br>So if the next few paragraphs need reading twice, that is not you being slow. It is one of the genuinely hardest ideas in the subject, and <b>almost everyone</b> meets it with the same objection you are about to have."
+        },
+        "html": "<p>Φ⁺ makes the qubits <b>agree</b>. One extra flip on either wire makes them <b>always disagree</b> — that is <b>Ψ⁺ = (|01⟩ + |10⟩)/√2</b>, the same entanglement with a mirror-image correlation, and it is what Task 2 asks you to build.</p><p>But first, the elephant in the room.</p><p><b>🚫 Myth:</b> <i>“Entangled qubits communicate instantly, so you can send messages faster than light.”</i></p><p><b>✅ Reality:</b> You cannot. Look only at Alice's qubit across many Bell pairs and you see a boring, perfectly random 50/50 stream of 0s and 1s. Bob measuring his half does nothing Alice could ever detect on hers. The correlation is real, but it only <i>appears</i> when someone later lays the two lists of results side by side and <b>compares</b> them — and comparing lists needs an ordinary, slower-than-light message.</p><p>So why does the “spooky action” story feel so tempting? Because measuring one really does pin down the other. But <i>learning something about</i> B is not <i>sending something to</i> B. Opening one of two envelopes that were sealed together tells you what is in the other instantly too, and nobody calls that a telephone.</p><p>One piece of honesty, though, because the envelope picture is not the whole truth: entanglement is <b>stranger than sealed envelopes</b>. Its correlations can beat <i>any</i> pre-arranged classical scheme — that is Bell's theorem, and it is what rules out the “they agreed in advance” explanation. Showing it requires measuring in more than one direction, which this course does not do, so take that one on trust rather than on evidence. What you <i>can</i> verify here is the part that matters for computing: no signal, ever.</p>"
+      },
+      {
+        "id": "03-d",
+        "before": "end",
+        "heading": "What you just built",
+        "minutes": 1,
+        "source": "notebooks/03_entanglement_and_multiqubit.ipynb wrap-up",
+        "teaches": [],
+        "anchors": [],
+        "html": "<p>You linked two qubits into one shared state:</p><ul><li><b>Two qubits carry four amplitudes</b>, and n qubits carry 2ⁿ. That is the room to work in.</li><li><b>CNOT plus a superposed control</b> is the entire entangling recipe.</li><li><b>Entanglement is un-splittability</b> — not a spooky signal, but a state that has no description as “A does this, B does that”.</li><li><b>One extra flip</b> turns “always agree” into “always disagree” without breaking the link.</li></ul><p><b>Next:</b> Basecamp 4 stops asking <i>which face?</i> and starts asking <i>how much?</i> — attaching a number to each outcome so a quantum computer can score a state. That score is what everything above here optimises.</p>"
+      }
+    ]
+  },
+
+  "04": {
+    "requires": {
+      "04-1": ["observable", "expectation-value", "z-observable"],
+      "04-2": ["zz-observable", "cost-hamiltonian"]
+    },
+    "beats": [
+      {
+        "id": "04-a",
+        "before": "04-1",
+        "heading": "From “which face?” to “how much?”",
+        "minutes": 4,
+        "source": "notebooks/04_hamiltonians_and_expectation.ipynb §4.1",
+        "teaches": ["observable", "expectation-value", "z-observable"],
+        "anchors": ["expectation value", "observable", "pen"],
+        "reassure": {
+          "position": "after",
+          "icon": "✍️",
+          "title": "Study tip",
+          "html": "If this feels abstract, grab a pen: write out ⟨Z⟩ = P(0) − P(1) and plug in a few probabilities by hand. Three lines of arithmetic and it clicks.<br><br>Watch the sign as you go. <b>Almost everyone</b> writes “outcome 0 scores 0” at least once, because the labels 0 and 1 look like they ought to be the scores. They are not — the scores are +1 and −1, and the labels are just names."
+        },
+        "html": "<p>Every measurement so far handed you a bare label: 0 or 1. Useful, but thin. Let us make it richer with a small game.</p><p><b>The game.</b> Every time you measure, you get paid: outcome <b>0</b> scores <b>+1</b>, outcome <b>1</b> scores <b>−1</b>. Now a measurement is not just a face, it is a <i>payout</i> — and a run of measurements has an <b>average payout</b>.</p><p>That scoreboard has a name you have already met as a gate: the <b>Z observable</b>. An <b>observable</b> is exactly that — a rule attaching a number to each outcome — and Z is the simplest one there is.</p><p>The average is called the <b>expectation value</b>, written ⟨Z⟩, and you get it by weighting each score by how often it happens:</p><p class=\"beat-eq\">⟨Z⟩ = (+1)·P(0) + (−1)·P(1) = P(0) − P(1)</p><p><b>Mind the sign.</b> It is tempting to think outcome 0 scores zero. It does not — it scores +1. The scoreboard does not care what the bits are <i>labelled</i>; it just looks up a payout.</p><p>And here is the beautiful part: <b>no single measurement ever returns the average.</b> Each shot is +1 or −1, full stop. Yet a fair coin's expectation value is exactly 0 — a number no shot can produce. The expectation value is a statement about the long run, not about any one slap.</p>",
+        "math": {
+          "summary": "Check it on three states you already know",
+          "html": "<p>Put a pen to this — it takes three lines and then it clicks.</p><p><b>|0⟩:</b> P(0) = 1, so ⟨Z⟩ = 1 − 0 = <b>+1</b>. Every shot scores +1, so of course the average is +1.</p><p><b>|1⟩:</b> P(0) = 0, so ⟨Z⟩ = 0 − 1 = <b>−1</b>.</p><p><b>The fair coin |+⟩:</b> P(0) = P(1) = ½, so ⟨Z⟩ = ½ − ½ = <b>0</b> — the average no individual shot can ever return.</p><p>So ⟨Z⟩ runs from +1 (certainly 0) down to −1 (certainly 1), and every state in between lands somewhere on that dial. Task 1 asks you to aim it at a specific value.</p>"
+        },
+        "widget": {
+          "name": "energy-meter",
+          "label": "Energy Meter — a state, and its average score",
+          "note": "The green/amber bar is the state in exact Born proportions; the dial runs from −1 to +1 with a goal mark at the true average. Slide to all-green and the needle pins at +1. Slide to the middle and it wanders but homes in on 0. Then set it to 75% green and <b>predict the goal before you measure</b>."
+        }
+      },
+      {
+        "id": "04-b",
+        "before": "04-2",
+        "heading": "Scoring a whole configuration: the cost Hamiltonian",
+        "minutes": 4,
+        "source": "notebooks/04_hamiltonians_and_expectation.ipynb §4.3",
+        "teaches": ["zz-observable", "cost-hamiltonian", "hamiltonian"],
+        "anchors": ["Hamiltonian", "agree"],
+        "reassure": {
+          "position": "before",
+          "icon": "🧭",
+          "title": "The word is heavier than the idea",
+          "html": "<b>Hamiltonian</b> sounds like a word that needs a semester of physics behind it, and being put off by it is one of the <b>most common</b> reasons people bounce off variational algorithms entirely. Here it means something you can hold in a single sentence: <i>a scoreboard for the whole system</i>. If the name bothers you, mentally swap in “scoreboard” every time you see it — that substitution stays honest all the way to the Summit."
+        },
+        "html": "<p>One qubit, one scoreboard. Real problems have many qubits and a score that depends on how they <i>relate</i>.</p><p>The object holding the full scoreboard for a whole system is the <b>Hamiltonian</b> — a sum of Pauli terms, one per rule you want to encode. Its expectation value is the system's <b>energy</b>. And when that energy encodes the <i>cost</i> of a candidate solution, we call it a <b>cost Hamiltonian</b>: minimising the energy then <i>is</i> solving the problem. That is the entire summit in one sentence, and you are two basecamps from it.</p><p>Here is the simplest interesting one — <b>ZZ</b>, the two-qubit <b>agreement</b> scoreboard:</p><p class=\"beat-eq\">ZZ = +1 when the two qubits AGREE (00 or 11)\nZZ = −1 when they DISAGREE (01 or 10)</p><p>Why? Because ZZ just multiplies the two individual Z scores: (+1)(+1) = +1 and (−1)(−1) = +1 for agreement, while (+1)(−1) = −1 for disagreement.</p><p>So ⟨ZZ⟩ measures how aligned a pair is on average — and it reaches straight back to Basecamp 3. The Bell pair Φ⁺ only ever gives 00 or 11, so its ⟨ZZ⟩ is a perfect <b>+1</b>. Task 2 asks you for the other end of that dial.</p><p>Keep one eye on where this is going: at the Summit, “this edge is cut” will mean exactly “drive ⟨ZZ⟩ to −1”.</p>"
+      },
+      {
+        "id": "04-c",
+        "before": "end",
+        "heading": "What you just built",
+        "minutes": 1,
+        "source": "notebooks/04_hamiltonians_and_expectation.ipynb wrap-up",
+        "teaches": [],
+        "anchors": [],
+        "html": "<p>This basecamp is the hinge of the course:</p><ul><li><b>An observable is a scoreboard</b> — a number attached to each outcome.</li><li><b>An expectation value is its average</b>, weighted by the Born probabilities, and no single shot ever lands on it.</li><li><b>A Hamiltonian is the scoreboard for a whole system</b>, and its expectation value is energy.</li><li><b>⟨ZZ⟩ reads agreement</b>: +1 when two qubits match, −1 when they differ.</li></ul><p><b>Next:</b> Basecamp 5 stops <i>reading</i> the energy and starts <i>lowering</i> it — building a state with a tuning knob and rolling it downhill to the bottom of the landscape.</p>"
+      }
+    ]
+  },
+
+  "05": {
+    "_requires_note": "05-1 must NOT be told where the minimum sits — finding it is the task. The beat teaches only that the X term moves it away from 180°.",
+    "requires": {
+      "05-1": ["ground-state", "variational-loop", "ansatz", "energy-landscape"],
+      "05-2": ["variational-theorem", "incompatible-observables"]
+    },
+    "beats": [
+      {
+        "id": "05-a",
+        "before": "05-1",
+        "heading": "Don't guess the state — search for it",
+        "minutes": 4,
+        "source": "notebooks/05_variational_principle.ipynb §5.1–§5.2",
+        "teaches": ["ground-state", "variational-loop", "ansatz", "energy-landscape"],
+        "anchors": ["ground state", "variational", "optimizer"],
+        "reassure": {
+          "position": "after",
+          "icon": "🧭",
+          "title": "Can't park the ball exactly? Good.",
+          "html": "Dragging the slider will get you close to the bottom and then leave you nudging uselessly — the curve goes almost flat down there. <b>Nobody</b> can park it exactly by hand, and that is not your mouse letting you down.<br><br>It is the whole reason real algorithms hand the knob to a classical optimizer. In much larger circuits that same flatness becomes severe enough to be a named research problem in its own right. Your frustration here <i>is</i> the physics."
+        },
+        "html": "<p>You can now measure any state's energy. So here is the question that runs the rest of quantum computing:</p><p class=\"beat-eq\">Of all the states you could prepare, which has the LOWEST energy?</p><p>That state is the <b>ground state</b>, and for a cost Hamiltonian — where energy encodes the cost of a candidate answer — the ground state literally <i>is</i> the solution. Find the bottom of the valley and you have solved the problem.</p><p>But you cannot check infinitely many states one at a time. The <b>variational</b> idea sidesteps that entirely:</p><ul><li><b>1.</b> Build a state with a tuning knob — a parameter θ you can turn. This is called an <b>ansatz</b>.</li><li><b>2.</b> Read its energy at the current setting.</li><li><b>3.</b> Nudge θ in whatever direction lowers the energy.</li><li><b>4.</b> Repeat until you cannot go lower.</li></ul><p>Picture a ball let loose on a hilly landscape: it rolls downhill and settles in the lowest valley. θ is where you stand; the energy is your height.</p><p>Notice the division of labour, because it is how every near-term quantum algorithm is built: <b>the quantum computer is the altimeter</b> — it reports the energy — and <b>a classical optimizer decides where to step next</b>. In Task 1 you are the optimizer, working by hand.</p><p>Your ansatz is the RY(θ) rotation from Basecamp 1, and your Hamiltonian is <b>H = Z + 0.5·X</b>. The Z term is the scoreboard you know; the <b>X term tilts the landscape</b>, so the lowest point is <i>not</i> where you would guess from Z alone — it is not at 180°. That tilt is what makes this a real search rather than an obvious answer.</p>",
+        "widget": {
+          "name": "qaoa-landscape",
+          "label": "Energy Landscape — roll the ball downhill",
+          "note": "Drag θ and watch the ball ride the curve. <b>Predict where the lowest point is, then try to park the ball there by hand</b> — it is harder than it looks, and noticing <i>why</i> matters: the curve goes very flat near the bottom. That flatness is exactly what makes an optimizer's job difficult on real problems."
+        }
+      },
+      {
+        "id": "05-b",
+        "before": "05-2",
+        "heading": "The floor belongs to the Hamiltonian, not to your circuit",
+        "minutes": 3,
+        "source": "notebooks/05_variational_principle.ipynb §5.3",
+        "teaches": ["variational-theorem", "incompatible-observables"],
+        "anchors": ["ground", "energy"],
+        "reassure": {
+          "position": "before",
+          "icon": "🧭",
+          "title": "A theorem — but a friendly one",
+          "html": "“Variational theorem” sounds like something you are about to be asked to prove. You are not. You need what it <i>promises</i>, which is one line: <b>you can never get below the floor.</b><br><br>If the notation ⟨ψ|H|ψ⟩ is unfamiliar, read it as “the energy of the state ψ” and carry on — it is the same energy you have been reading off the meter since Basecamp 4, and <b>most people</b> never write that notation by hand and do perfectly well."
+        },
+        "html": "<p>You just found the bottom of one particular curve by turning one particular knob. Natural question: was that the bottom, or just the bottom <i>your ansatz could reach</i>?</p><p>The <b>variational theorem</b> answers it, and the answer is strong:</p><p class=\"beat-eq\">⟨ψ|H|ψ⟩ ≥ E₀   for every state ψ, without exception</p><p>The ground energy E₀ is a hard <b>floor</b> set by the Hamiltonian itself. A better ansatz gets you closer to it; nothing — no depth, no parameter count, no cleverness — gets you through it. That is why variational algorithms are trustworthy in a way that heuristics usually are not: you may not know how close you are, but you always know which side of the floor you are on.</p><p>So where is the floor for a Hamiltonian like <b>H = aZ + bX</b>? The tempting answer is “make both terms as negative as possible”, giving −a − b. <b>That is wrong</b>, and the reason is physical rather than arithmetic: Z and X are <b>incompatible observables</b>. No state makes both of them maximally negative at once — driving one towards its extreme necessarily pulls the other back towards the middle.</p><p>What you get instead is a compromise, and it takes the shape of a <b>vector length</b> rather than a sum:</p><p class=\"beat-eq\">E₀ = −√(a² + b²)</p><p>Task 2 hands you the specific a and b and asks for the number. The arithmetic is yours; the shape of the rule is the lesson.</p>"
+      },
+      {
+        "id": "05-c",
+        "before": "end",
+        "heading": "What you just built",
+        "minutes": 1,
+        "source": "notebooks/05_variational_principle.ipynb wrap-up",
+        "teaches": [],
+        "anchors": [],
+        "html": "<p>You ran a complete variational algorithm by hand:</p><ul><li><b>An ansatz</b> — a state with a knob on it.</li><li><b>A cost function</b> — the energy of that state, read by the quantum side.</li><li><b>An optimizer</b> — you, deciding which way to turn the knob. Real ones just do it faster and with fewer evaluations.</li><li><b>A floor you cannot cross</b>, set by the Hamiltonian rather than by your circuit.</li></ul><p>This loop is the template for VQE, for QAOA, and for most of near-term quantum computing.</p><p><b>Next:</b> the Summit points this exact machinery at a real optimization problem — and then shows you two different ways the answer can come back short of perfect.</p>"
+      }
+    ]
+  },
+
+  "06": {
+    "_requires_note": "06-1 deliberately does NOT require 'frustration'. Discovering that a triangle's best cut is still 2 of 3 IS the task; pre-teaching it would delete the discovery. The honest frustration-vs-depth summary is beat 06-c, after both tasks.",
+    "requires": {
+      "06-1": ["max-cut", "cut-encoding"],
+      "06-2": ["qaoa-ansatz", "cost-layer", "mixer-layer", "depth", "approximation-ratio"]
+    },
+    "beats": [
+      {
+        "id": "06-a",
+        "before": "06-1",
+        "heading": "Max-Cut, and how to turn a graph into energy",
+        "minutes": 4,
+        "source": "notebooks/06_qaoa_maxcut_capstone.ipynb §6.1–§6.2",
+        "teaches": ["max-cut", "cut-encoding", "np-hard"],
+        "anchors": ["Max-Cut", "NP-hard", "edges"],
+        "reassure": {
+          "position": "before",
+          "icon": "🏔️",
+          "title": "You already have every tool this needs",
+          "html": "<b>Everyone</b> arrives at this page slightly unsure they are ready for it. You are — and here is the proof: nothing new shows up today. The qubits are from Basecamp 1, the gates from 2, the entangling move from 3, the ⟨ZZ⟩ scoreboard from 4, and the optimizer loop from 5. <b>Every single piece is one you built yourself.</b> All that happens at the summit is that they get pointed at a real problem."
+        },
+        "html": "<p>Here is a puzzle that looks innocent and is genuinely hard. You have a <b>graph</b> — dots joined by lines. Split the dots into <b>two groups</b>. An edge is <b>cut</b> if its two ends land in different groups.</p><p class=\"beat-eq\">Max-Cut: find the split that cuts the MOST edges.</p><p>Think of it socially: you are seating people at two tables, and every edge is a pair who would rather not sit together. Max-Cut is the seating that separates the most feuding pairs. It sounds easy, but the number of possible splits doubles with every node, and no shortcut is known. Max-Cut is <b>NP-hard</b> — and it is not a toy, the same shape turns up in circuit design, network science and machine learning.</p><p>To let a quantum computer search, we turn the cut into <b>energy</b> — and you already have every tool for this. Give <b>each node its own qubit</b>. A node's group is that qubit's value: group A = |0⟩, group B = |1⟩. A whole split is then just a bitstring.</p><p>Now recall Basecamp 4's agreement scoreboard:</p><ul><li>an edge is <b>cut</b> ⟺ its nodes are in different groups ⟺ the qubits <b>disagree</b> ⟺ Z<sub>i</sub>Z<sub>j</sub> = <b>−1</b></li><li>an edge is <b>uncut</b> ⟺ same group ⟺ the qubits <b>agree</b> ⟺ Z<sub>i</sub>Z<sub>j</sub> = <b>+1</b></li></ul><p>Add that up over every edge and you have the <b>cost Hamiltonian</b> H<sub>C</sub> = Σ Z<sub>i</sub>Z<sub>j</sub>. Each cut edge subtracts 1, each uncut edge adds 1 — so the split with the <b>most cuts</b> has the <b>lowest energy</b>. Max-Cut just became a ground-state problem, which is exactly the job you did in Basecamp 5.</p><p><b>Task 1 is by hand, deliberately.</b> Before you let an algorithm loose on a graph, it is worth finding out what the best answer even is — and whether “best” means what you assume it means.</p>",
+        "widget": {
+          "name": "maxcut-painter",
+          "label": "Max-Cut Painter — click nodes to move them between groups",
+          "note": "Click a node to move it between the green and amber groups; an edge lights up when it is cut. Try the 4-node ring first and get all four edges — notice the winning pattern is a <b>checkerboard</b>, every node opposite both its neighbours. Then keep the shape of that reasoning in mind for Task 1, where the graph is a triangle."
+        }
+      },
+      {
+        "id": "06-b",
+        "before": "06-2",
+        "heading": "QAOA: the cost layer marks, the mixer makes likely",
+        "minutes": 5,
+        "source": "notebooks/06_qaoa_maxcut_capstone.ipynb §6.3",
+        "teaches": ["qaoa-ansatz", "cost-layer", "mixer-layer", "depth", "approximation-ratio"],
+        "anchors": ["mixer", "gamma", "beta"],
+        "reassure": {
+          "position": "before",
+          "icon": "🧭",
+          "title": "The cost-and-mixer split is the slippery bit",
+          "html": "If you read the next few paragraphs and think “I follow the words, but I could not explain why you need <i>both</i> layers” — that is the <b>normal</b> place to land. It is the part of QAOA that trips <b>most people</b>, and it is why we spell it out in plain language instead of leaving it to the equations.<br><br>Read it once, build the circuit, then read it again. It lands better on the second pass, for almost <b>everybody</b>."
+        },
+        "html": "<p>Now the algorithm itself. <b>QAOA</b> builds a parameterised state whose measurement concentrates on low-energy — that is, high-cut — bitstrings. It starts with every qubit in the fair superposition, so <b>every split is equally likely</b>, and then applies a few <b>layers</b>. Each layer is two moves, each with its own tunable angle:</p><ul><li><b>Cost layer (angle γ).</b> For every edge, an RZZ rotation. This stamps a <b>phase</b> onto each configuration according to its energy — good cuts get marked.</li><li><b>Mixer layer (angle β).</b> An RX rotation on <b>every</b> qubit. This turns those invisible phases into real <b>probability</b>, by letting the marked configurations interfere.</li></ul><p><b>Why both?</b> This is the trap worth understanding. The cost layer alone only adds phases — and phases are invisible to a measurement, exactly as you saw with Z back in Basecamp 2. Measure after the cost layer alone and you would get a uniformly random split: useless. The mixer is what converts phase differences into amplitude differences, so that good cuts actually become <i>more likely</i>. <b>Cost marks; mixer makes likely.</b> Neither works without the other.</p><p>The number of layers is the <b>depth p</b>, and this is the part people misread: <b>each layer brings its own fresh pair of angles</b>, γ and β. Depth does not mean doing the same thing harder — it means having more dials to shape the interference with.</p><p>Finally, how do you score the result? The <b>approximation ratio</b> is what you achieved divided by the true optimum. A ratio of 1.0 means you found a maximum cut. Below 1.0 means you did not — and in Task 2 you will want to notice that random guessing already scores well above zero, so “better than nothing” is a low bar. The interesting question is where between random and optimal a given depth actually lands.</p>"
+      },
+      {
+        "id": "06-c",
+        "before": "end",
+        "heading": "The word you just earned: Approximate",
+        "minutes": 3,
+        "source": "notebooks/06_qaoa_maxcut_capstone.ipynb §7",
+        "teaches": [],
+        "anchors": ["frustration", "Approximate"],
+        "html": "<p>QAOA stands for the Quantum <b>Approximate</b> Optimization Algorithm, and you have now met both reasons that word is there. They are completely different problems, and telling them apart is the actual skill.</p><p><b>Frustration — when the best answer still isn't perfect.</b> Your triangle cuts 2 of 3, and <i>no algorithm on Earth does better</i>. Two groups, three mutually connected towns: two of them must land together, and the road between those two can never be cut. That is a property of the <b>problem</b>, not a failure of the <b>solver</b>. A perfect quantum computer, a supercomputer, and a patient person with a pencil all return 2.</p><p><b>Depth — when the shortfall really is the algorithm's.</b> The 5-cycle's true maximum is 4 of 5, and at p = 1 QAOA lands short of it. Add a second layer, with its own pair of angles, and the ratio climbs to essentially 1.000. Here the algorithm <i>was</i> the limit, and depth was the fix.</p><p>So the next time you see an approximation ratio below 1.0, ask which of those two it is. Sometimes the algorithm fell short. Sometimes it found the true best answer and the true best answer simply is not perfect.</p><p>And one last piece of honesty, because it is the bit people leave out: <b>more depth is not free.</b> Every layer is more gates, and on real hardware more gates means more noise. Choosing p is a genuine engineering trade-off between a better answer and a circuit that still survives the machine — not a dial you simply turn up. <b>Nobody has yet demonstrated a quantum advantage for Max-Cut on real hardware.</b></p><p>You built the algorithm, you saw where it shines, and you saw where it does not. That last part is what makes you dangerous. <b>You have reached the summit.</b> 🏔️</p>",
+        "aside": "The notebook track runs this same summit against real Qiskit, with COBYLA closing the loop instead of your hands on the sliders — and it samples the optimized circuit to read the winning bitstring off the mountain. Worth doing once, now that you know what every layer is for."
+      }
+    ]
+  }
+}
