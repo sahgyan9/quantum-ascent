@@ -37,8 +37,12 @@ Every basecamp exists in two equivalent forms. **Pick one, or let students pick.
 | Best for | First pass, in-class time, phones, no-install environments | Students who want the industry SDK on their CV |
 
 Both tracks cover the same concepts, set the same tasks, and mint the same completion codes.
-**Neither is a lesser version of the other.** If your session is 50 minutes and you cannot
-afford a Colab round-trip, use the browser track without hesitation.
+**The physics is identical** — the browser simulator is verified against Qiskit to twelve
+decimal places, so a student on the browser track is not getting an approximation. What differs
+is the toolchain, not the correctness: the notebook track additionally teaches the Qiskit API
+and a Python workflow, so it is the better choice if SDK fluency is one of your outcomes.
+If your session is 50 minutes and you cannot afford a Colab round-trip, use the browser track
+without hesitation.
 
 ## 3. Running it as a course
 

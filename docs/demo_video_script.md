@@ -112,8 +112,9 @@ solution.'"*
 
 🎬 Flip to the same basecamp's **Colab notebook** in another tab, briefly.
 
-🎙️ *"And if you want the real thing — same tasks, real Qiskit, one click. Both tracks mint the
-identical completion code. Neither is the lesser version."*
+🎙️ *"And if you want the industry SDK — same tasks, real Qiskit, one click. Both tracks mint the
+identical completion code, and the physics matches to twelve decimal places. What changes is the
+toolchain, not the correctness."*
 
 > Your strongest 100 seconds: creativity, adoption and implementation quality at once. Slow
 > down, and make sure the Qiskit code mirror is legible at 1080p.
