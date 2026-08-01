@@ -10,13 +10,24 @@ async function renderQuiz(containerId, moduleId, moduleMeta) {
   }
 
   let answered = 0, correct = 0;
+  const hasRecall = questions.some(q => q.recall);
   el.innerHTML = `<p class="muted">${questions.length} questions · answer each one to
-    see the explanation · score ≥ 70% completes the basecamp</p>`;
+    see the explanation · score ≥ 70% completes the basecamp${hasRecall ? `<br>
+    One question deliberately revisits an earlier basecamp: pulling an idea back out of
+    memory is what fixes it there, and it is about to matter again here.` : ""}</p>`;
 
   questions.forEach((item, qi) => {
     const box = document.createElement("div");
     box.className = "quiz-q panel";
-    box.innerHTML = `<b>Q${qi + 1}.</b> ${item.q}`;
+    /* Marked, not smuggled in — see .quiz-recall in site.css. */
+    /* Number() strips the padding: ids are "04", prose everywhere says "Basecamp 4". */
+    const from = item.recall ? Number(item.recall) : null;
+    const chip = item.recall
+      ? `<div class="quiz-recall" title="Spaced retrieval practice: you met this in
+           Basecamp ${from}, and this basecamp leans on it again.">🔁 Recall ·
+           Basecamp ${from}</div>`
+      : "";
+    box.innerHTML = chip + `<b>Q${qi + 1}.</b> ${item.q}`;
     item.options.forEach((opt, oi) => {
       const btn = document.createElement("button");
       btn.className = "quiz-opt";

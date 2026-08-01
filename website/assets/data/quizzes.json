@@ -89,6 +89,18 @@
       ],
       "answer": 1,
       "explain": "Qiskit is little-endian: qubit 0 is the rightmost character of the bitstring. Flipping qubit 0 lights up that rightmost bit, giving '01'. Read Qiskit bitstrings right-to-left and this trap disappears."
+    },
+    {
+      "recall": "01",
+      "q": "A qubit is in the state $0.6\\,|0\\rangle + 0.8\\,|1\\rangle$. What is $P(1)$?",
+      "options": [
+        "$0.8$",
+        "$0.64$",
+        "$0.4$",
+        "$0.5$"
+      ],
+      "answer": 1,
+      "explain": "The Born rule: a probability is the amplitude <b>squared</b>, so $P(1) = 0.8^2 = 0.64$. Reading $0.8$ off directly as the probability is the trap that catches everyone once. Sanity check: $0.6^2 + 0.8^2 = 0.36 + 0.64 = 1$, so this is a valid state."
     }
   ],
   "03": [
@@ -135,6 +147,18 @@
       ],
       "answer": 1,
       "explain": "Alice learns Bob's value, but learning is not sending. On its own, Bob's stream of results is perfectly random 50/50 — nothing Alice does is detectable on his side. The correlation only becomes visible when the two result lists are laid side by side, which requires a normal message. Real link, no telephone: entanglement never carries a signal."
+    },
+    {
+      "recall": "01",
+      "q": "Starting from $|0\\rangle$, which angle $\\theta$ in $R_y(\\theta)$ gives $P(1) = 3/4$?",
+      "options": [
+        "$\\theta = 60°$",
+        "$\\theta = 120°$",
+        "$\\theta = 150°$",
+        "$\\theta = 45°$"
+      ],
+      "answer": 1,
+      "explain": "$P(1) = \\sin^2(\\theta/2) = 3/4$, so $\\sin(\\theta/2) = \\sqrt{3}/2 \\approx 0.866$, giving $\\theta/2 = 60°$ and $\\theta = 120°$. Stopping at $60°$ is the classic slip — that is the <i>half</i>-angle, not the angle. In Basecamp 1 the same three steps (square root, arcsine, double) took you to $60°$ for $P(1) = 1/4$."
     }
   ],
   "04": [
@@ -181,6 +205,18 @@
       ],
       "answer": 1,
       "explain": "$\\Phi^+$ only ever gives 00 or 11 — agreement on every shot — so every score is $+1$ and $\\langle ZZ\\rangle = +1$. $\\langle ZZ\\rangle$ scores the *pair*, not either coin (each qubit alone is still fair). Flip one qubit to get $\\Psi^+$ and they always disagree instead: $\\langle ZZ\\rangle = -1$. This 'agreement energy' is the seed of the cost Hamiltonians you'll minimize at the summit."
+    },
+    {
+      "recall": "02",
+      "q": "You build a 3-qubit circuit, apply $X$ to <b>qubit 2</b> only, and measure. Which bitstring does Qiskit report?",
+      "options": [
+        "<code>001</code>",
+        "<code>010</code>",
+        "<code>100</code>",
+        "<code>111</code>"
+      ],
+      "answer": 2,
+      "explain": "Qiskit writes qubit 0 on the <b>right</b>, so the string reads $q_2q_1q_0$. Flipping qubit 2 lights the <b>leftmost</b> character: <code>100</code>. Answering <code>001</code> is the endianness trap from Basecamp 2 — and it is about to matter again at the Summit, where a Max-Cut split is read straight off a bitstring."
     }
   ],
   "05": [
@@ -227,6 +263,18 @@
       ],
       "answer": 1,
       "explain": "$-1.118 = -\\sqrt{1.25}$ is the smallest eigenvalue of $Z + 0.5X$ — the **ground energy**. Because the $X$ term tilts the Hamiltonian, the lowest-energy state is a rotated blend, not $|1\\rangle$. That is exactly why you had to *search* with a tunable angle instead of reading off an obvious answer — and for a cost Hamiltonian, that bottom encodes the solution to your problem."
+    },
+    {
+      "recall": "03",
+      "q": "Which of these two-qubit states is <b>entangled</b>?",
+      "options": [
+        "$\\frac{1}{\\sqrt{2}}(|00\\rangle + |01\\rangle)$",
+        "$\\frac{1}{\\sqrt{2}}(|00\\rangle + |11\\rangle)$",
+        "$\\frac{1}{2}(|00\\rangle + |01\\rangle + |10\\rangle + |11\\rangle)$",
+        "$|10\\rangle$"
+      ],
+      "answer": 1,
+      "explain": "Entangled means the state <b>cannot</b> be written as one qubit's state <i>and</i> another's. The first factors as $|0\\rangle \\otimes \\frac{1}{\\sqrt{2}}(|0\\rangle+|1\\rangle)$, the third as $|+\\rangle \\otimes |+\\rangle$, and the fourth is already a product. Only $\\frac{1}{\\sqrt{2}}(|00\\rangle+|11\\rangle)$ — the Bell pair $\\Phi^+$ — refuses to split. An even spread across all four outcomes looks like the most 'quantum' option, which is exactly why it is the popular wrong answer."
     }
   ],
   "06": [
@@ -273,6 +321,18 @@
       ],
       "answer": 1,
       "explain": "The approximation ratio is (edges your solution cuts) ÷ (edges the best possible solution cuts). A ratio of $1.0$ means you matched the true maximum — here 0101 is the checkerboard, cutting all 4 edges. You just solved a real optimization problem end to end with QAOA. 🏔️ Summit reached."
+    },
+    {
+      "recall": "04",
+      "q": "For the two-qubit state $|01\\rangle$, what is $\\langle ZZ \\rangle$?",
+      "options": [
+        "$+1$",
+        "$-1$",
+        "$0$",
+        "$+2$"
+      ],
+      "answer": 1,
+      "explain": "$Z$ scores $+1$ for outcome 0 and $-1$ for outcome 1, and $ZZ$ multiplies the two scores: $(+1)\\times(-1) = -1$. The two bits <b>disagree</b>, so the agreement scoreboard reads $-1$ — which in Max-Cut language is precisely what 'this edge is cut' means. The entire Summit runs on this one number."
     }
   ]
 }

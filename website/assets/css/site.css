@@ -878,6 +878,26 @@ h2.section::after {
   margin: 24px 0;
 }
 
+/* Cumulative-retrieval questions are labelled rather than slipped in unmarked.
+   Learners consistently underrate retrieval practice — it feels less productive
+   than re-reading while working considerably better — so saying "this is
+   deliberate, and here is why" is part of the intervention, not decoration. */
+.quiz-recall {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: var(--amber-strong);
+  background: var(--amber-bg);
+  border: 1px solid var(--amber);
+  border-radius: 20px;
+  padding: 3px 11px;
+  margin-bottom: 9px;
+  cursor: help;
+}
+
 .quiz-opt {
   display: block;
   width: 100%;
