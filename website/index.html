@@ -128,11 +128,17 @@
     <span></span><span></span><span></span>
   </a>
   <div class="nav-links" id="nav-menu">
-    <a href="kit-check.html">Kit Check</a>
+    <a href="index.html#start-here" class="active">Start here</a>
     <a href="ascent.html">The Ascent</a>
-    <a href="widgets.html">Widget Gallery</a>
-    <a href="analogy-studio.html">Analogy Studio</a>
-    <a href="myths.html">Myth Autopsy</a>
+    <details class="nav-group">
+      <summary>Toolbox</summary>
+      <div class="nav-drop">
+        <a href="widgets.html">Widget Gallery<span class="nav-drop-note">All 12 interactive widgets in one place</span></a>
+        <a href="analogy-studio.html">Analogy Studio<span class="nav-drop-note">Quantum explained through your own hobby</span></a>
+        <a href="myths.html">Myth Autopsy<span class="nav-drop-note">Nine pop-science myths, dissected</span></a>
+        <a href="kit-check.html">Kit Check<span class="nav-drop-note">Basecamp 0 · set up Python and Qiskit</span></a>
+      </div>
+    </details>
     <a href="assessment.html">Diagnostic</a>
     <span id="xp-pill">⚡ 0 XP · 0/6</span>
   </div>
@@ -151,7 +157,7 @@
       build intuition, gap-fill code you complete yourself, instant feedback on
       every answer, and analogies tailored to <i>your</i> world.</p>
       <a class="btn" href="ascent.html">Start the ascent →</a>
-      <a class="btn ghost" href="module.html?id=01">Jump into Basecamp 1</a>
+      <a class="btn ghost" href="#start-here">New here? See the route ↓</a>
     </div>
     <div class="hero-visual">
       <div class="hero-visual-card coin-card">
@@ -166,25 +172,55 @@
     </div>
   </div>
 
-  <h2 class="section">Why this course is different</h2>
-  <div class="grid3">
-    <div class="panel"><h3>🎛️ Play first, formalize second</h3>
-      <p class="muted">Every concept starts as an interactive widget you can poke.
-      Only after your hands understand it does the math arrive — and by then it's
-      just naming what you already saw.</p></div>
-    <div class="panel"><h3>⛏️ You write the quantum code</h3>
-      <p class="muted">Notebooks give you the scaffolding; you fill the physics.
-      Instant checkers tell you not just <i>that</i> you're wrong, but <i>why</i> —
-      and honest shot noise never fails a correct answer.</p></div>
-    <div class="panel"><h3>🎨 Analogies from your world</h3>
-      <p class="muted">Cricket fan? Baker? Guitarist? The Analogy Studio generates
-      AI prompts with the precise physics baked in, so your favorite AI explains
-      each concept through your life — without the pop-science myths.</p></div>
-  </div>
+  <h2 class="section" id="start-here">Start here</h2>
+  <p class="muted" style="margin-bottom: 22px;">Never touched quantum computing before?
+  You are exactly who this was built for. Here is the whole path, in order — about
+  eight hours end to end, and you can stop and come back whenever you like.</p>
+
+  <ol class="startpath">
+    <li>
+      <h3>Take the before-test <span class="step-tag">optional · 5 min</span></h3>
+      <p class="muted">A short set of questions about ideas you have not met yet.
+      You are <i>not</i> expected to know them — that is the entire point. Take it
+      now and again at the end, and you will see exactly how far you moved rather
+      than having to guess.</p>
+      <a href="assessment.html">Open the Diagnostic →</a>
+    </li>
+    <li>
+      <h3>Choose how you want to work <span class="step-tag">1 min</span></h3>
+      <p class="muted">Two tracks, the same physics, the same completion code. Pick
+      either — you can switch between them at any point, even mid-basecamp.</p>
+      <div class="track-pick">
+        <div class="track recommended">
+          <b>🌐 In your browser</b>
+          <p class="muted">Nothing to install and no account needed. Every basecamp
+          has a Browser Lab that runs an exact simulator right on the page.
+          <b>If you are not sure, choose this.</b></p>
+        </div>
+        <div class="track">
+          <b>📓 In a notebook</b>
+          <p class="muted">Real Qiskit in Jupyter or Google Colab. Run
+          <a href="kit-check.html">Basecamp 0 · Kit Check</a> first — it confirms
+          your setup works before you depend on it. Five minutes now saves a lot
+          of frustration later.</p>
+        </div>
+      </div>
+    </li>
+    <li>
+      <h3>Climb the six basecamps <span class="step-tag">~8 hours</span></h3>
+      <p class="muted">Each one runs the same way: play with a widget until the idea
+      feels obvious, then write the physics yourself in the lab or notebook, then a
+      short quiz that earns you XP. Start at Basecamp 1 — each camp builds on the
+      one before it.</p>
+      <a class="btn" href="module.html?id=01">Start Basecamp 1 →</a>
+      <span class="muted" style="margin-left:12px;font-size:14px">or
+        <a href="ascent.html">see the whole map first</a></span>
+    </li>
+  </ol>
 
   <h2 class="section">The route</h2>
-  <p class="muted" style="margin-bottom: 20px;">Climb through six structured basecamps to conquer the QAOA summit. Each camp features: <b>Interactive Widget</b> ➔ <b>Jupyter Notebook</b> ➔ <b>Concept Quiz</b>.</p>
-  
+  <p class="muted" style="margin-bottom: 20px;">Six basecamps take you to the QAOA summit. Each one is an <b>interactive widget</b> ➔ a <b>Browser Lab or Jupyter notebook</b> ➔ a <b>concept quiz</b>.</p>
+
   <div class="grid3" style="margin-top: 24px;">
     <div class="panel">
       <h3>Basecamp 1: The Qubit <a href="module.html?id=01" class="soon-chip" style="color:var(--accent);border-color:var(--accent);text-decoration:none;">▶ start now</a></h3>
@@ -234,6 +270,22 @@
         <li style="display: flex; gap: 8px; font-size: 14px; align-items: center;"><span style="color: var(--amber);">★</span> Maxcut Painter Capstone</li>
       </ul>
     </div>
+  </div>
+
+  <h2 class="section">Why this course is different</h2>
+  <div class="grid3">
+    <div class="panel"><h3>🎛️ Play first, formalize second</h3>
+      <p class="muted">Every concept starts as an interactive widget you can poke.
+      Only after your hands understand it does the math arrive — and by then it's
+      just naming what you already saw.</p></div>
+    <div class="panel"><h3>⛏️ You write the quantum code</h3>
+      <p class="muted">The labs and notebooks give you the scaffolding; you fill the
+      physics. Instant checkers tell you not just <i>that</i> you're wrong, but
+      <i>why</i> — and honest shot noise never fails a correct answer.</p></div>
+    <div class="panel"><h3>🎨 Analogies from your world</h3>
+      <p class="muted">Cricket fan? Baker? Guitarist? The Analogy Studio generates
+      AI prompts with the precise physics baked in, so your favorite AI explains
+      each concept through your life — without the pop-science myths.</p></div>
   </div>
 
   <div class="panel" style="margin-top:18px">

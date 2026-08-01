@@ -152,14 +152,20 @@ document.addEventListener("DOMContentLoaded", () => {
   renderPill();
   document.addEventListener("progress-changed", renderPill);
 
-  /* First-visit orientation: a one-time bubble so a newcomer knows what the
-     mysterious "⚡ 0 XP · 0/6" pill is, instead of having to guess. */
+  /* Orientation bubble for the XP pill.
+     This used to fire on page load, which put a popup explaining a counter
+     reading "0 XP · 0/6" on top of the hero before the visitor had done
+     anything — interrupting the best thing on the page to explain a number
+     that did not mean anything yet. Feedback follows an action: the bubble now
+     waits for the first XP to land, at the exact moment the pill changes and
+     the eye is already on it. */
   const COACH_KEY = "q2q_seen_pill_coach";
-  if (pill && !localStorage.getItem(COACH_KEY) && Progress.get().xp === 0) {
+  const showCoach = () => {
     const coach = document.createElement("div");
     coach.className = "pill-coach";
-    coach.innerHTML = `<b>⚡ This is your climb tracker.</b> Finish a basecamp quiz to earn XP
-      and badges — reach the summit and collect all four. <button type="button" aria-label="Got it">Got it ✓</button>`;
+    coach.innerHTML = `<b>⚡ That's your climb tracker.</b> It just went up. Finish a basecamp
+      quiz to earn more XP and badges — reach the summit and collect all four.
+      <button type="button" aria-label="Got it">Got it ✓</button>`;
     document.body.appendChild(coach);
     const place = () => {
       const r = pill.getBoundingClientRect();
@@ -171,6 +177,20 @@ document.addEventListener("DOMContentLoaded", () => {
     const dismiss = () => { coach.remove(); localStorage.setItem(COACH_KEY, "1"); };
     coach.querySelector("button").addEventListener("click", dismiss);
     setTimeout(() => { if (document.body.contains(coach)) dismiss(); }, 12000);
+  };
+
+  if (pill && !localStorage.getItem(COACH_KEY)) {
+    const maybeCoach = () => {
+      if (localStorage.getItem(COACH_KEY)) return;
+      if (Progress.get().xp > 0) {
+        localStorage.setItem(COACH_KEY, "1");   // once per learner, not per page
+        showCoach();
+      }
+    };
+    /* Also covers the learner who earned XP before this shipped, or who is
+       returning on a device where the bubble never got its chance. */
+    maybeCoach();
+    document.addEventListener("progress-changed", maybeCoach);
   }
 
   const toggle = document.getElementById("theme-toggle");

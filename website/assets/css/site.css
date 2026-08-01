@@ -16,6 +16,10 @@
 
   --amber: #b45309;
   --amber-bg: #fdf3e7;
+  /* Was only ever defined in widgets/_base/widget.css, which loads inside the
+     widget iframes — so every use of it on a top-level page (the Summit chip
+     on the home page, for one) silently fell back to inherited ink. */
+  --amber-strong: #7c3a06;
 
   --danger: #b3261e;
   --danger-bg: #fbebe9;
@@ -45,6 +49,12 @@ html {
      not turn <html> into a scroll container (which would break the sticky
      nav and the Kit Check tally). */
   overflow-x: clip;
+}
+
+/* The nav is fixed and body is padded 84px to clear it, so an in-page anchor
+   would otherwise scroll its target underneath the pill and out of sight. */
+[id] {
+  scroll-margin-top: 96px;
 }
 
 body {
@@ -145,6 +155,11 @@ body { padding-top: 84px; }
   font-family: var(--font-body);
   border-bottom: none;
   transition: color 0.2s;
+  /* A nav label that wraps is the failure this whole layout was rebuilt to
+     stop. Refuse to wrap and refuse to shrink; if it genuinely will not fit,
+     the 960px breakpoint below hands over to the burger instead. */
+  white-space: nowrap;
+  flex: none;
 }
 
 .nav-links a:hover,
@@ -176,6 +191,85 @@ body { padding-top: 84px; }
   flex: none;
 }
 .nav-links > .gsi-btn { flex: none; white-space: nowrap; }
+
+/* ── Toolbox disclosure ──
+   A native <details>, so it opens by keyboard and announces its own state
+   without a line of JavaScript. nav.js only adds the two conveniences the
+   element does not give us: click-outside and Escape to close. */
+.nav-group { position: relative; flex: none; }
+
+.nav-group > summary {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  list-style: none;               /* Firefox: hide the default triangle */
+  cursor: pointer;
+  color: var(--muted);
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  transition: color 0.2s;
+}
+.nav-group > summary::-webkit-details-marker { display: none; }
+.nav-group > summary::after {
+  content: "▾";
+  font-size: 0.85em;
+  line-height: 1;
+  opacity: 0.7;
+  transition: transform 0.2s ease;
+}
+.nav-group[open] > summary::after { transform: rotate(180deg); }
+.nav-group > summary:hover,
+.nav-group[open] > summary { color: var(--text); }
+
+/* "You are here" has to survive being inside a closed disclosure, so the
+   summary carries the marker on behalf of whichever child is current. */
+.nav-group.active > summary {
+  color: var(--text);
+  border-bottom: 1px solid var(--accent);
+  padding-bottom: 1px;
+}
+
+.nav-drop {
+  position: absolute;
+  top: calc(100% + 16px);
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 264px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  /* Opaque, like the mobile panel: at 0.97 the page text underneath was still
+     legible through the menu items. */
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  box-shadow: 0 12px 32px rgba(26, 26, 24, 0.14);
+}
+
+.nav-drop a {
+  display: block;
+  padding: 9px 12px;
+  border-radius: 9px;
+  border-bottom: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--text);
+}
+.nav-drop a:hover,
+.nav-drop a:focus-visible { background: var(--bg2); }
+.nav-drop a.active { background: var(--accent-bg); color: var(--accent-strong); }
+
+.nav-drop-note {
+  display: block;
+  font-size: 0.76rem;
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--muted);
+}
 
 /* ── Hamburger button (hidden on desktop) ── */
 .nav-burger {
@@ -415,6 +509,133 @@ body:has(#nav-menu:target) .nav-dismiss {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 24px;
+}
+
+/* -------- "Start here" route band --------
+   Deliberately a vertical numbered list rather than three cards in a row.
+   Cards side by side read as three alternatives you pick between; a numbered
+   column with a rail down the left reads as one thing after another, which is
+   what this actually is. The shape has to carry the ordering, because that
+   ordering is the exact thing a first-time visitor was missing. */
+.startpath {
+  list-style: none;
+  counter-reset: step;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+}
+
+.startpath > li {
+  counter-increment: step;
+  position: relative;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 22px 26px 22px 76px;
+  box-shadow: 0 2px 8px rgba(26, 26, 24, 0.03);
+}
+
+.startpath > li::before {
+  content: counter(step);
+  position: absolute;
+  left: 24px;
+  top: 23px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--accent-bg);
+  border: 1px solid var(--accent);
+  color: var(--accent-strong);
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 15px;
+  line-height: 1;
+}
+
+/* The rail joining one step to the next — "then this" made visible. */
+.startpath > li:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: 39px;
+  top: 63px;
+  bottom: -15px;
+  width: 2px;
+  background: var(--line);
+}
+
+.startpath h3 {
+  font-size: 19px;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+
+.startpath p {
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.startpath .btn {
+  margin-top: 14px;
+}
+
+/* Step 2 is a fork, not a list. Two bordered boxes side by side say "pick one"
+   in a way two stacked paragraphs never do — and the recommended one is marked,
+   so a beginner who has no basis for choosing is not left to flip a coin. */
+.track-pick {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.track {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  background: var(--bg);
+}
+
+.track.recommended {
+  border-color: var(--accent);
+  background: var(--accent-bg);
+}
+
+.track > b {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.track p {
+  font-size: 14px;
+  line-height: 1.6;
+  margin: 0;
+}
+
+@media (max-width: 640px) {
+  .track-pick {
+    grid-template-columns: 1fr;
+  }
+}
+
+.step-tag {
+  display: inline-block;
+  margin-left: 8px;
+  vertical-align: 3px;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: var(--bg2);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
 }
 
 h2.section {
@@ -744,9 +965,11 @@ footer {
   padding: 30px 40px;
   color: var(--muted);
   font-size: 14px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  /* Every footer here is one sentence. `display: flex; space-between` made
+     each text node and link its own flex item and threw them to opposite ends
+     of a 1280px page — "Built for the ... WISER ... Export progress" with
+     yawning gaps. It is prose; lay it out as prose. */
+  text-align: center;
   background: var(--bg);
 }
 
@@ -928,14 +1151,12 @@ footer a:hover {
   }
 }
 
-@media (max-width: 640px) {
-  #nav {
-    gap: 12px;
-  }
-  #nav .nav-name {
-    font-size: 18px;
-  }
-
+/* The pill needs about 880px of content: logo 180 + four entries 288 + the
+   sign-in button 117 + the XP pill 119 + the gaps between them. Below that it
+   has to collapse, and 640px was far too late — measured in Chromium at a
+   900px viewport, "Start here" and "The Ascent" were still wrapping onto two
+   lines each. This breakpoint is the measurement, not a guess. */
+@media (max-width: 960px) {
   /* Show the hamburger; collapse the links into a drop-down panel */
   .nav-burger {
     display: flex;
@@ -951,9 +1172,9 @@ footer a:hover {
     align-items: flex-start;
     gap: 0;
     padding: 0.5rem 1.25rem 0.75rem;
-    background: rgba(248, 246, 241, 0.97);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    /* Fully opaque: at 0.97 the hero headline was still legible through the
+       open menu, which made both unreadable. A menu is not a glass surface. */
+    background: var(--bg);
     border: 1px solid var(--line);
     border-radius: 16px;
     box-shadow: 0 12px 32px rgba(26, 26, 24, 0.12);
@@ -972,13 +1193,75 @@ footer a:hover {
     font-size: 0.95rem;
   }
 
+  /* Every row already has a hairline under it, so a green underline reads as a
+     divider rather than as "you are here". Mark the current page by weight and
+     colour instead. */
+  .nav-links a.active {
+    border-bottom-color: var(--line);
+    color: var(--accent-strong);
+    font-weight: 600;
+  }
+
   .nav-links #xp-pill {
     margin-top: 0.75rem;
+  }
+
+  /* Inside the burger panel there is no room to float anything: the Toolbox
+     becomes an inline accordion, indented so the nesting is still legible. */
+  .nav-group {
+    width: 100%;
+    border-bottom: 1px solid var(--line);
+  }
+  .nav-group > summary {
+    padding: 0.75rem 0;
+    font-size: 0.95rem;
+  }
+  .nav-group.active > summary {
+    border-bottom: none;
+    padding-bottom: 0.75rem;
+  }
+  .nav-drop {
+    position: static;
+    transform: none;
+    min-width: 0;
+    padding: 0 0 0.5rem 0.9rem;
+    background: none;
+    border: none;
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  .nav-drop a {
+    width: auto;
+    padding: 0.5rem 0.6rem;
+    border-bottom: none;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 640px) {
+  #nav {
+    gap: 12px;
+  }
+  #nav .nav-name {
+    font-size: 18px;
   }
 
   .grid3 {
     grid-template-columns: 1fr;
     gap: 16px;
+  }
+  /* Narrow screens cannot spare 76px of gutter for the step numbers, so the
+     badge sits inline above the heading instead of beside it. */
+  .startpath > li {
+    padding: 20px;
+  }
+  .startpath > li::before {
+    position: static;
+    margin-bottom: 10px;
+  }
+  .startpath > li:not(:last-child)::after {
+    display: none;
   }
   .btn {
     width: 100%;

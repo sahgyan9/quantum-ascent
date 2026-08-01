@@ -126,13 +126,21 @@
 <a href="#" class="nav-dismiss" aria-hidden="true" tabindex="-1"></a>
 <nav id="nav">
   <a href="index.html" class="nav-name"><img src="assets/logo.svg" alt="" width="24" height="24"> Quantum <span>Ascent</span></a>
-  <a href="#nav-menu" class="nav-burger" id="nav-burger" aria-label="Toggle menu"><span></span><span></span><span></span></a>
+  <a href="#nav-menu" class="nav-burger" id="nav-burger" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </a>
   <div class="nav-links" id="nav-menu">
-    <a href="kit-check.html">Kit Check</a>
-    <a href="ascent.html">The Ascent</a>
-    <a href="widgets.html">Widget Gallery</a>
-    <a href="analogy-studio.html">Analogy Studio</a>
-    <a href="myths.html">Myth Autopsy</a>
+    <a href="index.html#start-here">Start here</a>
+    <a href="ascent.html" class="active">The Ascent</a>
+    <details class="nav-group">
+      <summary>Toolbox</summary>
+      <div class="nav-drop">
+        <a href="widgets.html">Widget Gallery<span class="nav-drop-note">All 12 interactive widgets in one place</span></a>
+        <a href="analogy-studio.html">Analogy Studio<span class="nav-drop-note">Quantum explained through your own hobby</span></a>
+        <a href="myths.html">Myth Autopsy<span class="nav-drop-note">Nine pop-science myths, dissected</span></a>
+        <a href="kit-check.html">Kit Check<span class="nav-drop-note">Basecamp 0 · set up Python and Qiskit</span></a>
+      </div>
+    </details>
     <a href="assessment.html">Diagnostic</a>
     <span id="xp-pill">⚡ 0 XP · 0/6</span>
   </div>
