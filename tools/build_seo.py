@@ -101,6 +101,17 @@ PAGES = {
               "after the course and measure exactly what changed. Scored in your browser."),
         priority="0.7", changefreq="monthly", crumb="Diagnostic",
     ),
+    # Targets the "what is quantum computing / how does a quantum computer
+    # work" queries, which are far higher-volume than anything else on the
+    # site and are the actual entry point for a beginner who does not yet know
+    # they want a course. It is the only page here written to be read rather
+    # than worked through, so it is also the most linkable.
+    "essentials.html": dict(
+        title="Before You Climb · The Quantum World — Quantum Ascent",
+        desc=("What quantum actually means, what a quantum computer physically is, and how to "
+              "read “0 and 1 at the same time” without being misled. A 15-minute orientation."),
+        priority="0.8", changefreq="monthly", crumb="Before You Climb",
+    ),
     "kit-check.html": dict(
         title="Kit Check · What You Need First — Quantum Ascent",
         desc=("A ten-minute prerequisite check before Basecamp 1: radians, sin², Python "

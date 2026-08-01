@@ -18,12 +18,16 @@ survives future edits.
 """
 
 import re
+import sys
 from pathlib import Path
 
 import pytest
 
 REPO = Path(__file__).resolve().parent.parent
 WEB = REPO / "website"
+
+sys.path.insert(0, str(REPO / "tools"))
+import build_nav  # noqa: E402  — the generator is the source of truth
 
 
 def _is_content_page(p):
@@ -39,7 +43,17 @@ TOP_LEVEL = ["Start here", "The Ascent", "Toolbox", "Diagnostic"]
 MAX_TOP_LEVEL = 4
 
 # Reference pages, grouped behind the Toolbox disclosure.
-TOOLBOX = ["widgets.html", "analogy-studio.html", "myths.html", "kit-check.html"]
+# Derived from the generator rather than restated here. This list used to be a
+# hand-kept copy of build_nav.TOOLBOX, which meant adding one Toolbox entry
+# failed ten tests for the wrong reason — they were reporting a stale duplicate,
+# not a broken nav. What these tests should pin is that the *rendered pages*
+# match the declared structure, plus the constraints that are genuinely about
+# fit (below).
+TOOLBOX = [href for href, _label, _note in build_nav.TOOLBOX]
+
+# The pill itself is capped at MAX_TOP_LEVEL; the disclosure can hold more, but
+# not without limit — past this it stops being a menu and becomes a directory.
+MAX_TOOLBOX = 6
 
 NAV_BLOCK = re.compile(
     r'<div class="nav-links" id="nav-menu">(.*?)\n  </div>', re.S)
@@ -126,6 +140,9 @@ def test_toolbox_entries_say_what_they_are(page):
     notes = re.findall(r'class="nav-drop-note">([^<]+)<', m.group(1))
     assert len(notes) == len(TOOLBOX), (
         f"{page.name}: {len(notes)} Toolbox notes for {len(TOOLBOX)} entries")
+    assert len(TOOLBOX) <= MAX_TOOLBOX, (
+        f"{len(TOOLBOX)} Toolbox entries — past {MAX_TOOLBOX} the disclosure "
+        f"stops being a menu and becomes a directory")
 
 
 def test_current_page_is_marked_even_inside_the_toolbox():

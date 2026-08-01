@@ -37,6 +37,11 @@ UNDER_ASCENT = {"ascent.html", "module.html", "lab.html"}
 # a bare "Analogy Studio" is meaningless until you have already used it once,
 # and grouping is what bought us the room to explain.
 TOOLBOX = [
+    # First in the list because it is the only entry that answers "what even is
+    # this?" — the question a visitor has *before* they have any use for a
+    # widget or an analogy. It stays in the Toolbox rather than the top level
+    # because it is genuinely optional: no basecamp depends on it.
+    ("essentials.html", "Before You Climb", "New to quantum? A 15-minute orientation"),
     ("widgets.html", "Widget Gallery", "All 12 interactive widgets in one place"),
     ("analogy-studio.html", "Analogy Studio", "Quantum explained through your own hobby"),
     ("myths.html", "Myth Autopsy", "Nine pop-science myths, dissected"),
