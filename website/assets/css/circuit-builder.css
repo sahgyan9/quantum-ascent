@@ -56,7 +56,14 @@
   /* ---- readouts ---- */
   .bars { display: grid; grid-template-columns: auto 1fr 58px; gap: 4px 7px; align-items: center; }
   .bars .lab-k { font-family: var(--font-code); font-size: 12px; white-space: nowrap; }
-  .track { height: 15px; background: var(--bg2); border: 1px solid var(--line); border-radius: 7px; overflow: hidden; }
+  /* `padding: 0` is load-bearing, not tidiness. site.css also defines `.track`
+     — as a bordered content card with `padding: 14px 16px` — and any page that
+     loads both (lab.html, myths.html) applies that padding here too. With
+     border-box sizing the 28px of vertical padding swallows the 15px height,
+     the content box collapses to zero, and `.fill { height: 100% }` resolves to
+     0px: the Born-rule bars render as empty rails. That is a rule 5 violation
+     (the visual proportions must BE the probabilities), so pin the padding. */
+  .track { height: 15px; padding: 0; background: var(--bg2); border: 1px solid var(--line); border-radius: 7px; overflow: hidden; }
   .fill { height: 100%; width: 0%; transition: width .18s; }
   .fill.p { background: var(--accent); }
   .fill.s { background: var(--amber); }

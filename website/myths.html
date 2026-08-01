@@ -29,7 +29,10 @@
              margin: 10px 0; min-height: 22px; white-space: pre-wrap; overflow-x: auto; }
   .bars { display: grid; grid-template-columns: auto 1fr 64px; gap: 5px 8px; align-items: center; }
   .bars .k { font-family: var(--font-code); font-size: 12.5px; }
-  .track { height: 15px; background: var(--bg2); border: 1px solid var(--line);
+  /* padding: 0 overrides site.css's unrelated `.track` card rule, whose
+     14px 16px padding would otherwise collapse this bar's content box to zero
+     and render every fill invisible. See circuit-builder.css for the full note. */
+  .track { height: 15px; padding: 0; background: var(--bg2); border: 1px solid var(--line);
            border-radius: 7px; overflow: hidden; }
   .fill { height: 100%; width: 0%; transition: width .2s; background: var(--accent); }
   .fill.amber { background: var(--amber); }
